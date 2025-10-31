@@ -55,7 +55,7 @@ const Transactions = () => {
 
   const fetchTransactions = async () => {
     try {
-      const type = tabValue === 0 ? 'DEPOSIT' : 'WITHDRAWAL'
+      const type = tabValue === 0 ? 'DEPOSIT' : 'WITHDRAW'
       const params = {
         type,
         page,
@@ -201,7 +201,7 @@ const Transactions = () => {
                     >
                       <VisibilityIcon />
                     </IconButton>
-                    {transaction.status === 'PENDING' && transaction.type === 'WITHDRAWAL' && (
+                    {transaction.status === 'PENDING' && transaction.type === 'WITHDRAW' && (
                       <>
                         <IconButton
                           size="small"

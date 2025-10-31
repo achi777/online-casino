@@ -224,4 +224,50 @@ public class AdminService {
 
         return stats;
     }
+
+    @Transactional
+    public AdminResponse updateProfile(String username, AdminUpdateProfileRequest request) {
+        Admin admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new BadRequestException("Admin not found"));
+
+        // Check if email is being changed and if it's already taken
+        if (!admin.getEmail().equals(request.getEmail()) &&
+            adminRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email already exists");
+        }
+
+        String oldEmail = admin.getEmail();
+        admin.setFirstName(request.getFirstName());
+        admin.setLastName(request.getLastName());
+        admin.setEmail(request.getEmail());
+        admin = adminRepository.save(admin);
+
+        auditService.logAdminAction(admin.getId(), "PROFILE_UPDATED", "Admin", admin.getId(),
+                oldEmail, request.getEmail());
+
+        return AdminResponse.fromEntity(admin);
+    }
+
+    @Transactional
+    public void changePassword(String username, ChangePasswordRequest request) {
+        Admin admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new BadRequestException("Admin not found"));
+
+        // Verify current password
+        if (!passwordEncoder.matches(request.getCurrentPassword(), admin.getPassword())) {
+            throw new BadRequestException("Current password is incorrect");
+        }
+
+        // Verify new password confirmation
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new BadRequestException("New password and confirmation do not match");
+        }
+
+        // Update password
+        admin.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        adminRepository.save(admin);
+
+        auditService.logAdminAction(admin.getId(), "PASSWORD_CHANGED", "Admin", admin.getId(),
+                null, "Password changed successfully");
+    }
 }

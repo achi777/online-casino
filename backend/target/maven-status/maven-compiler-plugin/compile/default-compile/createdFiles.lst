@@ -123,6 +123,7 @@ com/casino/repository/AdminRepository.class
 com/casino/service/ResponsibleGamingService.class
 com/casino/entity/GameRound.class
 com/casino/entity/Game$GameCategory.class
+com/casino/dto/AdminUpdateProfileRequest.class
 com/casino/entity/GameProvider$IntegrationType.class
 com/casino/dto/PasswordResetRequest.class
 com/casino/service/SlotSpinService.class

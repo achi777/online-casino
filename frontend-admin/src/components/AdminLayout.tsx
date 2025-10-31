@@ -21,7 +21,8 @@ import {
   History as AuditIcon,
   Settings as SettingsIcon,
   Announcement as CMSIcon,
-  AccountBalanceWallet as PaymentMethodIcon
+  AccountBalanceWallet as PaymentMethodIcon,
+  Person as ProfileIcon
 } from '@mui/icons-material'
 import { useAuth } from '../context/AuthContext'
 import { usePermissions } from '../hooks/usePermissions'
@@ -174,6 +175,21 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
       </List>
       <Divider />
       <List>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => navigate('/profile')}
+            selected={location.pathname === '/profile'}
+          >
+            <ListItemIcon
+              sx={{
+                color: location.pathname === '/profile' ? 'primary.main' : 'inherit'
+              }}
+            >
+              <ProfileIcon />
+            </ListItemIcon>
+            <ListItemText primary="My Profile" />
+          </ListItemButton>
+        </ListItem>
         <ListItem disablePadding>
           <ListItemButton onClick={handleLogout}>
             <ListItemIcon><LogoutIcon /></ListItemIcon>

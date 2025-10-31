@@ -4,6 +4,7 @@ import com.casino.dto.AdminResponse;
 import com.casino.dto.CreateAdminRequest;
 import com.casino.dto.DashboardStatsResponse;
 import com.casino.entity.Admin;
+import com.casino.repository.AdminRepository;
 import com.casino.service.AdminService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,15 @@ import java.util.Map;
 public class AdminManagementController {
 
     private final AdminService adminService;
+    private final AdminRepository adminRepository;
 
     @PostMapping("/admins")
     public ResponseEntity<AdminResponse> createAdmin(
             Authentication authentication,
             @Valid @RequestBody CreateAdminRequest request) {
-        Long adminId = 1L; // Placeholder
-        return ResponseEntity.ok(adminService.createAdmin(adminId, request));
+        Admin currentAdmin = adminRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+        return ResponseEntity.ok(adminService.createAdmin(currentAdmin.getId(), request));
     }
 
     @GetMapping("/dashboard/stats")
@@ -45,8 +48,9 @@ public class AdminManagementController {
             Authentication authentication,
             @PathVariable Long adminId,
             @RequestBody Map<String, String> request) {
-        Long currentAdminId = 1L; // Placeholder
+        Admin currentAdmin = adminRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
         Admin.AdminStatus status = Admin.AdminStatus.valueOf(request.get("status"));
-        return ResponseEntity.ok(adminService.updateAdminStatus(currentAdminId, adminId, status));
+        return ResponseEntity.ok(adminService.updateAdminStatus(currentAdmin.getId(), adminId, status));
     }
 }

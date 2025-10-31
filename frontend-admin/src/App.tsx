@@ -17,6 +17,7 @@ import AuditLogs from './pages/AuditLogs'
 import Settings from './pages/Settings'
 import CMS from './pages/CMS'
 import PaymentMethods from './pages/PaymentMethods'
+import Profile from './pages/Profile'
 
 const theme = createTheme({
   palette: {
@@ -53,6 +54,7 @@ function App() {
             <Route path="/admins" element={<Admins />} />
             <Route path="/audit-logs" element={<AuditLogs />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<Navigate to="/login" replace />} />
           </Routes>
         </Box>

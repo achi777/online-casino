@@ -27,6 +27,7 @@
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/UserController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/config/SecurityConfig.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/service/ResponsibleGamingService.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/AdminUpdateProfileRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/GameResponse.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/TransactionResponse.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/AdminVIPController.java
