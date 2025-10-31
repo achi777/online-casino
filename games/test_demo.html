@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Demo Parameter</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        p { margin: 10px 0; }
+        strong { color: #007bff; }
+        .result { background: #f0f0f0; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Testing Demo Parameter</h1>
+    <div id="output" class="result"></div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionToken = urlParams.get('session') || '';
+        const demoParam = urlParams.get('demo');
+        const isDemo = demoParam === 'true';
+
+        const output = document.getElementById('output');
+        output.innerHTML = `
+            <p><strong>Current URL:</strong> ${window.location.href}</p>
+            <p><strong>Search params:</strong> ${window.location.search}</p>
+            <p><strong>Session Token:</strong> ${sessionToken || '(empty)'}</p>
+            <p><strong>Demo param raw:</strong> "${demoParam}"</p>
+            <p><strong>isDemo:</strong> ${isDemo}</p>
+            <hr>
+            <p style="color: ${isDemo ? 'green' : 'red'}; font-size: 20px;">
+                ${isDemo ? '✅ DEMO MODE ENABLED' : '❌ DEMO MODE DISABLED'}
+            </p>
+        `;
+
+        console.log('=== URL PARAMETER TEST ===');
+        console.log('URL:', window.location.href);
+        console.log('Search:', window.location.search);
+        console.log('demo param raw:', demoParam);
+        console.log('isDemo:', isDemo);
+    </script>
+</body>
+</html>

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacks or Better - Video Poker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c003e 0%, #512da8 50%, #673ab7 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .game-container {
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.9), rgba(75, 0, 130, 0.9));
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            max-width: 950px;
+            width: 95%;
+            border: 5px solid #FFD700;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .balance-display {
+            font-size: 1.6em;
+            margin-bottom: 30px;
+            padding: 18px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            border-radius: 12px;
+            border: 2px solid #FFD700;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .balance-amount {
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 1.4em;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .paytable {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 2px solid #FFD700;
+        }
+
+        .paytable-title {
+            font-size: 1.2em;
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .paytable-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+
+        .paytable-item {
+            padding: 5px;
+        }
+
+        .paytable-hand {
+            text-align: left;
+            color: #FFA500;
+        }
+
+        .paytable-payout {
+            text-align: right;
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .card-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card {
+            width: 100px;
+            height: 140px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            font-size: 2em;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .card.held {
+            border: 4px solid #FFD700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+
+        .card.red {
+            color: #DC143C;
+        }
+
+        .card.black {
+            color: #000;
+        }
+
+        .card-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-suit {
+            font-size: 2.5em;
+        }
+
+        .hold-button {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: 2px solid #FFD700;
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .hold-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 7px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .hold-button.held {
+            background: linear-gradient(135deg, #00FF00, #32CD32);
+            border-color: #00FF00;
+            color: #000;
+        }
+
+        .controls {
+            margin-top: 30px;
+        }
+
+        .bet-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .bet-button {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 215, 0, 0.2));
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            padding: 14px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .bet-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.6), rgba(255, 215, 0, 0.4));
+            transform: scale(1.08);
+            box-shadow: 0 7px 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .bet-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .bet-amount {
+            font-size: 1.6em;
+            color: #FFD700;
+            min-width: 170px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: none;
+            color: #000;
+            padding: 18px 50px;
+            font-size: 1.5em;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .action-button.draw {
+            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+            color: white;
+        }
+
+        .action-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.8);
+        }
+
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 25px;
+            font-size: 2em;
+            min-height: 60px;
+            font-weight: bold;
+            text-shadow: 0 0 15px currentColor;
+        }
+
+        .win {
+            color: #00FF00;
+            text-shadow: 0 0 20px #00FF00;
+            animation: pulse 0.6s infinite;
+        }
+
+        .lose {
+            color: #FF6B6B;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.2);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #ff6b6b;
+        }
+
+        .loading {
+            color: #FFD700;
+            font-size: 1.4em;
+        }
+
+        @keyframes dealCard {
+            0% { transform: translateY(-100px) rotateY(180deg); opacity: 0; }
+            100% { transform: translateY(0) rotateY(0); opacity: 1; }
+        }
+
+        .card.dealing {
+            animation: dealCard 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>♠️ JACKS OR BETTER ♥️</h1>
+        <div class="subtitle">Video Poker Classic</div>
+
+        <div id="status" class="loading">Loading...</div>
+
+        <div id="game-content" style="display: none;">
+            <div class="balance-display">
+                Balance: <span class="balance-amount" id="balance">100.00</span> ₾
+            </div>
+
+            <div class="paytable">
+                <div class="paytable-title">PAYTABLE (1 Coin)</div>
+                <div class="paytable-grid">
+                    <div class="paytable-item paytable-hand">Royal Flush</div>
+                    <div class="paytable-item paytable-payout">250x</div>
+                    <div class="paytable-item paytable-hand">Straight Flush</div>
+                    <div class="paytable-item paytable-payout">50x</div>
+                    <div class="paytable-item paytable-hand">Four of a Kind</div>
+                    <div class="paytable-item paytable-payout">25x</div>
+                    <div class="paytable-item paytable-hand">Full House</div>
+                    <div class="paytable-item paytable-payout">9x</div>
+                    <div class="paytable-item paytable-hand">Flush</div>
+                    <div class="paytable-item paytable-payout">6x</div>
+                    <div class="paytable-item paytable-hand">Straight</div>
+                    <div class="paytable-item paytable-payout">4x</div>
+                    <div class="paytable-item paytable-hand">Three of a Kind</div>
+                    <div class="paytable-item paytable-payout">3x</div>
+                    <div class="paytable-item paytable-hand">Two Pair</div>
+                    <div class="paytable-item paytable-payout">2x</div>
+                    <div class="paytable-item paytable-hand">Jacks or Better</div>
+                    <div class="paytable-item paytable-payout">1x</div>
+                </div>
+            </div>
+
+            <div class="cards-container" id="cards-container"></div>
+
+            <div class="controls">
+                <div class="bet-controls">
+                    <button class="bet-button" id="decrease-bet" onclick="decreaseBet()">−</button>
+                    <div class="bet-amount">Bet: <span id="bet-amount">5.00</span> ₾</div>
+                    <button class="bet-button" id="increase-bet" onclick="increaseBet()">+</button>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-button" id="deal-btn" onclick="dealCards()">Deal</button>
+                    <button class="action-button draw" id="draw-btn" onclick="drawCards()" disabled>Draw</button>
+                </div>
+            </div>
+
+            <div class="message" id="message"></div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:8080';
+        const suits = ['♠', '♥', '♦', '♣'];
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        const valueOrder = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14 };
+
+        let balance = 0;
+        let betAmount = 5;
+        let sessionToken = '';
+        let isDemo = false;
+        let gameId = null;
+        let gameInProgress = false;
+
+        let hand = [];
+        let held = [false, false, false, false, false];
+        let deck = [];
+
+        // Get session token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        sessionToken = urlParams.get('session') || '';
+        isDemo = urlParams.get('demo') === 'true';
+
+        async function init() {
+            const statusEl = document.getElementById('status');
+
+            console.log('=== JACKS OR BETTER INIT ===');
+            console.log('Session Token:', sessionToken);
+            console.log('Is Demo:', isDemo);
+            console.log('Backend URL:', BACKEND_URL);
+
+            if (isDemo) {
+
+                console.log('Starting in DEMO mode');
+
+                // Demo mode - no backend calls
+
+                balance = 100;
+
+                updateBalance();
+
+                showGame();
+
+                return;
+
+            }
+
+            if (!sessionToken) {
+
+                console.error('NO SESSION TOKEN!');
+
+                statusEl.innerHTML = '<div class="error">No session token found</div>';
+
+                return;
+
+            }
+
+            // Real money mode
+
+
+            {
+                console.log('Starting in REAL MONEY mode');
+                const balanceUrl = `${BACKEND_URL}/api/user/balance?sessionToken=${sessionToken}`;
+                console.log('Fetching balance from:', balanceUrl);
+
+                try {
+                    const response = await fetch(balanceUrl);
+                    console.log('Balance response status:', response.status);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Balance data:', data);
+                        balance = data.balance;
+                        updateBalance();
+
+                        // Fetch game info to get gameId
+                        const gameInfoUrl = `${BACKEND_URL}/api/user/game-info?sessionToken=${sessionToken}`;
+                        console.log('Fetching game info from:', gameInfoUrl);
+                        const gameInfoResponse = await fetch(gameInfoUrl);
+                        if (gameInfoResponse.ok) {
+                            const gameData = await gameInfoResponse.json();
+                            console.log('Game data:', gameData);
+                            gameId = gameData.gameId;
+                        }
+
+                        showGame();
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Balance fetch failed:', errorText);
+                        statusEl.innerHTML = `<div class="error">Failed to load balance: ${response.status}</div>`;
+                    }
+                } catch (error) {
+                    console.error('Init error:', error);
+                    statusEl.innerHTML = '<div class="error">Connection error. Starting in demo mode...</div>';
+                    isDemo = true;
+                    balance = 100;
+                    setTimeout(() => {
+                        updateBalance();
+                        showGame();
+                    }, 2000);
+                }
+            }
+        }
+
+        function showGame() {
+            document.getElementById('status').style.display = 'none';
+            document.getElementById('game-content').style.display = 'block';
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance.toFixed(2);
+        }
+
+        function increaseBet() {
+            if (!gameInProgress && betAmount < balance && betAmount < 100) {
+                betAmount += 5;
+                if (betAmount > balance) betAmount = balance;
+                document.getElementById('bet-amount').textContent = betAmount.toFixed(2);
+            }
+        }
+
+        function decreaseBet() {
+            if (!gameInProgress && betAmount > 5) {
+                betAmount -= 5;
+                document.getElementById('bet-amount').textContent = betAmount.toFixed(2);
+            }
+        }
+
+        function createDeck() {
+            deck = [];
+            for (let suit of suits) {
+                for (let value of values) {
+                    deck.push({ value, suit });
+                }
+            }
+            // Shuffle deck
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        function drawCard() {
+            return deck.pop();
+        }
+
+        function displayCard(card, index) {
+            const isRed = card.suit === '♥' || card.suit === '♦';
+            return `
+                <div class="card-wrapper">
+                    <div class="card ${isRed ? 'red' : 'black'} ${held[index] ? 'held' : ''} dealing" onclick="toggleHold(${index})" id="card-${index}">
+                        <div class="card-top">
+                            <div>${card.value}</div>
+                            <div class="card-suit">${card.suit}</div>
+                        </div>
+                        <div>${card.value}</div>
+                    </div>
+                    <button class="hold-button ${held[index] ? 'held' : ''}" onclick="toggleHold(${index})" id="hold-${index}">
+                        ${held[index] ? 'HELD' : 'HOLD'}
+                    </button>
+                </div>
+            `;
+        }
+
+        function displayHand() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = hand.map((card, index) => displayCard(card, index)).join('');
+        }
+
+        function toggleHold(index) {
+            if (!gameInProgress || hand.length === 0) return;
+
+            held[index] = !held[index];
+
+            const card = document.getElementById(`card-${index}`);
+            const button = document.getElementById(`hold-${index}`);
+
+            if (held[index]) {
+                card.classList.add('held');
+                button.classList.add('held');
+                button.textContent = 'HELD';
+            } else {
+                card.classList.remove('held');
+                button.classList.remove('held');
+                button.textContent = 'HOLD';
+            }
+        }
+
+        async function dealCards() {
+            if (balance < betAmount) {
+                showMessage('Insufficient balance!', 'lose');
+                return;
+            }
+
+            gameInProgress = true;
+            hand = [];
+            held = [false, false, false, false, false];
+            document.getElementById('message').textContent = '';
+
+            // Disable betting
+            document.getElementById('decrease-bet').disabled = true;
+            document.getElementById('increase-bet').disabled = true;
+            document.getElementById('deal-btn').disabled = true;
+
+            // Deduct bet
+            if (isDemo) {
+                balance -= betAmount;
+                updateBalance();
+            }
+
+            // Create deck and deal 5 cards
+            createDeck();
+            hand = [drawCard(), drawCard(), drawCard(), drawCard(), drawCard()];
+            displayHand();
+
+            // Enable draw button
+            document.getElementById('draw-btn').disabled = false;
+        }
+
+        async function drawCards() {
+            // Replace non-held cards
+            for (let i = 0; i < 5; i++) {
+                if (!held[i]) {
+                    hand[i] = drawCard();
+                }
+            }
+
+            displayHand();
+
+            // Disable draw button
+            document.getElementById('draw-btn').disabled = true;
+
+            // Evaluate hand
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            if (!isDemo) {
+                // Call backend for final result
+                const roundId = 'round_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+                try {
+                    const response = await fetch(`${BACKEND_URL}/api/user/games/spin`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sessionToken: sessionToken,
+                            gameId: gameId,
+                            betAmount: betAmount,
+                            roundId: roundId
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Draw failed:', errorText);
+                        throw new Error('Draw failed');
+                    }
+
+                    const result = await response.json();
+                    console.log('Game result:', result);
+
+                    balance = result.newBalance;
+                    updateBalance();
+
+                    if (result.win) {
+                        showMessage(result.message, 'win');
+                    } else {
+                        showMessage(result.message || 'No winning hand', 'lose');
+                    }
+
+                } catch (error) {
+                    console.error('Draw error:', error);
+                    showMessage('Error during draw', 'lose');
+                }
+            } else {
+                // Demo mode - evaluate locally
+                const handResult = evaluateHand(hand);
+
+                if (handResult.payout > 0) {
+                    const winAmount = betAmount * handResult.payout;
+                    balance += winAmount;
+                    updateBalance();
+                    showMessage(`${handResult.name}! Win ${winAmount.toFixed(2)} ₾!`, 'win');
+                } else {
+                    showMessage('No winning hand', 'lose');
+                }
+            }
+
+            resetGame();
+        }
+
+        function evaluateHand(cards) {
+            // Sort cards by value
+            const sorted = [...cards].sort((a, b) => valueOrder[a.value] - valueOrder[b.value]);
+
+            // Count values and suits
+            const valueCounts = {};
+            const suitCounts = {};
+
+            sorted.forEach(card => {
+                valueCounts[card.value] = (valueCounts[card.value] || 0) + 1;
+                suitCounts[card.suit] = (suitCounts[card.suit] || 0) + 1;
+            });
+
+            const counts = Object.values(valueCounts).sort((a, b) => b - a);
+            const isFlush = Object.values(suitCounts).some(count => count === 5);
+
+            // Check for straight
+            const values = sorted.map(c => valueOrder[c.value]);
+            let isStraight = true;
+            for (let i = 1; i < values.length; i++) {
+                if (values[i] !== values[i-1] + 1) {
+                    isStraight = false;
+                    break;
+                }
+            }
+            // Special case: A-2-3-4-5
+            if (!isStraight && values[0] === 2 && values[4] === 14) {
+                const lowAce = [2, 3, 4, 5, 14];
+                isStraight = values.every((v, i) => v === lowAce[i]);
+            }
+
+            // Check for Royal Flush
+            const royalValues = ['10', 'J', 'Q', 'K', 'A'];
+            const isRoyal = isFlush && isStraight && sorted.every(c => royalValues.includes(c.value));
+
+            if (isRoyal) return { name: 'Royal Flush', payout: 250 };
+            if (isFlush && isStraight) return { name: 'Straight Flush', payout: 50 };
+            if (counts[0] === 4) return { name: 'Four of a Kind', payout: 25 };
+            if (counts[0] === 3 && counts[1] === 2) return { name: 'Full House', payout: 9 };
+            if (isFlush) return { name: 'Flush', payout: 6 };
+            if (isStraight) return { name: 'Straight', payout: 4 };
+            if (counts[0] === 3) return { name: 'Three of a Kind', payout: 3 };
+            if (counts[0] === 2 && counts[1] === 2) return { name: 'Two Pair', payout: 2 };
+
+            // Jacks or Better
+            if (counts[0] === 2) {
+                const pairValue = Object.keys(valueCounts).find(v => valueCounts[v] === 2);
+                if (['J', 'Q', 'K', 'A'].includes(pairValue)) {
+                    return { name: 'Jacks or Better', payout: 1 };
+                }
+            }
+
+            return { name: 'No Win', payout: 0 };
+        }
+
+        function resetGame() {
+            gameInProgress = false;
+            held = [false, false, false, false, false];
+
+            setTimeout(() => {
+                hand = [];
+                document.getElementById('cards-container').innerHTML = '';
+                document.getElementById('decrease-bet').disabled = false;
+                document.getElementById('increase-bet').disabled = false;
+                document.getElementById('deal-btn').disabled = false;
+            }, 3000);
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+        }
+
+        // Initialize game on load
+        window.onload = init;
+    </script>
+</body>
+</html>

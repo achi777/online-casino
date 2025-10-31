@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple 5-Reel Video Slots</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .game-container {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            max-width: 900px;
+            width: 95%;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .balance-display {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+
+        .balance-amount {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.4em;
+        }
+
+        .reels-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 15px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .reel {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5em;
+            border: 3px solid #ffd700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .reel.spinning {
+            animation: spin 0.1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(0) rotateY(0deg); }
+            100% { transform: translateY(-10px) rotateY(360deg); }
+        }
+
+        .controls {
+            margin-top: 30px;
+        }
+
+        .bet-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .bet-button {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.2));
+            border: 2px solid #ffd700;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .bet-button:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(255, 215, 0, 0.3));
+            transform: scale(1.05);
+        }
+
+        .bet-amount {
+            font-size: 1.5em;
+            color: #ffd700;
+            min-width: 150px;
+            font-weight: bold;
+        }
+
+        .spin-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 20px 60px;
+            font-size: 1.8em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.5);
+            transition: all 0.3s;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.7);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.8em;
+            min-height: 50px;
+            font-weight: bold;
+        }
+
+        .win {
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            animation: pulse 0.5s infinite;
+        }
+
+        .lose {
+            color: #ff6b6b;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .error {
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .loading {
+            color: #ffd700;
+            font-size: 1.3em;
+        }
+
+        .paylines {
+            font-size: 0.9em;
+            color: #ffd700;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>✨ Simple 5-Reel Video Slots ✨</h1>
+
+        <div id="status" class="loading">Loading...</div>
+
+        <div id="game-content" style="display: none;">
+            <div class="balance-display">
+                Balance: <span class="balance-amount" id="balance">100.00</span> ₾
+            </div>
+
+            <div class="reels-container">
+                <div class="reel" id="reel1">💎</div>
+                <div class="reel" id="reel2">⭐</div>
+                <div class="reel" id="reel3">🍀</div>
+                <div class="reel" id="reel4">🔔</div>
+                <div class="reel" id="reel5">💰</div>
+            </div>
+
+            <div class="paylines">25 Paylines Active</div>
+
+            <div class="controls">
+                <div class="bet-controls">
+                    <button class="bet-button" onclick="decreaseBet()">-</button>
+                    <div class="bet-amount">Bet: <span id="bet-amount">1.00</span> ₾</div>
+                    <button class="bet-button" onclick="increaseBet()">+</button>
+                </div>
+
+                <button class="spin-button" id="spin-btn" onclick="spin()">SPIN</button>
+            </div>
+
+            <div class="message" id="message"></div>
+        </div>
+    </div>
+
+    <script>
+        const symbols = ['💎', '⭐', '🍀', '🔔', '💰', '🎰', '7️⃣', '🎲', '🏆'];
+        const BACKEND_URL = 'http://localhost:8080';
+
+        let balance = 0;
+        let betAmount = 1;
+        let sessionToken = '';
+        let isDemo = false;
+        let isSpinning = false;
+        let gameId = null;
+
+        // Get session token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        sessionToken = urlParams.get('session') || '';
+        isDemo = urlParams.get('demo') === 'true';
+
+        async function init() {
+            const statusEl = document.getElementById('status');
+
+            console.log('=== GAME INIT ===');
+            console.log('Session Token:', sessionToken);
+            console.log('Is Demo:', isDemo);
+            console.log('Backend URL:', BACKEND_URL);
+
+            if (isDemo) {
+
+                console.log('Starting in DEMO mode');
+
+                // Demo mode - no backend calls
+
+                balance = 100;
+
+                updateBalance();
+
+                showGame();
+
+                return;
+
+            }
+
+            if (!sessionToken) {
+
+                console.error('NO SESSION TOKEN!');
+
+                statusEl.innerHTML = '<div class="error">No session token found</div>';
+
+                return;
+
+            }
+
+            // Real money mode
+
+
+            {
+                console.log('Starting in REAL MONEY mode');
+                // Real money mode - get balance from backend
+                const balanceUrl = `${BACKEND_URL}/api/user/balance?sessionToken=${sessionToken}`;
+                console.log('Fetching balance from:', balanceUrl);
+
+                try {
+                    const response = await fetch(balanceUrl);
+                    console.log('Balance response status:', response.status);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Balance data:', data);
+                        balance = data.balance;
+                        updateBalance();
+
+                        // Fetch game info to get gameId
+                        const gameInfoUrl = `${BACKEND_URL}/api/user/game-info?sessionToken=${sessionToken}`;
+                        console.log('Fetching game info from:', gameInfoUrl);
+                        const gameInfoResponse = await fetch(gameInfoUrl);
+                        if (gameInfoResponse.ok) {
+                            const gameData = await gameInfoResponse.json();
+                            console.log('Game data:', gameData);
+                            gameId = gameData.gameId;
+                        }
+
+                        showGame();
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Balance fetch failed:', errorText);
+                        statusEl.innerHTML = `<div class="error">Failed to load balance: ${response.status}</div>`;
+                    }
+                } catch (error) {
+                    console.error('Init error:', error);
+                    statusEl.innerHTML = '<div class="error">Connection error. Starting in demo mode...</div>';
+                    // Fallback to demo mode
+                    isDemo = true;
+                    balance = 100;
+                    setTimeout(() => {
+                        updateBalance();
+                        showGame();
+                    }, 2000);
+                }
+            }
+        }
+
+        function showGame() {
+            document.getElementById('status').style.display = 'none';
+            document.getElementById('game-content').style.display = 'block';
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance.toFixed(2);
+        }
+
+        function increaseBet() {
+            if (betAmount < balance && betAmount < 100) {
+                betAmount++;
+                document.getElementById('bet-amount').textContent = betAmount.toFixed(2);
+            }
+        }
+
+        function decreaseBet() {
+            if (betAmount > 1) {
+                betAmount--;
+                document.getElementById('bet-amount').textContent = betAmount.toFixed(2);
+            }
+        }
+
+        async function spin() {
+            if (isSpinning) return;
+            if (balance < betAmount) {
+                showMessage('Insufficient balance!', 'lose');
+                return;
+            }
+
+            isSpinning = true;
+            const spinBtn = document.getElementById('spin-btn');
+            spinBtn.disabled = true;
+            document.getElementById('message').textContent = '';
+
+            // Start spinning animation
+            const reels = [
+                document.getElementById('reel1'),
+                document.getElementById('reel2'),
+                document.getElementById('reel3'),
+                document.getElementById('reel4'),
+                document.getElementById('reel5')
+            ];
+
+            reels.forEach(reel => reel.classList.add('spinning'));
+
+            if (!isDemo) {
+                const roundId = 'round_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+                try {
+                    // Call backend RTP-based spin endpoint
+                    const spinResponse = await fetch(`${BACKEND_URL}/api/user/games/spin`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sessionToken: sessionToken,
+                            gameId: gameId,
+                            betAmount: betAmount,
+                            roundId: roundId
+                        })
+                    });
+
+                    if (!spinResponse.ok) {
+                        const errorText = await spinResponse.text();
+                        console.error('Spin failed:', errorText);
+                        throw new Error('Spin failed');
+                    }
+
+                    const spinData = await spinResponse.json();
+                    console.log('Spin result:', spinData);
+
+                    // Use backend results
+                    await spinReels(reels, spinData);
+
+                    balance = spinData.newBalance;
+                    updateBalance();
+
+                    if (spinData.win) {
+                        showMessage(spinData.message, 'win');
+                    } else {
+                        showMessage(spinData.message, 'lose');
+                    }
+                } catch (error) {
+                    console.error('Spin error:', error);
+                    showMessage('Error during spin', 'lose');
+                    reels.forEach(reel => reel.classList.remove('spinning'));
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    return;
+                }
+            } else {
+                // Demo mode - generate random results
+                balance -= betAmount;
+                updateBalance();
+                const demoResults = {
+                    results: [
+                        symbols[Math.floor(Math.random() * symbols.length)],
+                        symbols[Math.floor(Math.random() * symbols.length)],
+                        symbols[Math.floor(Math.random() * symbols.length)],
+                        symbols[Math.floor(Math.random() * symbols.length)],
+                        symbols[Math.floor(Math.random() * symbols.length)]
+                    ],
+                    win: false,
+                    winAmount: 0
+                };
+
+                // Simple demo win logic - 5 of a kind
+                if (demoResults.results.every(s => s === demoResults.results[0])) {
+                    demoResults.win = true;
+                    demoResults.winAmount = betAmount * 50;
+                    balance += demoResults.winAmount;
+                    updateBalance();
+                }
+
+                await spinReels(reels, demoResults);
+
+                if (demoResults.win) {
+                    showMessage(`🎉 BIG WIN ${demoResults.winAmount.toFixed(2)} ₾! 🎉`, 'win');
+                } else {
+                    showMessage('Try again!', 'lose');
+                }
+            }
+
+            isSpinning = false;
+            spinBtn.disabled = false;
+        }
+
+        async function spinReels(reels, spinData) {
+            // Spin for 2.5 seconds
+            await new Promise(resolve => setTimeout(resolve, 2500));
+
+            // Stop spinning and show results from backend
+            reels.forEach((reel, i) => {
+                reel.classList.remove('spinning');
+                reel.textContent = spinData.results[i];
+            });
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+        }
+
+        // Initialize game on load
+        window.onload = init;
+    </script>
+</body>
+</html>
