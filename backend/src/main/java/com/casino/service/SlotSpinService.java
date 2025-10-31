@@ -60,10 +60,23 @@ public class SlotSpinService {
     );
 
     @Transactional
-    public SpinResponse processSpin(SpinRequest request) {
+    public SpinResponse processSpin(Long userId, SpinRequest request) {
         // Validate session
         GameSession session = gameSessionRepository.findBySessionToken(request.getSessionToken())
                 .orElseThrow(() -> new BadRequestException("Invalid session token"));
+
+        // SECURITY: Validate session belongs to authenticated user
+        if (!session.getUser().getId().equals(userId)) {
+            log.error("Session hijack attempt: userId={}, sessionUserId={}", userId, session.getUser().getId());
+            throw new BadRequestException("Invalid session");
+        }
+
+        // Validate session is not expired
+        if (session.getExpiresAt() != null && session.getExpiresAt().isBefore(java.time.LocalDateTime.now())) {
+            session.setStatus(GameSession.SessionStatus.EXPIRED);
+            gameSessionRepository.save(session);
+            throw new BadRequestException("Session expired");
+        }
 
         User user = session.getUser();
         Game game = gameRepository.findById(request.getGameId())

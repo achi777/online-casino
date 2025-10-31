@@ -42,7 +42,10 @@ const Games = () => {
     setError('')
     try {
       const response = await axios.post('/api/user/games/launch', { gameId, demoMode })
-      setGameUrl(response.data.launchUrl)
+      // Append JWT token to game URL so iframe can use it
+      const token = localStorage.getItem('accessToken')
+      const launchUrl = response.data.launchUrl + (token ? `&token=${token}` : '')
+      setGameUrl(launchUrl)
     } catch (error: any) {
       setError(error.response?.data?.error || 'Failed to launch game. Please try again.')
     }

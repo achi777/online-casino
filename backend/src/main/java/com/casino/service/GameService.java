@@ -69,12 +69,14 @@ public class GameService {
             throw new BadRequestException("Game is not available");
         }
 
-        // Create game session
+        // Create game session with expiration
         GameSession session = new GameSession();
         session.setUser(user);
         session.setGame(game);
         session.setSessionToken(UUID.randomUUID().toString());
         session.setStartedAt(LocalDateTime.now());
+        session.setExpiresAt(LocalDateTime.now().plusHours(2)); // 2 hour session expiry
+        // Note: IP tracking can be added by passing HttpServletRequest to this method
         session = gameSessionRepository.save(session);
 
         auditService.logUserAction(userId, "GAME_LAUNCHED", "GameSession", session.getId(),
@@ -88,9 +90,23 @@ public class GameService {
     }
 
     @Transactional
-    public BigDecimal placeBet(GameBetRequest request) {
+    public BigDecimal placeBet(Long userId, GameBetRequest request) {
         GameSession session = gameSessionRepository.findBySessionToken(request.getSessionToken())
                 .orElseThrow(() -> new BadRequestException("Invalid session"));
+
+        // Validate session belongs to authenticated user
+        if (!session.getUser().getId().equals(userId)) {
+            auditService.logUserAction(userId, "SESSION_HIJACK_ATTEMPT", "GameSession", session.getId(),
+                    null, "Attempted to use another user's session");
+            throw new BadRequestException("Invalid session");
+        }
+
+        // Validate session is not expired
+        if (session.getExpiresAt() != null && session.getExpiresAt().isBefore(LocalDateTime.now())) {
+            session.setStatus(GameSession.SessionStatus.EXPIRED);
+            gameSessionRepository.save(session);
+            throw new BadRequestException("Session expired");
+        }
 
         User user = session.getUser();
 
@@ -142,15 +158,39 @@ public class GameService {
     }
 
     @Transactional
-    public BigDecimal processWin(GameWinRequest request) {
+    public BigDecimal processWin(Long userId, GameWinRequest request) {
         GameSession session = gameSessionRepository.findBySessionToken(request.getSessionToken())
                 .orElseThrow(() -> new BadRequestException("Invalid session"));
+
+        // Validate session belongs to authenticated user
+        if (!session.getUser().getId().equals(userId)) {
+            auditService.logUserAction(userId, "SESSION_HIJACK_ATTEMPT", "GameSession", session.getId(),
+                    null, "Attempted to use another user's session");
+            throw new BadRequestException("Invalid session");
+        }
+
+        // Validate session is not expired
+        if (session.getExpiresAt() != null && session.getExpiresAt().isBefore(LocalDateTime.now())) {
+            session.setStatus(GameSession.SessionStatus.EXPIRED);
+            gameSessionRepository.save(session);
+            throw new BadRequestException("Session expired");
+        }
 
         GameRound round = gameRoundRepository.findByRoundId(request.getRoundId())
                 .orElseThrow(() -> new BadRequestException("Round not found"));
 
         if (round.getStatus() == GameRound.RoundStatus.COMPLETED) {
             throw new BadRequestException("Round already completed");
+        }
+
+        // CRITICAL: Validate win amount
+        BigDecimal betAmount = round.getBetAmount();
+        BigDecimal maxWin = betAmount.multiply(BigDecimal.valueOf(1000)); // Max 1000x multiplier
+
+        if (request.getWinAmount().compareTo(maxWin) > 0) {
+            auditService.logUserAction(userId, "FRAUD_ATTEMPT", "GameRound", round.getId(),
+                    betAmount.toString(), "Win amount " + request.getWinAmount() + " exceeds max " + maxWin);
+            throw new BadRequestException("Invalid win amount");
         }
 
         User user = session.getUser();

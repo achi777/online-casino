@@ -221,10 +221,11 @@
         let isSpinning = false;
         let gameId = null;
 
-        // Get session token from URL
+        // Get session token and JWT token from URL
         const urlParams = new URLSearchParams(window.location.search);
         sessionToken = urlParams.get('session') || '';
         isDemo = urlParams.get('demo') === 'true';
+        const jwtToken = urlParams.get('token') || '';
 
         async function init() {
             const statusEl = document.getElementById('status');
@@ -344,11 +345,17 @@
                 const roundId = 'round_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
                 try {
+                    // Use JWT token from URL
+                    if (!jwtToken) {
+                        throw new Error('No authentication token found');
+                    }
+
                     // Call backend RTP-based spin endpoint
                     const spinResponse = await fetch(`${BACKEND_URL}/api/user/games/spin`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${jwtToken}`
                         },
                         body: JSON.stringify({
                             sessionToken: sessionToken,

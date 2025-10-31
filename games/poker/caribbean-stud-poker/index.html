@@ -160,6 +160,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         sessionToken = urlParams.get('session') || '';
         isDemo = urlParams.get('demo') === 'true';
+        const jwtToken = urlParams.get('token') || '';
 
         async function init() {
             const statusEl = document.getElementById('status');
@@ -215,8 +216,13 @@
             if (!isDemo) {
                 const roundId = 'round_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 try {
+                    // Use JWT token from URL
+                    if (!jwtToken) {
+                        throw new Error('No authentication token found');
+                    }
+
                     const response = await fetch(`${BACKEND_URL}/api/user/games/spin`, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` },
                         body: JSON.stringify({ sessionToken: sessionToken, gameId: gameId, betAmount: betAmount * 3, roundId: roundId })
                     });
                     if (response.ok) { const result = await response.json(); balance = result.newBalance; updateBalance(); showMessage(result.win ? result.message : (result.message || 'Dealer wins'), result.win ? 'win' : 'lose'); }

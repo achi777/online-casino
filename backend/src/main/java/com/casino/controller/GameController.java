@@ -3,6 +3,7 @@ package com.casino.controller;
 import com.casino.dto.*;
 import com.casino.entity.Game;
 import com.casino.entity.User;
+import com.casino.exception.BadRequestException;
 import com.casino.repository.UserRepository;
 import com.casino.service.GameService;
 import jakarta.validation.Valid;
@@ -50,20 +51,29 @@ public class GameController {
     }
 
     private Long getUserIdFromAuth(Authentication authentication) {
+        if (authentication == null) {
+            throw new BadRequestException("Authentication required");
+        }
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+                .orElseThrow(() -> new BadRequestException("User not found: " + email));
         return user.getId();
     }
 
     @PostMapping("/bet")
-    public ResponseEntity<BigDecimal> placeBet(@Valid @RequestBody GameBetRequest request) {
-        return ResponseEntity.ok(gameService.placeBet(request));
+    public ResponseEntity<BigDecimal> placeBet(
+            Authentication authentication,
+            @Valid @RequestBody GameBetRequest request) {
+        Long userId = getUserIdFromAuth(authentication);
+        return ResponseEntity.ok(gameService.placeBet(userId, request));
     }
 
     @PostMapping("/win")
-    public ResponseEntity<BigDecimal> processWin(@Valid @RequestBody GameWinRequest request) {
-        return ResponseEntity.ok(gameService.processWin(request));
+    public ResponseEntity<BigDecimal> processWin(
+            Authentication authentication,
+            @Valid @RequestBody GameWinRequest request) {
+        Long userId = getUserIdFromAuth(authentication);
+        return ResponseEntity.ok(gameService.processWin(userId, request));
     }
 
     @PostMapping("/rollback/{roundId}")

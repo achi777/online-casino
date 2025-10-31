@@ -44,13 +44,27 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/auth/**").permitAll()
-                        .requestMatchers("/api/user/games", "/api/user/games/**").permitAll()
-                        .requestMatchers("/api/user/balance").permitAll()
-                        .requestMatchers("/api/user/game-info").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+
+                        // Game listing endpoints - can be public
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/user/games", "/api/user/games/category/**", "/api/user/games/featured").permitAll()
+
+                        // Game initialization endpoints - secured by session token in backend
+                        .requestMatchers("/api/user/balance", "/api/user/game-info").permitAll()
+
+                        // SECURITY: Game play endpoints - MUST be authenticated with JWT
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/launch").hasRole("USER")
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/spin").hasRole("USER")
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/bet").hasRole("USER")
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/win").hasRole("USER")
+
+                        // Admin endpoints
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN_OWNER", "ADMIN_FINANCE", "ADMIN_SUPPORT", "ADMIN_CONTENT")
+
+                        // All other user endpoints require authentication
                         .requestMatchers("/api/user/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )

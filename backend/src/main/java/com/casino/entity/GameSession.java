@@ -41,6 +41,10 @@ public class GameSession extends BaseEntity {
 
     private LocalDateTime endedAt;
 
+    private LocalDateTime expiresAt;
+
+    private String ipAddress;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SessionStatus status = SessionStatus.ACTIVE;
