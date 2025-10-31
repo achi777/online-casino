@@ -28,7 +28,14 @@ const GameHistory = () => {
 
   const loadGameHistory = async () => {
     try {
-      const response = await axios.get('/api/user/game-history')
+      // Request with sorting by startedAt descending (newest first) and larger page size
+      const response = await axios.get('/api/user/game-history', {
+        params: {
+          page: 0,
+          size: 100,
+          sort: 'startedAt,desc'
+        }
+      })
       setSessions(response.data.content || [])
       setLoading(false)
     } catch (err) {
