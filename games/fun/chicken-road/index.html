@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicken Road - Risk Ladder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .game-container {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            max-width: 800px;
+            width: 95%;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .balance-display {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+
+        .balance-amount {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .tile {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tile:hover:not(.revealed):not(.disabled) {
+            transform: scale(1.05);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .tile.revealed {
+            cursor: default;
+            animation: reveal 0.5s;
+        }
+
+        .tile.safe {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            border-color: #38ef7d;
+        }
+
+        .tile.bomb {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+            border-color: #f45c43;
+        }
+
+        .tile.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @keyframes reveal {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0deg); }
+        }
+
+        .multiplier-display {
+            font-size: 2em;
+            color: #ffd700;
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .bet-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bet-button {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.2));
+            border: 2px solid #ffd700;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .bet-button:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(255, 215, 0, 0.3));
+            transform: scale(1.05);
+        }
+
+        .bet-amount {
+            font-size: 1.2em;
+            color: #ffd700;
+            min-width: 120px;
+            font-weight: bold;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+            transition: all 0.3s;
+        }
+
+        .action-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(245, 87, 108, 0.6);
+        }
+
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-button.cashout {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.5em;
+            min-height: 40px;
+            font-weight: bold;
+        }
+
+        .win {
+            color: #38ef7d;
+            animation: pulse 0.5s infinite;
+        }
+
+        .lose {
+            color: #f45c43;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .error {
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .loading {
+            color: #ffd700;
+            font-size: 1.3em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: #ffd700;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .row-label {
+            position: absolute;
+            left: -30px;
+            color: #aaa;
+            font-size: 0.8em;
+        }
+
+        @media (max-width: 600px) {
+            .tile {
+                width: 60px;
+                height: 60px;
+                font-size: 2em;
+            }
+
+            .game-board {
+                gap: 5px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🐔 Chicken Road 🐔</h1>
+        <p class="subtitle">Find the safe path and avoid the bombs!</p>
+
+        <div id="status" class="loading">Loading...</div>
+
+        <div id="game-content" style="display: none;">
+            <div class="balance-display">
+                Balance: <span class="balance-amount" id="balance">100.00</span> ₾
+            </div>
+
+            <div class="multiplier-display">
+                Multiplier: <span id="multiplier">1.00</span>x
+                <span style="font-size: 0.6em; color: #aaa;">(Potential Win: <span id="potential-win">0.00</span> ₾)</span>
+            </div>
+
+            <div class="game-board" id="game-board">
+                <!-- Tiles will be generated by JavaScript -->
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">Safe Tiles</div>
+                    <div class="stat-value" id="safe-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Current Bet</div>
+                    <div class="stat-value" id="current-bet">0.00 ₾</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Bombs Left</div>
+                    <div class="stat-value" id="bombs-left">5</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="bet-controls">
+                    <button class="bet-button" onclick="decreaseBet()">-</button>
+                    <div class="bet-amount">Bet: <span id="bet-amount">1.00</span> ₾</div>
+                    <button class="bet-button" onclick="increaseBet()">+</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button class="action-button" id="start-btn" onclick="startGame()">START GAME</button>
+                <button class="action-button cashout" id="cashout-btn" onclick="cashOut()" style="display: none;">CASH OUT</button>
+            </div>
+
+            <div class="message" id="message"></div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:8080';
+        const GRID_SIZE = 25; // 5x5 grid
+        const BOMBS_COUNT = 5;
+        const MULTIPLIER_INCREMENT = 0.4; // Each safe tile increases multiplier by 0.4x
+
+        let balance = 0;
+        let betAmount = 1;
+        let sessionToken = '';
+        let isDemo = false;
+        let gameId = null;
+        let gameActive = false;
+        let currentMultiplier = 1.0;
+        let safeTilesFound = 0;
+        let revealedTiles = new Set();
+        let bombPositions = [];
+        let jwtToken = '';
+
+        // Get session token and JWT from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        sessionToken = urlParams.get('session') || '';
+        isDemo = urlParams.get('demo') === 'true';
+        jwtToken = urlParams.get('token') || '';
+
+        async function init() {
+            const statusEl = document.getElementById('status');
+
+            console.log('=== CHICKEN ROAD INIT ===');
+            console.log('Session Token:', sessionToken);
+            console.log('Is Demo:', isDemo);
+            console.log('JWT Token:', jwtToken ? 'Present' : 'Missing');
+
+            initGameBoard();
+
+            if (isDemo) {
+                console.log('Starting in DEMO mode');
+                balance = 100;
+                updateBalance();
+                showGame();
+                return;
+            }
+
+            if (!sessionToken) {
+                console.error('NO SESSION TOKEN!');
+                statusEl.innerHTML = '<div class="error">No session token found</div>';
+                return;
+            }
+
+            // Real money mode
+            {
+                console.log('Starting in REAL MONEY mode');
+                const balanceUrl = `${BACKEND_URL}/api/user/balance?sessionToken=${sessionToken}`;
+
+                try {
+                    const response = await fetch(balanceUrl);
+                    console.log('Balance response status:', response.status);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        balance = data.balance;
+                        updateBalance();
+
+                        // Fetch game info
+                        const gameInfoUrl = `${BACKEND_URL}/api/user/game-info?sessionToken=${sessionToken}`;
+                        const gameInfoResponse = await fetch(gameInfoUrl);
+                        if (gameInfoResponse.ok) {
+                            const gameData = await gameInfoResponse.json();
+                            gameId = gameData.gameId;
+                        }
+
+                        showGame();
+                    } else {
+                        statusEl.innerHTML = `<div class="error">Failed to load balance: ${response.status}</div>`;
+                    }
+                } catch (error) {
+                    console.error('Init error:', error);
+                    statusEl.innerHTML = '<div class="error">Connection error. Starting in demo mode...</div>';
+                    isDemo = true;
+                    balance = 100;
+                    setTimeout(() => {
+                        updateBalance();
+                        showGame();
+                    }, 2000);
+                }
+            }
+        }
+
+        function initGameBoard() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
+
+            for (let i = 0; i < GRID_SIZE; i++) {
+                const tile = document.createElement('div');
+                tile.className = 'tile disabled';
+                tile.id = `tile-${i}`;
+                tile.onclick = () => revealTile(i);
+                board.appendChild(tile);
+            }
+        }
+
+        function showGame() {
+            document.getElementById('status').style.display = 'none';
+            document.getElementById('game-content').style.display = 'block';
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance.toFixed(2);
+        }
+
+        function updateMultiplier() {
+            document.getElementById('multiplier').textContent = currentMultiplier.toFixed(2);
+            const potentialWin = betAmount * currentMultiplier;
+            document.getElementById('potential-win').textContent = potentialWin.toFixed(2);
+        }
+
+        function updateStats() {
+            document.getElementById('safe-count').textContent = safeTilesFound;
+            document.getElementById('current-bet').textContent = betAmount.toFixed(2) + ' ₾';
+            document.getElementById('bombs-left').textContent = BOMBS_COUNT;
+        }
+
+        function increaseBet() {
+            if (!gameActive && betAmount < balance && betAmount < 100) {
+                betAmount++;
+                document.getElementById('bet-amount').textContent = betAmount.toFixed(2);
+            }
+        }
+
+        function decreaseBet() {
+            if (!gameActive && betAmount > 1) {
+                betAmount--;
+                document.getElementById('bet-amount').textContent = betAmount.toFixed(2);
+            }
+        }
+
+        async function startGame() {
+            if (balance < betAmount) {
+                showMessage('Insufficient balance!', 'lose');
+                return;
+            }
+
+            gameActive = true;
+            safeTilesFound = 0;
+            currentMultiplier = 1.0;
+            revealedTiles.clear();
+
+            // Deduct bet
+            balance -= betAmount;
+            updateBalance();
+            updateMultiplier();
+            updateStats();
+
+            // Reset board
+            for (let i = 0; i < GRID_SIZE; i++) {
+                const tile = document.getElementById(`tile-${i}`);
+                tile.className = 'tile';
+                tile.textContent = '';
+            }
+
+            // Get bomb positions from backend
+            if (!isDemo) {
+                await fetchRoundData();
+            } else {
+                // Demo mode - random bombs
+                bombPositions = [];
+                while (bombPositions.length < BOMBS_COUNT) {
+                    const pos = Math.floor(Math.random() * GRID_SIZE);
+                    if (!bombPositions.includes(pos)) {
+                        bombPositions.push(pos);
+                    }
+                }
+            }
+
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('cashout-btn').style.display = 'inline-block';
+            document.getElementById('message').textContent = '';
+        }
+
+        async function fetchRoundData() {
+            if (isDemo) return;
+
+            const roundId = 'round_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+            try {
+                if (!jwtToken) {
+                    throw new Error('No authentication token found');
+                }
+
+                const spinResponse = await fetch(`${BACKEND_URL}/api/user/games/spin`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                    body: JSON.stringify({
+                        sessionToken: sessionToken,
+                        gameId: gameId,
+                        betAmount: betAmount,
+                        roundId: roundId
+                    })
+                });
+
+                if (!spinResponse.ok) {
+                    throw new Error('Failed to start round');
+                }
+
+                const spinData = await spinResponse.json();
+                console.log('Round data:', spinData);
+
+                // Backend returns results array - use it to determine bomb positions
+                // For now, generate random positions (backend integration can be enhanced)
+                bombPositions = [];
+                while (bombPositions.length < BOMBS_COUNT) {
+                    const pos = Math.floor(Math.random() * GRID_SIZE);
+                    if (!bombPositions.includes(pos)) {
+                        bombPositions.push(pos);
+                    }
+                }
+
+                // Update balance from backend response
+                balance = spinData.newBalance;
+                updateBalance();
+
+            } catch (error) {
+                console.error('Round error:', error);
+                showMessage('Error starting round', 'lose');
+                resetGame();
+            }
+        }
+
+        function revealTile(index) {
+            if (!gameActive || revealedTiles.has(index)) return;
+
+            const tile = document.getElementById(`tile-${index}`);
+            revealedTiles.add(index);
+
+            if (bombPositions.includes(index)) {
+                // Hit a bomb!
+                tile.className = 'tile revealed bomb';
+                tile.textContent = '💣';
+                gameOver(false);
+            } else {
+                // Safe tile
+                tile.className = 'tile revealed safe';
+                tile.textContent = '🐔';
+                safeTilesFound++;
+                currentMultiplier += MULTIPLIER_INCREMENT;
+                updateMultiplier();
+                updateStats();
+
+                // Check if all safe tiles found
+                if (safeTilesFound >= GRID_SIZE - BOMBS_COUNT) {
+                    gameOver(true);
+                }
+            }
+        }
+
+        async function cashOut() {
+            if (!gameActive) return;
+
+            const winAmount = betAmount * currentMultiplier;
+            balance += winAmount;
+            updateBalance();
+
+            showMessage(`💰 Cashed out ${winAmount.toFixed(2)} ₾!`, 'win');
+
+            revealAllBombs();
+            resetGame();
+        }
+
+        function gameOver(won) {
+            gameActive = false;
+
+            if (won) {
+                const winAmount = betAmount * currentMultiplier;
+                balance += winAmount;
+                updateBalance();
+                showMessage(`🎉 Perfect! Won ${winAmount.toFixed(2)} ₾!`, 'win');
+            } else {
+                showMessage(`💥 Bomb! Lost ${betAmount.toFixed(2)} ₾`, 'lose');
+            }
+
+            revealAllBombs();
+
+            setTimeout(() => {
+                resetGame();
+            }, 3000);
+        }
+
+        function revealAllBombs() {
+            bombPositions.forEach(pos => {
+                const tile = document.getElementById(`tile-${pos}`);
+                if (!revealedTiles.has(pos)) {
+                    tile.className = 'tile revealed bomb';
+                    tile.textContent = '💣';
+                }
+            });
+        }
+
+        function resetGame() {
+            gameActive = false;
+            safeTilesFound = 0;
+            currentMultiplier = 1.0;
+            revealedTiles.clear();
+            bombPositions = [];
+
+            updateMultiplier();
+            updateStats();
+
+            initGameBoard();
+
+            document.getElementById('start-btn').style.display = 'inline-block';
+            document.getElementById('cashout-btn').style.display = 'none';
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+        }
+
+        // Initialize game on load
+        window.onload = init;
+    </script>
+</body>
+</html>

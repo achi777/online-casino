@@ -203,6 +203,26 @@ public class DataLoader implements CommandLineRunner {
             log.info("Game already exists: Caribbean Stud Poker");
         }
 
+        // Create game 9 - Chicken Road (if doesn't exist)
+        if (!gameRepository.findByGameCode("CHICKEN_ROAD").isPresent()) {
+            Game game9 = new Game();
+            game9.setGameCode("CHICKEN_ROAD");
+            game9.setName("Chicken Road");
+            game9.setDescription("Crash-style risk ladder game! Reveal safe tiles to multiply your bet. Cash out before hitting a bomb!");
+            game9.setCategory(Game.GameCategory.OTHER);
+            game9.setProvider(provider);
+            game9.setIframeUrl("http://localhost:8888/fun/chicken-road/index.html");
+            game9.setThumbnailUrl("https://via.placeholder.com/300x200?text=Chicken+Road");
+            game9.setRtp(new BigDecimal("96.00"));
+            game9.setFeatured(true);
+            game9.setStatus(Game.GameStatus.ACTIVE);
+            game9.setSortOrder(9);
+            gameRepository.save(game9);
+            log.info("Game data loaded: {}", game9.getName());
+        } else {
+            log.info("Game already exists: Chicken Road");
+        }
+
         // Create test user if doesn't exist (run every time)
         if (!userRepository.findByEmail("test@casino.ge").isPresent()) {
             User testUser = new User();
