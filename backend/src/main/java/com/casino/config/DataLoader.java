@@ -243,6 +243,26 @@ public class DataLoader implements CommandLineRunner {
             log.info("Game already exists: European Roulette");
         }
 
+        // Create game 11 - Baccarat (if doesn't exist)
+        if (!gameRepository.findByGameCode("BACCARAT").isPresent()) {
+            Game game11 = new Game();
+            game11.setGameCode("BACCARAT");
+            game11.setName("Baccarat - Punto Banco");
+            game11.setDescription("Classic Baccarat! Bet on Player, Banker, or Tie. Closest to 9 wins. One of the most popular casino games worldwide!");
+            game11.setCategory(Game.GameCategory.TABLE_GAMES);
+            game11.setProvider(provider);
+            game11.setIframeUrl("http://localhost:8888/table-games/baccarat/index.html");
+            game11.setThumbnailUrl("https://via.placeholder.com/300x200?text=Baccarat");
+            game11.setRtp(new BigDecimal("98.94"));
+            game11.setFeatured(true);
+            game11.setStatus(Game.GameStatus.ACTIVE);
+            game11.setSortOrder(11);
+            gameRepository.save(game11);
+            log.info("Game data loaded: {}", game11.getName());
+        } else {
+            log.info("Game already exists: Baccarat - Punto Banco");
+        }
+
         // Create test user if doesn't exist (run every time)
         if (!userRepository.findByEmail("test@casino.ge").isPresent()) {
             User testUser = new User();

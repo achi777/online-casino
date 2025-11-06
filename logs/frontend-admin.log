@@ -8,3 +8,31 @@
 
   ➜  Local:   http://localhost:3001/
   ➜  Network: use --host to expose
+4:04:23 PM [vite] http proxy error: /api/admin/dashboard/stats
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+4:04:23 PM [vite] http proxy error: /api/admin/dashboard/stats
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+4:04:24 PM [vite] http proxy error: /api/admin/games
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+4:04:24 PM [vite] http proxy error: /api/admin/games
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+4:04:29 PM [vite] http proxy error: /api/admin/dashboard/stats
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+4:04:29 PM [vite] http proxy error: /api/admin/dashboard/stats
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+4:05:10 PM [vite] http proxy error: /api/admin/auth/login
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
