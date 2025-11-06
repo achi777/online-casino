@@ -14,6 +14,7 @@ public class GameResponse {
     private String providerName;
     private String category;
     private String thumbnailUrl;
+    private String iframeUrl;
     private BigDecimal rtp;
     private String status;
     private Boolean featured;
@@ -27,6 +28,7 @@ public class GameResponse {
         response.setProviderName(game.getProvider().getName());
         response.setCategory(game.getCategory().name());
         response.setThumbnailUrl(game.getThumbnailUrl());
+        response.setIframeUrl(game.getIframeUrl());
         response.setRtp(game.getRtp());
         response.setStatus(game.getStatus().name());
         response.setFeatured(game.getFeatured());

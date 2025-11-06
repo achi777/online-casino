@@ -223,6 +223,26 @@ public class DataLoader implements CommandLineRunner {
             log.info("Game already exists: Chicken Road");
         }
 
+        // Create game 10 - European Roulette (if doesn't exist)
+        if (!gameRepository.findByGameCode("EUROPEAN_ROULETTE").isPresent()) {
+            Game game10 = new Game();
+            game10.setGameCode("EUROPEAN_ROULETTE");
+            game10.setName("European Roulette");
+            game10.setDescription("Classic European Roulette with 37 numbers (0-36). Place your bets on numbers, colors, or combinations. Single zero for better odds!");
+            game10.setCategory(Game.GameCategory.TABLE_GAMES);
+            game10.setProvider(provider);
+            game10.setIframeUrl("http://localhost:8888/table-games/european-roulette/index.html");
+            game10.setThumbnailUrl("https://via.placeholder.com/300x200?text=European+Roulette");
+            game10.setRtp(new BigDecimal("97.30"));
+            game10.setFeatured(true);
+            game10.setStatus(Game.GameStatus.ACTIVE);
+            game10.setSortOrder(10);
+            gameRepository.save(game10);
+            log.info("Game data loaded: {}", game10.getName());
+        } else {
+            log.info("Game already exists: European Roulette");
+        }
+
         // Create test user if doesn't exist (run every time)
         if (!userRepository.findByEmail("test@casino.ge").isPresent()) {
             User testUser = new User();

@@ -6,7 +6,7 @@ A full-featured online casino platform with user and admin interfaces, built wit
 
 ```
 gambling/
-├── backend/                 # Spring Boot backend
+├── backend/                 # Spring Boot backend (Port 8080)
 │   ├── src/main/java/
 │   │   └── com/casino/
 │   │       ├── config/      # Security, CORS configuration
@@ -25,34 +25,69 @@ gambling/
 │       ├── context/
 │       └── services/
 ├── frontend-admin/          # Admin React frontend (Port 3001)
-└── docker-compose.yml       # PostgreSQL database
+│   └── src/
+│       ├── components/
+│       ├── pages/
+│       ├── context/
+│       └── services/
+├── games/                   # HTML5 games (Port 8888)
+│   ├── slots/              # Slot games
+│   ├── table-games/        # Blackjack, etc.
+│   ├── poker/              # Video poker games
+│   └── fun/                # Crash games
+├── logs/                    # Service logs (auto-created)
+├── install.sh              # Install dependencies
+├── start.sh                # Start all services
+├── stop.sh                 # Stop all services
+└── docker-compose.yml      # PostgreSQL database
 ```
 
 ## Features
 
+### 🎮 Games (9 Available)
+1. **Classic Fruit Slot** - 3-reel classic slot machine
+2. **Simple 5-Reel Video Slots** - Modern 5-reel with 25 paylines
+3. **Book of Fortune** - Book-style slot with expanding symbols
+4. **Fortune Hold & Win** - Hold & Win mechanic with jackpots
+5. **Blackjack - Classic 21** - Traditional blackjack (RTP 99.5%)
+6. **Jacks or Better** - Video poker (RTP 99.54%)
+7. **Three Card Poker** - 3-card poker vs dealer
+8. **Caribbean Stud Poker** - 5-card poker vs dealer
+9. **Chicken Road** - Crash-style risk ladder game (NEW!)
+
 ### User Platform
 - ✅ User registration and authentication (JWT)
 - ✅ Wallet management (deposits, withdrawals)
-- ✅ Game catalog and launch system (API + iframe)
-- ✅ Transaction history
+- ✅ Game catalog and launch system (iframe integration)
+- ✅ Transaction history with filtering
+- ✅ Game history with detailed session tracking
 - ✅ Responsible gaming (deposit limits, self-exclusion)
-- ✅ Balance tracking
+- ✅ Real-time balance updates
+- ✅ Demo mode for all games
 
 ### Admin Panel
-- ✅ Admin authentication and role-based access
-- ✅ User management (view, status changes, KYC)
-- ✅ Game management (create, edit, status)
+- ✅ Admin authentication and role-based access (7 roles)
+- ✅ User management (view, status changes, KYC, balance adjustments)
+- ✅ Game management (create, edit, status, featured)
 - ✅ Provider management
-- ✅ Financial reports (GGR, revenue)
+- ✅ Transaction monitoring (deposits, withdrawals, bets, wins)
+- ✅ Financial reports (GGR, revenue, player stats)
 - ✅ CSV export functionality
-- ✅ Audit logging
+- ✅ Audit logging for all admin actions
+- ✅ Administrator management (OWNER only)
+- ✅ Profile management for all admins
 
 ### Security Features
-- ✅ JWT authentication with refresh tokens
-- ✅ Password encryption (BCrypt)
-- ✅ Role-based authorization
+- ✅ JWT authentication with access/refresh tokens
+- ✅ Password encryption (BCrypt with strength 12)
+- ✅ Role-based authorization (7 admin roles)
+- ✅ Session validation and ownership checks
+- ✅ Session expiration (2 hours)
+- ✅ Win amount validation (max 1000x multiplier)
+- ✅ Fraud attempt detection and logging
 - ✅ CORS configuration
 - ✅ Audit trail for all actions
+- ✅ Server-side RTP (Return to Player) calculation
 
 ## Tech Stack
 
@@ -77,7 +112,51 @@ gambling/
 **Database:**
 - PostgreSQL 15 (Docker)
 
-## Setup Instructions
+## 🚀 Quick Start (Recommended)
+
+### Prerequisites
+- **Java 17+** - Backend runtime
+- **Maven** - Backend build tool
+- **Node.js 18+** - Frontend runtime
+- **Python 3** - Game server
+- **PostgreSQL** - Database (running on port 5432)
+
+### Automated Setup
+
+```bash
+# 1. Install all dependencies
+./install.sh
+
+# 2. Configure database (if not already done)
+# Make sure PostgreSQL is running with database 'casino_db'
+
+# 3. Start all services (backend, frontends, game server)
+./start.sh
+
+# 4. Access the platform
+# User Portal:  http://localhost:3000
+# Admin Portal: http://localhost:3001
+
+# 5. Stop all services when done
+./stop.sh
+```
+
+### Default Credentials
+
+**User Account:**
+- Email: `test@casino.ge`
+- Password: `Test1234`
+- Balance: ₾1000
+
+**Admin Accounts:**
+- Owner: `owner@casino.ge` / `Test1234`
+- Finance: `finance@casino.ge` / `Test1234`
+- Support: `support@casino.ge` / `Test1234`
+- Content: `content@casino.ge` / `Test1234`
+
+---
+
+## Manual Setup (Alternative)
 
 ### 1. Start PostgreSQL Database
 
@@ -94,12 +173,21 @@ This will start PostgreSQL on port 5432 with:
 
 ```bash
 cd backend
-./mvnw spring-boot:run
+mvn clean package -DskipTests
+java -jar target/casino-platform-1.0.0.jar
 ```
 
 The backend will start on http://localhost:8080
 
-### 3. Start User Frontend
+### 3. Start Game Server
+
+```bash
+python3 -m http.server 8888 --directory games
+```
+
+The game server will start on http://localhost:8888
+
+### 4. Start User Frontend
 
 ```bash
 cd frontend-user
@@ -109,7 +197,7 @@ npm run dev
 
 The user frontend will start on http://localhost:3000
 
-### 4. Start Admin Frontend
+### 5. Start Admin Frontend
 
 ```bash
 cd frontend-admin
@@ -118,6 +206,59 @@ npm run dev
 ```
 
 The admin frontend will start on http://localhost:3001
+
+---
+
+## 🛠️ Management Scripts
+
+The project includes three management scripts for easy setup and operation:
+
+### install.sh
+Installs all project dependencies:
+- Checks for required prerequisites (Java, Maven, Node.js, Python, PostgreSQL)
+- Builds backend with Maven
+- Installs npm packages for both frontends
+- Validates successful installation
+
+```bash
+./install.sh
+```
+
+### start.sh
+Starts all services automatically:
+- Backend (Spring Boot on port 8080)
+- Game Server (Python HTTP on port 8888)
+- User Portal (React on port 3000)
+- Admin Portal (React on port 3001)
+- Waits for services to be ready
+- Creates PID files in `logs/` directory for tracking
+
+```bash
+./start.sh
+```
+
+### stop.sh
+Stops all running services:
+- Gracefully stops all services using PID files
+- Falls back to port-based killing if needed
+- Force kills if graceful shutdown fails
+- Optional: Clean log files with `--clean` flag
+
+```bash
+# Stop all services
+./stop.sh
+
+# Stop and clean logs
+./stop.sh --clean
+```
+
+**Logs Location:** All service logs are stored in `logs/` directory:
+- `backend.log` - Spring Boot application
+- `game-server.log` - Python HTTP server
+- `frontend-user.log` - User portal console
+- `frontend-admin.log` - Admin portal console
+
+---
 
 ## API Endpoints
 
@@ -188,10 +329,13 @@ The admin frontend will start on http://localhost:3001
 - Algorithm: HMAC-SHA256
 
 ### Admin Roles
-- **OWNER** - Full access
-- **FINANCE** - Financial management
-- **SUPPORT** - User support
-- **CONTENT** - Game management
+- **OWNER** - Full access including administrator management
+- **FINANCE** - Financial management, transaction monitoring, reports
+- **SUPPORT** - User support, status changes, KYC management
+- **CONTENT** - Game management, provider management
+- **ANALYST** - Read-only access to reports and analytics
+- **COMPLIANCE** - Responsible gaming and compliance monitoring
+- **ADMIN** - General administrative tasks
 
 ### User Statuses
 - **ACTIVE** - Can play normally
