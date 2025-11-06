@@ -101,10 +101,15 @@
             width: 350px;
             height: 350px;
             border-radius: 50%;
-            border: 15px solid #8B4513;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            border: 12px solid #B8860B;
+            box-shadow:
+                0 0 0 4px #8B7355,
+                0 0 0 8px #D4AF37,
+                0 10px 40px rgba(0, 0, 0, 0.8),
+                inset 0 0 30px rgba(0, 0, 0, 0.3);
             position: relative;
-            background: #2c5234;
+            background: radial-gradient(circle at center, #8B6F47 0%, #6B4423 40%, #4A2511 100%);
+            will-change: transform;
         }
 
         .wheel-outer.spinning {
@@ -120,9 +125,12 @@
         .wheel-number {
             font-family: Arial, sans-serif;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 12px;
             fill: white;
             text-anchor: middle;
+            paint-order: stroke;
+            stroke: rgba(0, 0, 0, 0.5);
+            stroke-width: 0.5px;
         }
 
         .segment-border {
@@ -136,50 +144,50 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            background: radial-gradient(circle at 30% 30%, #E8E8E8, #C0C0C0 40%, #A8A8A8 70%, #888 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2em;
             font-weight: bold;
             color: #000;
-            border: 3px solid #8B4513;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border: 4px solid #D4AF37;
+            box-shadow:
+                0 0 0 2px #8B7355,
+                0 5px 20px rgba(0, 0, 0, 0.6),
+                inset 0 2px 10px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.3);
             z-index: 100;
         }
 
         .wheel-ball {
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background: radial-gradient(circle, #fff 0%, #ccc 100%);
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle at 35% 35%, #FFFFFF, #E8E8E8 40%, #C0C0C0 70%, #999 100%);
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-90deg) translateX(140px);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            box-shadow:
+                0 0 15px rgba(255, 255, 255, 0.9),
+                inset 1px 1px 3px rgba(255, 255, 255, 0.8),
+                inset -1px -1px 3px rgba(0, 0, 0, 0.3);
             z-index: 99;
             pointer-events: none;
+            will-change: transform;
+            backface-visibility: hidden;
         }
 
         @keyframes ballSpin {
             0% {
                 transform: translate(-50%, -50%) rotate(-90deg) translateX(140px);
             }
-            60% {
-                transform: translate(-50%, -50%) rotate(-2250deg) translateX(140px);
-            }
-            80% {
-                transform: translate(-50%, -50%) rotate(-2610deg) translateX(125px);
-            }
-            90% {
-                transform: translate(-50%, -50%) rotate(-2790deg) translateX(115px);
-            }
             100% {
-                transform: translate(-50%, -50%) rotate(var(--final-angle)) translateX(110px);
+                transform: translate(-50%, -50%) rotate(var(--final-angle)) translateX(var(--final-radius));
             }
         }
 
@@ -578,8 +586,34 @@
             const centerX = 175;
             const centerY = 175;
             const radius = 150;
-            const innerRadius = 60;
+            const innerRadius = 65;
             const segmentAngle = (2 * Math.PI) / 37;
+
+            // Add wooden background circles
+            const woodCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            woodCircle.setAttribute('cx', centerX);
+            woodCircle.setAttribute('cy', centerY);
+            woodCircle.setAttribute('r', radius);
+            woodCircle.setAttribute('fill', 'url(#woodGradient)');
+            svg.appendChild(woodCircle);
+
+            // Define gradient for wood effect
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+            gradient.setAttribute('id', 'woodGradient');
+
+            const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop1.setAttribute('offset', '0%');
+            stop1.setAttribute('style', 'stop-color:#A0826D;stop-opacity:1');
+
+            const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop2.setAttribute('offset', '100%');
+            stop2.setAttribute('style', 'stop-color:#6B4423;stop-opacity:1');
+
+            gradient.appendChild(stop1);
+            gradient.appendChild(stop2);
+            defs.appendChild(gradient);
+            svg.appendChild(defs);
 
             // Create segments
             wheelOrder.forEach((num, index) => {
@@ -599,11 +633,11 @@
                 // Determine color
                 let color;
                 if (num === 0) {
-                    color = '#228B22'; // Green
+                    color = '#2E7D32'; // Green
                 } else if (redNumbers.includes(num)) {
-                    color = '#DC143C'; // Red
+                    color = '#C62828'; // Red
                 } else {
-                    color = '#000000'; // Black
+                    color = '#1C1C1C'; // Black
                 }
 
                 // Create segment path
@@ -613,13 +647,13 @@
 
                 path.setAttribute('d', d);
                 path.setAttribute('fill', color);
-                path.setAttribute('stroke', '#FFD700');
-                path.setAttribute('stroke-width', '0.5');
+                path.setAttribute('stroke', '#D4AF37');
+                path.setAttribute('stroke-width', '1');
                 svg.appendChild(path);
 
                 // Add number text
                 const textAngle = startAngle + segmentAngle / 2;
-                const textRadius = (radius + innerRadius) / 2;
+                const textRadius = (radius + innerRadius) / 2 + 5;
                 const textX = centerX + textRadius * Math.cos(textAngle);
                 const textY = centerY + textRadius * Math.sin(textAngle);
 
@@ -632,15 +666,41 @@
                 svg.appendChild(text);
             });
 
-            // Add center circle
+            // Add inner gold ring
+            const goldRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            goldRing.setAttribute('cx', centerX);
+            goldRing.setAttribute('cy', centerY);
+            goldRing.setAttribute('r', innerRadius);
+            goldRing.setAttribute('fill', 'none');
+            goldRing.setAttribute('stroke', '#D4AF37');
+            goldRing.setAttribute('stroke-width', '3');
+            svg.appendChild(goldRing);
+
+            // Add center wood circle
             const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             centerCircle.setAttribute('cx', centerX);
             centerCircle.setAttribute('cy', centerY);
-            centerCircle.setAttribute('r', innerRadius);
-            centerCircle.setAttribute('fill', '#2c5234');
-            centerCircle.setAttribute('stroke', '#FFD700');
-            centerCircle.setAttribute('stroke-width', '2');
+            centerCircle.setAttribute('r', innerRadius - 3);
+            centerCircle.setAttribute('fill', 'url(#woodGradient)');
             svg.appendChild(centerCircle);
+
+            // Add radial wood grain lines for realism
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * Math.PI * 2) / 12;
+                const x1 = centerX + (innerRadius - 3) * Math.cos(angle);
+                const y1 = centerY + (innerRadius - 3) * Math.sin(angle);
+                const x2 = centerX + 20 * Math.cos(angle);
+                const y2 = centerY + 20 * Math.sin(angle);
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', 'rgba(101, 67, 33, 0.3)');
+                line.setAttribute('stroke-width', '1');
+                svg.appendChild(line);
+            }
         }
 
         function generateNumbersGrid() {
@@ -916,6 +976,7 @@
 
             // Set CSS variables
             ball.style.setProperty('--final-angle', `${ballFinalAngle}deg`);
+            ball.style.setProperty('--final-radius', '110px');
 
             // Reset any previous animations
             ball.style.animation = 'none';
@@ -947,12 +1008,14 @@
             document.head.appendChild(style);
 
             // Start both animations simultaneously with smooth natural easing
-            // Easing: starts fast, gradually slows down (realistic roulette physics)
-            wheel.style.animation = 'wheelSpinDynamic 5s cubic-bezier(0.17, 0.67, 0.35, 0.96) forwards';
-            ball.style.animation = 'ballSpin 5s cubic-bezier(0.17, 0.67, 0.35, 0.96) forwards';
+            // Easing: starts fast, maintains speed, then gradually slows down (realistic roulette physics)
+            // Using ease-out cubic for perfectly smooth deceleration
+            const duration = 6000; // 6 seconds for more realistic feel
+            wheel.style.animation = `wheelSpinDynamic ${duration}ms cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards`;
+            ball.style.animation = `ballSpin ${duration}ms cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards`;
 
             // Wait for animations to complete
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(resolve => setTimeout(resolve, duration));
 
             resultDisplay.textContent = result;
         }
