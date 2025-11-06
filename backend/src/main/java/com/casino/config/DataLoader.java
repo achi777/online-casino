@@ -263,6 +263,126 @@ public class DataLoader implements CommandLineRunner {
             log.info("Game already exists: Baccarat - Punto Banco");
         }
 
+        // Create game 12 - Dragon Tiger (if doesn't exist)
+        if (!gameRepository.findByGameCode("DRAGON_TIGER").isPresent()) {
+            Game game12 = new Game();
+            game12.setGameCode("DRAGON_TIGER");
+            game12.setName("Dragon Tiger");
+            game12.setDescription("The fastest card game in Asia! One card each for Dragon and Tiger. Highest card wins. Simple and thrilling!");
+            game12.setCategory(Game.GameCategory.TABLE_GAMES);
+            game12.setProvider(provider);
+            game12.setIframeUrl("http://localhost:8888/table-games/dragon-tiger/index.html");
+            game12.setThumbnailUrl("https://via.placeholder.com/300x200?text=Dragon+Tiger");
+            game12.setRtp(new BigDecimal("96.27"));
+            game12.setFeatured(true);
+            game12.setStatus(Game.GameStatus.ACTIVE);
+            game12.setSortOrder(12);
+            gameRepository.save(game12);
+            log.info("Game data loaded: {}", game12.getName());
+        } else {
+            log.info("Game already exists: Dragon Tiger");
+        }
+
+        // Create game 13 - Craps (if doesn't exist)
+        if (!gameRepository.findByGameCode("CRAPS").isPresent()) {
+            Game game13 = new Game();
+            game13.setGameCode("CRAPS");
+            game13.setName("Craps");
+            game13.setDescription("The most exciting dice game! Bet on Pass Line, Don't Pass, Field, and more. Roll the dice and win big!");
+            game13.setCategory(Game.GameCategory.TABLE_GAMES);
+            game13.setProvider(provider);
+            game13.setIframeUrl("http://localhost:8888/table-games/craps/index.html");
+            game13.setThumbnailUrl("https://via.placeholder.com/300x200?text=Craps");
+            game13.setRtp(new BigDecimal("98.59"));
+            game13.setFeatured(true);
+            game13.setStatus(Game.GameStatus.ACTIVE);
+            game13.setSortOrder(13);
+            gameRepository.save(game13);
+            log.info("Game data loaded: {}", game13.getName());
+        } else {
+            log.info("Game already exists: Craps");
+        }
+
+        // Create game 14 - Sic Bo (if doesn't exist)
+        if (!gameRepository.findByGameCode("SIC_BO").isPresent()) {
+            Game game14 = new Game();
+            game14.setGameCode("SIC_BO");
+            game14.setName("Sic Bo");
+            game14.setDescription("Ancient Chinese dice game! Bet on Small, Big, specific totals, and more. Three dice, endless excitement!");
+            game14.setCategory(Game.GameCategory.TABLE_GAMES);
+            game14.setProvider(provider);
+            game14.setIframeUrl("http://localhost:8888/table-games/sic-bo/index.html");
+            game14.setThumbnailUrl("https://via.placeholder.com/300x200?text=Sic+Bo");
+            game14.setRtp(new BigDecimal("97.22"));
+            game14.setFeatured(true);
+            game14.setStatus(Game.GameStatus.ACTIVE);
+            game14.setSortOrder(14);
+            gameRepository.save(game14);
+            log.info("Game data loaded: {}", game14.getName());
+        } else {
+            log.info("Game already exists: Sic Bo");
+        }
+
+        // Create game 15 - Keno (if doesn't exist)
+        if (!gameRepository.findByGameCode("KENO").isPresent()) {
+            Game game15 = new Game();
+            game15.setGameCode("KENO");
+            game15.setName("Keno");
+            game15.setDescription("Classic lottery-style game! Pick up to 10 numbers from 1-80 and watch the draw. Huge payouts for big hits!");
+            game15.setCategory(Game.GameCategory.OTHER);
+            game15.setProvider(provider);
+            game15.setIframeUrl("http://localhost:8888/other/keno/index.html");
+            game15.setThumbnailUrl("https://via.placeholder.com/300x200?text=Keno");
+            game15.setRtp(new BigDecimal("92.00"));
+            game15.setFeatured(true);
+            game15.setStatus(Game.GameStatus.ACTIVE);
+            game15.setSortOrder(15);
+            gameRepository.save(game15);
+            log.info("Game data loaded: {}", game15.getName());
+        } else {
+            log.info("Game already exists: Keno");
+        }
+
+        // Create game 16 - Money Wheel (if doesn't exist)
+        if (!gameRepository.findByGameCode("MONEY_WHEEL").isPresent()) {
+            Game game16 = new Game();
+            game16.setGameCode("MONEY_WHEEL");
+            game16.setName("Money Wheel");
+            game16.setDescription("Spin the giant Wheel of Fortune! Bet on numbers 1, 2, 5, 10, 20, or hit the Jackpot at 40:1. The most iconic casino game!");
+            game16.setCategory(Game.GameCategory.OTHER);
+            game16.setProvider(provider);
+            game16.setIframeUrl("http://localhost:8888/other/money-wheel/index.html");
+            game16.setThumbnailUrl("https://via.placeholder.com/300x200?text=Money+Wheel");
+            game16.setRtp(new BigDecimal("94.50"));
+            game16.setFeatured(true);
+            game16.setStatus(Game.GameStatus.ACTIVE);
+            game16.setSortOrder(16);
+            gameRepository.save(game16);
+            log.info("Game data loaded: {}", game16.getName());
+        } else {
+            log.info("Game already exists: Money Wheel");
+        }
+
+        // Create game 17 - 90-Ball Bingo (if doesn't exist)
+        if (!gameRepository.findByGameCode("BINGO_90").isPresent()) {
+            Game game17 = new Game();
+            game17.setGameCode("BINGO_90");
+            game17.setName("90-Ball Bingo");
+            game17.setDescription("Classic British Bingo! 6 cards, auto-daub feature. Win prizes for 1 Line, 2 Lines, and Full House! One of the most popular games in Europe!");
+            game17.setCategory(Game.GameCategory.OTHER);
+            game17.setProvider(provider);
+            game17.setIframeUrl("http://localhost:8888/other/bingo/index.html");
+            game17.setThumbnailUrl("https://via.placeholder.com/300x200?text=90-Ball+Bingo");
+            game17.setRtp(new BigDecimal("95.00"));
+            game17.setFeatured(true);
+            game17.setStatus(Game.GameStatus.ACTIVE);
+            game17.setSortOrder(17);
+            gameRepository.save(game17);
+            log.info("Game data loaded: {}", game17.getName());
+        } else {
+            log.info("Game already exists: 90-Ball Bingo");
+        }
+
         // Create test user if doesn't exist (run every time)
         if (!userRepository.findByEmail("test@casino.ge").isPresent()) {
             User testUser = new User();

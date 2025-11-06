@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keno - Casino Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2C3E50 0%, #3498DB 50%, #2980B9 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: linear-gradient(145deg, #34495E 0%, #2C3E50 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 900px;
+            width: 100%;
+            border: 4px solid #F39C12;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .game-header h1 {
+            color: #F39C12;
+            font-size: 3em;
+            text-shadow: 0 0 20px rgba(243, 156, 18, 0.8), 0 4px 8px rgba(0, 0, 0, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .game-header .subtitle {
+            color: #ECF0F1;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .info-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: 2px solid #F39C12;
+            min-width: 140px;
+        }
+
+        .info-box label {
+            color: #F39C12;
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-box span {
+            color: #ECF0F1;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        .keno-board {
+            background: linear-gradient(145deg, #1ABC9C 0%, #16A085 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 3px solid #F39C12;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .number-cell {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, #ECF0F1 0%, #BDC3C7 100%);
+            border: 3px solid #34495E;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2C3E50;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .number-cell:hover:not(.drawn):not(.disabled) {
+            background: linear-gradient(145deg, #F39C12 0%, #E67E22 100%);
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.8);
+        }
+
+        .number-cell.selected {
+            background: linear-gradient(145deg, #3498DB 0%, #2980B9 100%);
+            color: #fff;
+            border-color: #F39C12;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.8);
+        }
+
+        .number-cell.drawn {
+            background: linear-gradient(145deg, #E74C3C 0%, #C0392B 100%);
+            color: #fff;
+            border-color: #F39C12;
+            animation: drawPulse 0.5s ease-out;
+        }
+
+        .number-cell.hit {
+            background: linear-gradient(145deg, #27AE60 0%, #229954 100%);
+            color: #fff;
+            border-color: #F39C12;
+            animation: hitPulse 0.6s ease-out;
+        }
+
+        .number-cell.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        @keyframes drawPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes hitPulse {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.25); }
+            50% { transform: scale(1.1); }
+            75% { transform: scale(1.25); }
+        }
+
+        .draw-info {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .draw-info .label {
+            color: #F39C12;
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+
+        .draw-info .numbers {
+            color: #ECF0F1;
+            font-size: 1.1em;
+            font-weight: bold;
+            line-height: 1.6;
+        }
+
+        .betting-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            border: 3px solid #fff;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            font-size: 0.9em;
+        }
+
+        .chip:hover {
+            transform: scale(1.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .chip.selected {
+            border-color: #F39C12;
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.9);
+        }
+
+        .chip-1 { background: radial-gradient(circle, #fff 0%, #e0e0e0 100%); color: #000; }
+        .chip-5 { background: radial-gradient(circle, #ff4444 0%, #cc0000 100%); color: #fff; }
+        .chip-10 { background: radial-gradient(circle, #4444ff 0%, #0000cc 100%); color: #fff; }
+        .chip-25 { background: radial-gradient(circle, #44ff44 0%, #00cc00 100%); color: #000; }
+        .chip-100 { background: radial-gradient(circle, #000 0%, #333 100%); color: #fff; }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 14px 35px;
+            font-size: 1.05em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-draw {
+            background: linear-gradient(145deg, #F39C12 0%, #E67E22 100%);
+            color: #fff;
+        }
+
+        .btn-draw:hover:not(:disabled) {
+            background: linear-gradient(145deg, #E67E22 0%, #F39C12 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-clear {
+            background: linear-gradient(145deg, #95A5A6 0%, #7F8C8D 100%);
+            color: #fff;
+        }
+
+        .btn-clear:hover {
+            background: linear-gradient(145deg, #7F8C8D 0%, #95A5A6 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-quick {
+            background: linear-gradient(145deg, #9B59B6 0%, #8E44AD 100%);
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+
+        .btn-quick:hover {
+            background: linear-gradient(145deg, #8E44AD 0%, #9B59B6 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-message {
+            text-align: center;
+            margin-top: 15px;
+            min-height: 60px;
+            font-size: 1.3em;
+        }
+
+        .result-message.win {
+            color: #27AE60;
+            font-weight: bold;
+            animation: fadeIn 0.5s;
+        }
+
+        .result-message.lose {
+            color: #E74C3C;
+            font-weight: bold;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .payout-table {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #F39C12;
+        }
+
+        .payout-table h3 {
+            color: #F39C12;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .payout-row {
+            display: flex;
+            justify-content: space-between;
+            color: #ECF0F1;
+            padding: 5px 10px;
+            border-bottom: 1px solid rgba(243, 156, 18, 0.3);
+        }
+
+        .payout-row:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .game-header h1 {
+                font-size: 2.2em;
+            }
+
+            .number-grid {
+                grid-template-columns: repeat(8, 1fr);
+                gap: 6px;
+            }
+
+            .number-cell {
+                font-size: 1.1em;
+            }
+
+            .chip {
+                width: 48px;
+                height: 48px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>🎱 KENO 🎱</h1>
+            <div class="subtitle">Pick Your Lucky Numbers!</div>
+        </div>
+
+        <div class="game-info">
+            <div class="info-box">
+                <label>Balance</label>
+                <span id="balance">1000.00</span>
+            </div>
+            <div class="info-box">
+                <label>Bet Amount</label>
+                <span id="bet-amount">0</span>
+            </div>
+            <div class="info-box">
+                <label>Numbers Picked</label>
+                <span id="numbers-picked">0/10</span>
+            </div>
+        </div>
+
+        <div class="keno-board">
+            <div class="number-grid" id="number-grid"></div>
+
+            <div class="draw-info">
+                <div class="label">Drawn Numbers:</div>
+                <div class="numbers" id="drawn-numbers">-</div>
+            </div>
+
+            <div class="result-message" id="result-message"></div>
+        </div>
+
+        <div class="betting-controls">
+            <div class="chip chip-1 selected" data-value="1">$1</div>
+            <div class="chip chip-5" data-value="5">$5</div>
+            <div class="chip chip-10" data-value="10">$10</div>
+            <div class="chip chip-25" data-value="25">$25</div>
+            <div class="chip chip-100" data-value="100">$100</div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-quick" id="quick-pick-btn">Quick Pick (5)</button>
+            <button class="btn btn-clear" id="clear-btn">Clear All</button>
+            <button class="btn btn-draw" id="draw-btn">Draw Numbers</button>
+        </div>
+
+        <div class="payout-table">
+            <h3>Payout Table (10 spots picked)</h3>
+            <div class="payout-row"><span>10 Hits</span><span>10,000:1</span></div>
+            <div class="payout-row"><span>9 Hits</span><span>2,000:1</span></div>
+            <div class="payout-row"><span>8 Hits</span><span>500:1</span></div>
+            <div class="payout-row"><span>7 Hits</span><span>100:1</span></div>
+            <div class="payout-row"><span>6 Hits</span><span>20:1</span></div>
+            <div class="payout-row"><span>5 Hits</span><span>4:1</span></div>
+            <div class="payout-row"><span>4 Hits</span><span>1:1</span></div>
+            <div class="payout-row"><span>0 Hits</span><span>2:1 (Rare!)</span></div>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        let sessionToken = urlParams.get('session') || '';
+        let isDemo = urlParams.get('demo') === 'true';
+        const jwtToken = urlParams.get('token') || '';
+
+        let balance = 1000;
+        let betAmount = 1;
+        let selectedNumbers = [];
+        let drawnNumbers = [];
+        let isDrawing = false;
+        let gameId = null;
+        let roundId = 1;
+
+        const balanceEl = document.getElementById('balance');
+        const betAmountEl = document.getElementById('bet-amount');
+        const numbersPickedEl = document.getElementById('numbers-picked');
+        const drawnNumbersEl = document.getElementById('drawn-numbers');
+        const resultMessageEl = document.getElementById('result-message');
+        const drawBtn = document.getElementById('draw-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const quickPickBtn = document.getElementById('quick-pick-btn');
+        const numberGrid = document.getElementById('number-grid');
+
+        // Initialize
+        async function init() {
+            console.log('=== KENO INIT ===');
+            console.log('Session Token:', sessionToken);
+            console.log('JWT Token:', jwtToken);
+            console.log('Is Demo:', isDemo);
+
+            // Generate number grid (1-80)
+            for (let i = 1; i <= 80; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'number-cell';
+                cell.textContent = i;
+                cell.dataset.number = i;
+                cell.addEventListener('click', () => toggleNumber(i));
+                numberGrid.appendChild(cell);
+            }
+
+            if (isDemo) {
+                console.log('Starting in DEMO mode');
+                balance = 1000;
+                updateDisplay();
+                return;
+            }
+
+            if (!sessionToken) {
+                console.error('NO SESSION TOKEN!');
+                alert('Session token is missing! Please start the game from the casino lobby.');
+                return;
+            }
+
+            // Real money mode
+            console.log('Starting in REAL MONEY mode');
+            await fetchBalance();
+            updateDisplay();
+        }
+
+        async function fetchBalance() {
+            const BACKEND_URL = 'http://localhost:8080';
+            try {
+                const balanceUrl = `${BACKEND_URL}/api/user/balance?sessionToken=${sessionToken}`;
+                console.log('Fetching balance from:', balanceUrl);
+
+                const response = await fetch(balanceUrl);
+                console.log('Balance response status:', response.status);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Balance data:', data);
+                    balance = parseFloat(data.balance);
+
+                    // Fetch game info
+                    const gameInfoUrl = `${BACKEND_URL}/api/user/game-info?sessionToken=${sessionToken}`;
+                    const gameInfoResponse = await fetch(gameInfoUrl);
+                    if (gameInfoResponse.ok) {
+                        const gameData = await gameInfoResponse.json();
+                        gameId = gameData.gameId;
+                        console.log('Game info:', gameData);
+                    }
+                } else {
+                    console.error('Failed to fetch balance, status:', response.status);
+                    balance = 1000;
+                }
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+                balance = 1000;
+            }
+        }
+
+        // Chip selection
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                betAmount = parseInt(chip.dataset.value);
+                updateDisplay();
+            });
+        });
+
+        function toggleNumber(num) {
+            if (isDrawing) return;
+
+            const index = selectedNumbers.indexOf(num);
+            if (index > -1) {
+                selectedNumbers.splice(index, 1);
+            } else {
+                if (selectedNumbers.length >= 10) {
+                    showMessage('Maximum 10 numbers allowed!', 'lose');
+                    return;
+                }
+                selectedNumbers.push(num);
+            }
+
+            updateNumberDisplay();
+            updateDisplay();
+        }
+
+        function updateNumberDisplay() {
+            document.querySelectorAll('.number-cell').forEach(cell => {
+                const num = parseInt(cell.dataset.number);
+                cell.classList.remove('selected', 'drawn', 'hit');
+
+                if (selectedNumbers.includes(num)) {
+                    cell.classList.add('selected');
+                }
+            });
+        }
+
+        quickPickBtn.addEventListener('click', () => {
+            if (isDrawing) return;
+            selectedNumbers = [];
+
+            const count = 5;
+            while (selectedNumbers.length < count) {
+                const num = Math.floor(Math.random() * 80) + 1;
+                if (!selectedNumbers.includes(num)) {
+                    selectedNumbers.push(num);
+                }
+            }
+
+            updateNumberDisplay();
+            updateDisplay();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (isDrawing) return;
+            selectedNumbers = [];
+            drawnNumbers = [];
+            updateNumberDisplay();
+            updateDisplay();
+            resultMessageEl.textContent = '';
+            resultMessageEl.className = 'result-message';
+            drawnNumbersEl.textContent = '-';
+        });
+
+        drawBtn.addEventListener('click', async () => {
+            if (selectedNumbers.length === 0) {
+                showMessage('Please pick at least one number!', 'lose');
+                return;
+            }
+
+            if (betAmount > balance) {
+                showMessage('Insufficient balance!', 'lose');
+                return;
+            }
+
+            if (isDrawing) return;
+
+            isDrawing = true;
+            drawBtn.disabled = true;
+            resultMessageEl.textContent = 'Drawing...';
+            resultMessageEl.className = 'result-message';
+
+            // Deduct bet
+            balance -= betAmount;
+            updateDisplay();
+
+            // Draw 20 numbers
+            drawnNumbers = [];
+            while (drawnNumbers.length < 20) {
+                const num = Math.floor(Math.random() * 80) + 1;
+                if (!drawnNumbers.includes(num)) {
+                    drawnNumbers.push(num);
+                }
+            }
+
+            drawnNumbers.sort((a, b) => a - b);
+
+            // Animate drawing
+            await animateDrawing();
+
+            // Calculate hits and payout
+            await processResult();
+
+            isDrawing = false;
+            drawBtn.disabled = false;
+        });
+
+        async function animateDrawing() {
+            drawnNumbersEl.textContent = 'Drawing...';
+
+            for (let i = 0; i < drawnNumbers.length; i++) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                const num = drawnNumbers[i];
+                const cell = document.querySelector(`[data-number="${num}"]`);
+
+                if (selectedNumbers.includes(num)) {
+                    cell.classList.add('hit');
+                } else {
+                    cell.classList.add('drawn');
+                }
+
+                drawnNumbersEl.textContent = drawnNumbers.slice(0, i + 1).join(', ');
+            }
+        }
+
+        async function processResult() {
+            const hits = selectedNumbers.filter(num => drawnNumbers.includes(num)).length;
+            const numsPicked = selectedNumbers.length;
+
+            console.log('Picked:', numsPicked, 'Hits:', hits);
+
+            let multiplier = 0;
+
+            // Payout table based on 10 spots picked
+            if (numsPicked === 10) {
+                if (hits === 10) multiplier = 10000;
+                else if (hits === 9) multiplier = 2000;
+                else if (hits === 8) multiplier = 500;
+                else if (hits === 7) multiplier = 100;
+                else if (hits === 6) multiplier = 20;
+                else if (hits === 5) multiplier = 4;
+                else if (hits === 4) multiplier = 1;
+                else if (hits === 0) multiplier = 2; // Rare bonus
+            } else if (numsPicked >= 7) {
+                // Adjusted payouts for 7-9 spots
+                if (hits === numsPicked) multiplier = 1000;
+                else if (hits === numsPicked - 1) multiplier = 100;
+                else if (hits === numsPicked - 2) multiplier = 20;
+                else if (hits >= numsPicked - 3) multiplier = 3;
+            } else if (numsPicked >= 4) {
+                // Adjusted payouts for 4-6 spots
+                if (hits === numsPicked) multiplier = 50;
+                else if (hits === numsPicked - 1) multiplier = 10;
+                else if (hits === numsPicked - 2) multiplier = 2;
+            } else {
+                // 1-3 spots
+                if (hits === numsPicked) multiplier = 3;
+            }
+
+            const winAmount = betAmount * multiplier;
+            balance += winAmount;
+
+            updateDisplay();
+
+            if (winAmount > betAmount) {
+                const profit = winAmount - betAmount;
+                showMessage(`${hits} hits! You won $${profit.toFixed(2)}!`, 'win');
+            } else if (winAmount === betAmount) {
+                showMessage(`${hits} hits! You got your bet back!`, 'win');
+            } else {
+                showMessage(`${hits} hits. Better luck next time!`, 'lose');
+            }
+
+            // Update server balance
+            if (!isDemo && sessionToken) {
+                await updateServerBalance(betAmount, winAmount - betAmount);
+            }
+        }
+
+        async function updateServerBalance(betAmt, winAmt) {
+            if (isDemo) {
+                console.log('Demo mode - not updating server balance');
+                return;
+            }
+
+            const BACKEND_URL = 'http://localhost:8080';
+            try {
+                if (!jwtToken) {
+                    console.error('No JWT token found');
+                    return;
+                }
+
+                const response = await fetch(`${BACKEND_URL}/api/user/games/spin`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                    body: JSON.stringify({
+                        sessionToken: sessionToken,
+                        gameId: gameId,
+                        betAmount: betAmt,
+                        roundId: roundId++
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('Spin request failed:', response.status);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Spin result:', data);
+                balance = data.newBalance;
+                updateDisplay();
+            } catch (error) {
+                console.error('Error updating balance:', error);
+            }
+        }
+
+        function updateDisplay() {
+            balanceEl.textContent = balance.toFixed(2);
+            betAmountEl.textContent = betAmount.toFixed(2);
+            numbersPickedEl.textContent = `${selectedNumbers.length}/10`;
+        }
+
+        function showMessage(text, type) {
+            resultMessageEl.textContent = text;
+            resultMessageEl.className = `result-message ${type}`;
+        }
+
+        // Initialize game
+        init();
+    </script>
+</body>
+</html>

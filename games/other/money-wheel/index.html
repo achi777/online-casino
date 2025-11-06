@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Wheel - Casino Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #1a0033 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            max-width: 950px;
+            width: 100%;
+            border: 4px solid #FFD700;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .game-header h1 {
+            color: #FFD700;
+            font-size: 3.2em;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 4px 8px rgba(0, 0, 0, 0.7);
+            margin-bottom: 8px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 4px 8px rgba(0, 0, 0, 0.7); }
+            50% { text-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 4px 8px rgba(0, 0, 0, 0.7); }
+        }
+
+        .game-header .subtitle {
+            color: #fff;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .info-box {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: 2px solid #FFD700;
+            min-width: 150px;
+        }
+
+        .info-box label {
+            color: #FFD700;
+            font-size: 0.95em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-box span {
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .wheel-area {
+            background: linear-gradient(145deg, #0f3460 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 3px solid #FFD700;
+            position: relative;
+        }
+
+        .wheel-container {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 8px solid #FFD700;
+            position: relative;
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .wheel-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 5px solid #fff;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 40px solid #FF0000;
+            z-index: 20;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+        }
+
+        .betting-area {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .bet-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid #FFD700;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .bet-option:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+        }
+
+        .bet-option.selected {
+            background: rgba(255, 215, 0, 0.4);
+            border-color: #FFF;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.9);
+        }
+
+        .bet-option.won {
+            animation: winPulse 0.8s ease-in-out;
+        }
+
+        @keyframes winPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); background: rgba(34, 255, 34, 0.5); }
+        }
+
+        .bet-symbol {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+        }
+
+        .bet-name {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.15em;
+            margin-bottom: 5px;
+        }
+
+        .bet-payout {
+            color: #FFD700;
+            font-size: 0.95em;
+        }
+
+        .bet-amount {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #FFD700;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .betting-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            border: 3px solid #fff;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            font-size: 0.95em;
+        }
+
+        .chip:hover {
+            transform: scale(1.2);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .chip.selected {
+            border-color: #FFD700;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 1);
+        }
+
+        .chip-1 { background: radial-gradient(circle, #fff 0%, #e0e0e0 100%); color: #000; }
+        .chip-5 { background: radial-gradient(circle, #ff4444 0%, #cc0000 100%); color: #fff; }
+        .chip-10 { background: radial-gradient(circle, #4444ff 0%, #0000cc 100%); color: #fff; }
+        .chip-25 { background: radial-gradient(circle, #44ff44 0%, #00cc00 100%); color: #000; }
+        .chip-100 { background: radial-gradient(circle, #000 0%, #333 100%); color: #fff; }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            font-size: 1.15em;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-spin {
+            background: linear-gradient(145deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+        }
+
+        .btn-spin:hover:not(:disabled) {
+            background: linear-gradient(145deg, #FFA500 0%, #FFD700 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-clear {
+            background: linear-gradient(145deg, #e74c3c 0%, #c0392b 100%);
+            color: #fff;
+        }
+
+        .btn-clear:hover {
+            background: linear-gradient(145deg, #c0392b 0%, #e74c3c 100%);
+            transform: translateY(-3px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-message {
+            text-align: center;
+            margin-top: 20px;
+            min-height: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .result-message.win {
+            color: #2ecc71;
+            animation: fadeIn 0.6s;
+        }
+
+        .result-message.lose {
+            color: #e74c3c;
+            animation: fadeIn 0.6s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .game-header h1 {
+                font-size: 2.2em;
+            }
+
+            .wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            .betting-area {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .chip {
+                width: 50px;
+                height: 50px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>💰 MONEY WHEEL 💰</h1>
+            <div class="subtitle">Spin the Wheel of Fortune!</div>
+        </div>
+
+        <div class="game-info">
+            <div class="info-box">
+                <label>Balance</label>
+                <span id="balance">1000.00</span>
+            </div>
+            <div class="info-box">
+                <label>Total Bet</label>
+                <span id="total-bet">0</span>
+            </div>
+        </div>
+
+        <div class="wheel-area">
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <svg id="wheel" class="wheel" width="400" height="400" viewBox="0 0 400 400">
+                    <g id="wheel-segments"></g>
+                </svg>
+                <div class="wheel-center">💎</div>
+            </div>
+
+            <div class="betting-area" id="betting-area">
+                <div class="bet-option" data-bet="1" data-payout="1">
+                    <div class="bet-symbol">1️⃣</div>
+                    <div class="bet-name">ONE</div>
+                    <div class="bet-payout">Pays 1:1</div>
+                </div>
+                <div class="bet-option" data-bet="2" data-payout="2">
+                    <div class="bet-symbol">2️⃣</div>
+                    <div class="bet-name">TWO</div>
+                    <div class="bet-payout">Pays 2:1</div>
+                </div>
+                <div class="bet-option" data-bet="5" data-payout="5">
+                    <div class="bet-symbol">5️⃣</div>
+                    <div class="bet-name">FIVE</div>
+                    <div class="bet-payout">Pays 5:1</div>
+                </div>
+                <div class="bet-option" data-bet="10" data-payout="10">
+                    <div class="bet-symbol">🔟</div>
+                    <div class="bet-name">TEN</div>
+                    <div class="bet-payout">Pays 10:1</div>
+                </div>
+                <div class="bet-option" data-bet="20" data-payout="20">
+                    <div class="bet-symbol">💵</div>
+                    <div class="bet-name">TWENTY</div>
+                    <div class="bet-payout">Pays 20:1</div>
+                </div>
+                <div class="bet-option" data-bet="40" data-payout="40">
+                    <div class="bet-symbol">💎</div>
+                    <div class="bet-name">JACKPOT</div>
+                    <div class="bet-payout">Pays 40:1</div>
+                </div>
+            </div>
+
+            <div class="result-message" id="result-message"></div>
+        </div>
+
+        <div class="betting-controls">
+            <div class="chip chip-1 selected" data-value="1">$1</div>
+            <div class="chip chip-5" data-value="5">$5</div>
+            <div class="chip chip-10" data-value="10">$10</div>
+            <div class="chip chip-25" data-value="25">$25</div>
+            <div class="chip chip-100" data-value="100">$100</div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-spin" id="spin-btn">Spin Wheel</button>
+            <button class="btn btn-clear" id="clear-btn">Clear Bets</button>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        let sessionToken = urlParams.get('session') || '';
+        let isDemo = urlParams.get('demo') === 'true';
+        const jwtToken = urlParams.get('token') || '';
+
+        let balance = 1000;
+        let selectedChipValue = 1;
+        let bets = {};
+        let isSpinning = false;
+        let gameId = null;
+        let roundId = 1;
+
+        const balanceEl = document.getElementById('balance');
+        const totalBetEl = document.getElementById('total-bet');
+        const resultMessageEl = document.getElementById('result-message');
+        const spinBtn = document.getElementById('spin-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const bettingArea = document.getElementById('betting-area');
+        const wheelEl = document.getElementById('wheel');
+
+        // Wheel segments: 24 total (1:11, 2:7, 5:4, 10:1, 20:1, 40:1)
+        const wheelSegments = [
+            1, 2, 1, 5, 1, 2, 1, 5, 1, 2, 1, 10,
+            1, 2, 1, 5, 1, 2, 1, 5, 1, 2, 20, 40
+        ];
+
+        const segmentColors = {
+            1: '#3498db',
+            2: '#e74c3c',
+            5: '#2ecc71',
+            10: '#f39c12',
+            20: '#9b59b6',
+            40: '#FFD700'
+        };
+
+        // Initialize
+        async function init() {
+            console.log('=== MONEY WHEEL INIT ===');
+            console.log('Session Token:', sessionToken);
+            console.log('JWT Token:', jwtToken);
+            console.log('Is Demo:', isDemo);
+
+            createWheel();
+
+            if (isDemo) {
+                console.log('Starting in DEMO mode');
+                balance = 1000;
+                updateDisplay();
+                return;
+            }
+
+            if (!sessionToken) {
+                console.error('NO SESSION TOKEN!');
+                alert('Session token is missing! Please start the game from the casino lobby.');
+                return;
+            }
+
+            console.log('Starting in REAL MONEY mode');
+            await fetchBalance();
+            updateDisplay();
+        }
+
+        async function fetchBalance() {
+            const BACKEND_URL = 'http://localhost:8080';
+            try {
+                const balanceUrl = `${BACKEND_URL}/api/user/balance?sessionToken=${sessionToken}`;
+                console.log('Fetching balance from:', balanceUrl);
+
+                const response = await fetch(balanceUrl);
+                console.log('Balance response status:', response.status);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Balance data:', data);
+                    balance = parseFloat(data.balance);
+
+                    const gameInfoUrl = `${BACKEND_URL}/api/user/game-info?sessionToken=${sessionToken}`;
+                    const gameInfoResponse = await fetch(gameInfoUrl);
+                    if (gameInfoResponse.ok) {
+                        const gameData = await gameInfoResponse.json();
+                        gameId = gameData.gameId;
+                        console.log('Game info:', gameData);
+                    }
+                } else {
+                    console.error('Failed to fetch balance, status:', response.status);
+                    balance = 1000;
+                }
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+                balance = 1000;
+            }
+        }
+
+        function createWheel() {
+            const svg = document.getElementById('wheel');
+            const segmentsGroup = document.getElementById('wheel-segments');
+            segmentsGroup.innerHTML = '';
+
+            const centerX = 200;
+            const centerY = 200;
+            const radius = 190;
+            const segmentAngle = (2 * Math.PI) / wheelSegments.length;
+
+            wheelSegments.forEach((value, index) => {
+                const startAngle = index * segmentAngle - Math.PI / 2;
+                const endAngle = (index + 1) * segmentAngle - Math.PI / 2;
+                const midAngle = (startAngle + endAngle) / 2;
+
+                // Create path for segment
+                const x1 = centerX + radius * Math.cos(startAngle);
+                const y1 = centerY + radius * Math.sin(startAngle);
+                const x2 = centerX + radius * Math.cos(endAngle);
+                const y2 = centerY + radius * Math.sin(endAngle);
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const pathData = `M ${centerX},${centerY} L ${x1},${y1} A ${radius},${radius} 0 0,1 ${x2},${y2} Z`;
+                path.setAttribute('d', pathData);
+                path.setAttribute('fill', segmentColors[value]);
+                path.setAttribute('stroke', '#FFD700');
+                path.setAttribute('stroke-width', '2');
+                segmentsGroup.appendChild(path);
+
+                // Add text
+                const textRadius = radius * 0.65;
+                const textX = centerX + textRadius * Math.cos(midAngle);
+                const textY = centerY + textRadius * Math.sin(midAngle);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', textX);
+                text.setAttribute('y', textY);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dominant-baseline', 'middle');
+                text.setAttribute('fill', '#fff');
+                text.setAttribute('font-size', '28');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('stroke', '#000');
+                text.setAttribute('stroke-width', '1');
+                text.setAttribute('paint-order', 'stroke');
+                text.textContent = value;
+                segmentsGroup.appendChild(text);
+            });
+        }
+
+        // Chip selection
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                selectedChipValue = parseInt(chip.dataset.value);
+            });
+        });
+
+        // Betting
+        bettingArea.addEventListener('click', (e) => {
+            const betOption = e.target.closest('.bet-option');
+            if (!betOption || isSpinning) return;
+
+            const betType = betOption.dataset.bet;
+            const totalBet = getTotalBet();
+
+            if (totalBet + selectedChipValue > balance) {
+                showMessage('Insufficient balance!', 'lose');
+                return;
+            }
+
+            if (!bets[betType]) {
+                bets[betType] = 0;
+            }
+            bets[betType] += selectedChipValue;
+
+            updateBetDisplay();
+            updateDisplay();
+        });
+
+        function updateBetDisplay() {
+            document.querySelectorAll('.bet-option').forEach(option => {
+                const betType = option.dataset.bet;
+                const existingAmount = option.querySelector('.bet-amount');
+
+                if (existingAmount) {
+                    existingAmount.remove();
+                }
+
+                if (bets[betType] && bets[betType] > 0) {
+                    option.classList.add('selected');
+                    const amountEl = document.createElement('div');
+                    amountEl.className = 'bet-amount';
+                    amountEl.textContent = `$${bets[betType]}`;
+                    option.appendChild(amountEl);
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        }
+
+        function getTotalBet() {
+            return Object.values(bets).reduce((sum, bet) => sum + bet, 0);
+        }
+
+        spinBtn.addEventListener('click', async () => {
+            const totalBet = getTotalBet();
+            if (totalBet === 0) {
+                showMessage('Place your bets first!', 'lose');
+                return;
+            }
+
+            if (isSpinning) return;
+
+            isSpinning = true;
+            spinBtn.disabled = true;
+            resultMessageEl.textContent = 'Spinning...';
+            resultMessageEl.className = 'result-message';
+
+            // Deduct bet
+            balance -= totalBet;
+            updateDisplay();
+
+            // Random result
+            const resultIndex = Math.floor(Math.random() * wheelSegments.length);
+            const result = wheelSegments[resultIndex];
+
+            // Calculate rotation
+            const segmentAngle = 360 / wheelSegments.length;
+            const targetAngle = resultIndex * segmentAngle;
+            const spins = 5; // Number of full spins
+            const finalRotation = (spins * 360) + (360 - targetAngle) + (segmentAngle / 2);
+
+            wheelEl.style.transform = `rotate(${finalRotation}deg)`;
+
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
+            await processResult(result, totalBet);
+
+            isSpinning = false;
+            spinBtn.disabled = false;
+        });
+
+        async function processResult(result, totalBetAmount) {
+            let totalWinnings = 0;
+
+            for (let betType in bets) {
+                const betAmount = bets[betType];
+                const betOption = document.querySelector(`[data-bet="${betType}"]`);
+
+                if (parseInt(betType) === result) {
+                    const payout = parseInt(betOption.dataset.payout);
+                    const winAmount = betAmount * (payout + 1);
+                    totalWinnings += winAmount;
+                    betOption.classList.add('won');
+                    setTimeout(() => betOption.classList.remove('won'), 1000);
+                }
+            }
+
+            balance += totalWinnings;
+
+            setTimeout(() => {
+                bets = {};
+                updateBetDisplay();
+            }, 1500);
+
+            updateDisplay();
+
+            if (totalWinnings > totalBetAmount) {
+                const profit = totalWinnings - totalBetAmount;
+                showMessage(`🎉 Winner! Landed on ${result}! You won $${profit.toFixed(2)}!`, 'win');
+            } else {
+                showMessage(`Landed on ${result}. Better luck next time!`, 'lose');
+            }
+
+            if (!isDemo && sessionToken) {
+                await updateServerBalance(totalBetAmount, totalWinnings - totalBetAmount);
+            }
+        }
+
+        async function updateServerBalance(betAmt, winAmt) {
+            if (isDemo) {
+                console.log('Demo mode - not updating server balance');
+                return;
+            }
+
+            const BACKEND_URL = 'http://localhost:8080';
+            try {
+                if (!jwtToken) {
+                    console.error('No JWT token found');
+                    return;
+                }
+
+                const response = await fetch(`${BACKEND_URL}/api/user/games/spin`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                    body: JSON.stringify({
+                        sessionToken: sessionToken,
+                        gameId: gameId,
+                        betAmount: betAmt,
+                        roundId: roundId++
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('Spin request failed:', response.status);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Spin result:', data);
+                balance = data.newBalance;
+                updateDisplay();
+            } catch (error) {
+                console.error('Error updating balance:', error);
+            }
+        }
+
+        clearBtn.addEventListener('click', () => {
+            if (isSpinning) return;
+            bets = {};
+            updateBetDisplay();
+            updateDisplay();
+            resultMessageEl.textContent = '';
+            resultMessageEl.className = 'result-message';
+        });
+
+        function updateDisplay() {
+            balanceEl.textContent = balance.toFixed(2);
+            totalBetEl.textContent = getTotalBet().toFixed(2);
+        }
+
+        function showMessage(text, type) {
+            resultMessageEl.textContent = text;
+            resultMessageEl.className = `result-message ${type}`;
+        }
+
+        init();
+    </script>
+</body>
+</html>
