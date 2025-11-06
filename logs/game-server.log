@@ -142,3 +142,13 @@
 ::1 - - [06/Nov/2025 18:47:35] "GET /other/bingo/photo.jpeg HTTP/1.1" 200 -
 ::1 - - [06/Nov/2025 18:47:46] "GET /other/money-wheel/photo.jpeg HTTP/1.1" 304 -
 ::1 - - [06/Nov/2025 18:47:46] "GET /other/bingo/photo.jpeg HTTP/1.1" 304 -
+::1 - - [06/Nov/2025 18:59:34] "GET /table-games/american-roulette/index.html?demo=true HTTP/1.1" 200 -
+::1 - - [06/Nov/2025 18:59:35] code 404, message File not found
+::1 - - [06/Nov/2025 18:59:35] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [06/Nov/2025 19:00:04] "GET /other/keno/photo.jpeg HTTP/1.1" 304 -
+::1 - - [06/Nov/2025 19:00:04] "GET /table-games/craps/photo.jpeg HTTP/1.1" 304 -
+::1 - - [06/Nov/2025 19:00:04] "GET /table-games/dragon-tiger/photo.jpeg HTTP/1.1" 304 -
+::1 - - [06/Nov/2025 19:00:04] "GET /table-games/sic-bo/photo.jpeg HTTP/1.1" 304 -
+::1 - - [06/Nov/2025 19:00:04] "GET /other/money-wheel/photo.jpeg HTTP/1.1" 304 -
+::1 - - [06/Nov/2025 19:00:04] "GET /other/bingo/photo.jpeg HTTP/1.1" 304 -
+::1 - - [06/Nov/2025 19:00:09] "GET /table-games/american-roulette/index.html?session=d0677fe5-5762-4561-9d09-bc3831d81275&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MjQ0MDI4MiwiZXhwIjoxNzYyNTI2NjgyfQ.2Wf2KIGIGpeZlpXkSvLagXOckzLl0OiplXoGpr8VwRPIXEe98gaHslOgyWViQpOl HTTP/1.1" 200 -

@@ -383,6 +383,26 @@ public class DataLoader implements CommandLineRunner {
             log.info("Game already exists: 90-Ball Bingo");
         }
 
+        // Create game 18 - American Roulette (if doesn't exist)
+        if (!gameRepository.findByGameCode("AMERICAN_ROULETTE").isPresent()) {
+            Game game18 = new Game();
+            game18.setGameCode("AMERICAN_ROULETTE");
+            game18.setName("American Roulette");
+            game18.setDescription("Classic American Roulette with 38 numbers (0, 00, 1-36). The iconic double-zero wheel! Place your bets on numbers, colors, or combinations. The most popular roulette variant in America!");
+            game18.setCategory(Game.GameCategory.TABLE_GAMES);
+            game18.setProvider(provider);
+            game18.setIframeUrl("http://localhost:8888/table-games/american-roulette/index.html");
+            game18.setThumbnailUrl("https://via.placeholder.com/300x200?text=American+Roulette");
+            game18.setRtp(new BigDecimal("94.74"));
+            game18.setFeatured(true);
+            game18.setStatus(Game.GameStatus.ACTIVE);
+            game18.setSortOrder(18);
+            gameRepository.save(game18);
+            log.info("Game data loaded: {}", game18.getName());
+        } else {
+            log.info("Game already exists: American Roulette");
+        }
+
         // Create test user if doesn't exist (run every time)
         if (!userRepository.findByEmail("test@casino.ge").isPresent()) {
             User testUser = new User();

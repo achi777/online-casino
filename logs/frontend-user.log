@@ -124,3 +124,35 @@ AggregateError [ECONNREFUSED]:
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1139:18)
     at afterConnectMultiple (node:net:1712:7)
+6:58:52 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:58:52 PM [vite] http proxy error: /api/user/games
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:58:53 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:58:53 PM [vite] http proxy error: /api/user/games
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:58:55 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:58:55 PM [vite] http proxy error: /api/user/games
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:58:59 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:58:59 PM [vite] http proxy error: /api/user/games
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
