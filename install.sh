@@ -7,6 +7,13 @@ echo "Casino Platform - Installation Script"
 echo "=================================================="
 echo ""
 
+# Get the absolute path of the script directory
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR"
+
+# Create logs directory if it doesn't exist
+mkdir -p logs
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -81,13 +88,25 @@ echo "Installing Backend Dependencies"
 echo "=================================================="
 echo ""
 
+if [ ! -d "backend" ]; then
+    print_error "Backend directory not found"
+    exit 1
+fi
+
 cd backend
 print_status "Building backend with Maven..."
-mvn clean install -DskipTests
+mvn clean install -DskipTests 2>&1 | tee ../logs/install-backend.log
 if [ $? -eq 0 ]; then
     print_status "Backend built successfully"
+    # Verify JAR was created
+    if [ -f "target/casino-platform-1.0.0.jar" ]; then
+        print_status "JAR file verified: target/casino-platform-1.0.0.jar"
+    else
+        print_error "JAR file not found after build"
+        exit 1
+    fi
 else
-    print_error "Backend build failed"
+    print_error "Backend build failed. Check logs/install-backend.log"
     exit 1
 fi
 cd ..
@@ -98,13 +117,25 @@ echo "Installing Frontend User Portal Dependencies"
 echo "=================================================="
 echo ""
 
+if [ ! -d "frontend-user" ]; then
+    print_error "Frontend user directory not found"
+    exit 1
+fi
+
 cd frontend-user
 print_status "Installing npm packages for user portal..."
-npm install
+npm install 2>&1 | tee ../logs/install-frontend-user.log
 if [ $? -eq 0 ]; then
     print_status "User portal dependencies installed"
+    # Verify node_modules exists
+    if [ -d "node_modules" ]; then
+        print_status "node_modules verified"
+    else
+        print_error "node_modules not created"
+        exit 1
+    fi
 else
-    print_error "User portal installation failed"
+    print_error "User portal installation failed. Check logs/install-frontend-user.log"
     exit 1
 fi
 cd ..
@@ -115,13 +146,25 @@ echo "Installing Frontend Admin Portal Dependencies"
 echo "=================================================="
 echo ""
 
+if [ ! -d "frontend-admin" ]; then
+    print_error "Frontend admin directory not found"
+    exit 1
+fi
+
 cd frontend-admin
 print_status "Installing npm packages for admin portal..."
-npm install
+npm install 2>&1 | tee ../logs/install-frontend-admin.log
 if [ $? -eq 0 ]; then
     print_status "Admin portal dependencies installed"
+    # Verify node_modules exists
+    if [ -d "node_modules" ]; then
+        print_status "node_modules verified"
+    else
+        print_error "node_modules not created"
+        exit 1
+    fi
 else
-    print_error "Admin portal installation failed"
+    print_error "Admin portal installation failed. Check logs/install-frontend-admin.log"
     exit 1
 fi
 cd ..

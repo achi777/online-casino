@@ -46,6 +46,12 @@ public class GameController {
     public ResponseEntity<GameLaunchResponse> launchGame(
             Authentication authentication,
             @Valid @RequestBody GameLaunchRequest request) {
+        // Demo mode doesn't require authentication
+        if (Boolean.TRUE.equals(request.getDemoMode())) {
+            return ResponseEntity.ok(gameService.launchGameDemo(request));
+        }
+
+        // Real play requires authentication
         Long userId = getUserIdFromAuth(authentication);
         return ResponseEntity.ok(gameService.launchGame(userId, request));
     }

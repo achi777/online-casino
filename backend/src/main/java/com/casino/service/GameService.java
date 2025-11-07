@@ -47,6 +47,25 @@ public class GameService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public GameLaunchResponse launchGameDemo(GameLaunchRequest request) {
+        Game game = gameRepository.findById(request.getGameId())
+                .orElseThrow(() -> new BadRequestException("Game not found"));
+
+        if (game.getStatus() != Game.GameStatus.ACTIVE) {
+            throw new BadRequestException("Game is not available");
+        }
+
+        // Generate demo session token (not saved to database)
+        String demoSessionToken = "demo-" + UUID.randomUUID().toString();
+
+        // Generate launch URL for demo mode
+        String launchUrl = generateLaunchUrl(game, demoSessionToken, true);
+        String integrationType = game.getProvider().getIntegrationType().name();
+
+        return new GameLaunchResponse(demoSessionToken, launchUrl, integrationType);
+    }
+
     @Transactional
     public GameLaunchResponse launchGame(Long userId, GameLaunchRequest request) {
         User user = userRepository.findById(userId)

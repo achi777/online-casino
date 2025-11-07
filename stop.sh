@@ -98,11 +98,13 @@ if [ -d "logs" ]; then
     stop_service "logs/game-server.pid" "Game Server"
     stop_service "logs/frontend-user.pid" "User Portal"
     stop_service "logs/frontend-admin.pid" "Admin Portal"
+else
+    print_warning "Logs directory not found"
 fi
 
 # Fallback: stop by port if PID files don't work
 echo ""
-echo "Checking for any remaining processes..."
+echo "Checking for any remaining processes by port..."
 stop_by_port 8080 "Backend"
 stop_by_port 8888 "Game Server"
 stop_by_port 3000 "User Portal"
@@ -111,16 +113,40 @@ stop_by_port 3001 "Admin Portal"
 # Stop any remaining npm/vite processes
 echo ""
 echo "Checking for npm/vite processes..."
-pkill -f "vite.*frontend-user" 2>/dev/null && print_status "Stopped user portal vite process" || true
-pkill -f "vite.*frontend-admin" 2>/dev/null && print_status "Stopped admin portal vite process" || true
+VITE_USER_PIDS=$(pgrep -f "vite.*frontend-user" 2>/dev/null)
+if [ ! -z "$VITE_USER_PIDS" ]; then
+    echo $VITE_USER_PIDS | xargs kill -9 2>/dev/null
+    print_status "Stopped user portal vite processes"
+fi
+
+VITE_ADMIN_PIDS=$(pgrep -f "vite.*frontend-admin" 2>/dev/null)
+if [ ! -z "$VITE_ADMIN_PIDS" ]; then
+    echo $VITE_ADMIN_PIDS | xargs kill -9 2>/dev/null
+    print_status "Stopped admin portal vite processes"
+fi
+
+# Stop any remaining npm processes
+NPM_PIDS=$(pgrep -f "npm.*run.*dev" 2>/dev/null)
+if [ ! -z "$NPM_PIDS" ]; then
+    echo $NPM_PIDS | xargs kill -9 2>/dev/null
+    print_status "Stopped npm processes"
+fi
 
 # Stop any remaining Java processes with casino-platform
 echo "Checking for casino backend processes..."
-pkill -f "casino-platform-1.0.0.jar" 2>/dev/null && print_status "Stopped backend process" || true
+JAVA_PIDS=$(pgrep -f "casino-platform-1.0.0.jar" 2>/dev/null)
+if [ ! -z "$JAVA_PIDS" ]; then
+    echo $JAVA_PIDS | xargs kill -9 2>/dev/null
+    print_status "Stopped backend process"
+fi
 
 # Stop any remaining Python game server
 echo "Checking for game server processes..."
-pkill -f "http.server 8888" 2>/dev/null && print_status "Stopped game server process" || true
+PYTHON_PIDS=$(pgrep -f "http.server 8888" 2>/dev/null)
+if [ ! -z "$PYTHON_PIDS" ]; then
+    echo $PYTHON_PIDS | xargs kill -9 2>/dev/null
+    print_status "Stopped game server process"
+fi
 
 echo ""
 echo "=================================================="

@@ -56,8 +56,9 @@ public class SecurityConfig {
                         // Game initialization endpoints - secured by session token in backend
                         .requestMatchers("/api/user/balance", "/api/user/game-info").permitAll()
 
-                        // SECURITY: Game play endpoints - MUST be authenticated with JWT
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/launch").hasRole("USER")
+                        // SECURITY: Game play endpoints
+                        // Launch endpoint is public to support demo mode (controller validates auth for real play)
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/launch").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/spin").hasRole("USER")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/bet").hasRole("USER")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/win").hasRole("USER")

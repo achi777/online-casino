@@ -72,6 +72,11 @@ echo ""
 # Check if services are already running
 if check_port 8080; then
     print_warning "Backend already running on port 8080"
+    # Get actual PID and save it
+    ACTUAL_PID=$(lsof -ti:8080 | grep -v "^$" | tail -1)
+    if [ ! -z "$ACTUAL_PID" ]; then
+        echo $ACTUAL_PID > "$SCRIPT_DIR/logs/backend.pid"
+    fi
 else
     print_info "Starting Backend (Spring Boot)..."
     cd "$SCRIPT_DIR/backend"
@@ -83,15 +88,29 @@ else
         exit 1
     fi
 
-    java -jar target/casino-platform-1.0.0.jar > "$SCRIPT_DIR/logs/backend.log" 2>&1 &
+    nohup java -jar target/casino-platform-1.0.0.jar > "$SCRIPT_DIR/logs/backend.log" 2>&1 &
     BACKEND_PID=$!
     echo $BACKEND_PID > "$SCRIPT_DIR/logs/backend.pid"
-    print_status "Backend started (PID: $BACKEND_PID)"
+    sleep 2
+
+    # Verify it started
+    if ps -p $BACKEND_PID > /dev/null 2>&1; then
+        print_status "Backend started (PID: $BACKEND_PID)"
+    else
+        print_error "Failed to start backend. Check logs/backend.log for details."
+        cd "$SCRIPT_DIR"
+        exit 1
+    fi
     cd "$SCRIPT_DIR"
 fi
 
 if check_port 8888; then
     print_warning "Game server already running on port 8888"
+    # Get actual PID and save it
+    ACTUAL_PID=$(lsof -ti:8888 | grep -v "^$" | tail -1)
+    if [ ! -z "$ACTUAL_PID" ]; then
+        echo $ACTUAL_PID > "$SCRIPT_DIR/logs/game-server.pid"
+    fi
 else
     print_info "Starting Game Server (Python HTTP)..."
 
@@ -101,14 +120,28 @@ else
         exit 1
     fi
 
+    cd "$SCRIPT_DIR"
     python3 -m http.server 8888 --directory games > "$SCRIPT_DIR/logs/game-server.log" 2>&1 &
     GAME_SERVER_PID=$!
     echo $GAME_SERVER_PID > "$SCRIPT_DIR/logs/game-server.pid"
-    print_status "Game server started (PID: $GAME_SERVER_PID)"
+    sleep 1
+
+    # Verify it started
+    if ps -p $GAME_SERVER_PID > /dev/null 2>&1; then
+        print_status "Game server started (PID: $GAME_SERVER_PID)"
+    else
+        print_error "Failed to start game server"
+        exit 1
+    fi
 fi
 
 if check_port 3000; then
     print_warning "User portal already running on port 3000"
+    # Get actual PID and save it
+    ACTUAL_PID=$(lsof -ti:3000 | grep -v "^$" | tail -1)
+    if [ ! -z "$ACTUAL_PID" ]; then
+        echo $ACTUAL_PID > "$SCRIPT_DIR/logs/frontend-user.pid"
+    fi
 else
     print_info "Starting User Portal (React)..."
     cd "$SCRIPT_DIR/frontend-user"
@@ -120,15 +153,29 @@ else
         exit 1
     fi
 
-    npm run dev > "$SCRIPT_DIR/logs/frontend-user.log" 2>&1 &
+    nohup npm run dev > "$SCRIPT_DIR/logs/frontend-user.log" 2>&1 &
     USER_PORTAL_PID=$!
     echo $USER_PORTAL_PID > "$SCRIPT_DIR/logs/frontend-user.pid"
-    print_status "User portal started (PID: $USER_PORTAL_PID)"
+    sleep 1
+
+    # Verify it started
+    if ps -p $USER_PORTAL_PID > /dev/null 2>&1; then
+        print_status "User portal started (PID: $USER_PORTAL_PID)"
+    else
+        print_error "Failed to start user portal. Check logs/frontend-user.log for details."
+        cd "$SCRIPT_DIR"
+        exit 1
+    fi
     cd "$SCRIPT_DIR"
 fi
 
 if check_port 3001; then
     print_warning "Admin portal already running on port 3001"
+    # Get actual PID and save it
+    ACTUAL_PID=$(lsof -ti:3001 | grep -v "^$" | tail -1)
+    if [ ! -z "$ACTUAL_PID" ]; then
+        echo $ACTUAL_PID > "$SCRIPT_DIR/logs/frontend-admin.pid"
+    fi
 else
     print_info "Starting Admin Portal (React)..."
     cd "$SCRIPT_DIR/frontend-admin"
@@ -140,10 +187,19 @@ else
         exit 1
     fi
 
-    npm run dev > "$SCRIPT_DIR/logs/frontend-admin.log" 2>&1 &
+    nohup npm run dev > "$SCRIPT_DIR/logs/frontend-admin.log" 2>&1 &
     ADMIN_PORTAL_PID=$!
     echo $ADMIN_PORTAL_PID > "$SCRIPT_DIR/logs/frontend-admin.pid"
-    print_status "Admin portal started (PID: $ADMIN_PORTAL_PID)"
+    sleep 1
+
+    # Verify it started
+    if ps -p $ADMIN_PORTAL_PID > /dev/null 2>&1; then
+        print_status "Admin portal started (PID: $ADMIN_PORTAL_PID)"
+    else
+        print_error "Failed to start admin portal. Check logs/frontend-admin.log for details."
+        cd "$SCRIPT_DIR"
+        exit 1
+    fi
     cd "$SCRIPT_DIR"
 fi
 

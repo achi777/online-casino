@@ -4,39 +4,7 @@
 
 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
 
-  VITE v5.4.21  ready in 215 ms
+  VITE v5.4.21  ready in 1191 ms
 
   ➜  Local:   http://localhost:3001/
   ➜  Network: use --host to expose
-4:04:23 PM [vite] http proxy error: /api/admin/dashboard/stats
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1139:18)
-    at afterConnectMultiple (node:net:1712:7)
-4:04:23 PM [vite] http proxy error: /api/admin/dashboard/stats
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1139:18)
-    at afterConnectMultiple (node:net:1712:7)
-4:04:24 PM [vite] http proxy error: /api/admin/games
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1139:18)
-    at afterConnectMultiple (node:net:1712:7)
-4:04:24 PM [vite] http proxy error: /api/admin/games
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1139:18)
-    at afterConnectMultiple (node:net:1712:7)
-4:04:29 PM [vite] http proxy error: /api/admin/dashboard/stats
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1139:18)
-    at afterConnectMultiple (node:net:1712:7)
-4:04:29 PM [vite] http proxy error: /api/admin/dashboard/stats
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1139:18)
-    at afterConnectMultiple (node:net:1712:7)
-4:05:10 PM [vite] http proxy error: /api/admin/auth/login
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1139:18)
-    at afterConnectMultiple (node:net:1712:7)
-6:37:48 PM [vite] http proxy error: /api/admin/auth/login
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1139:18)
-    at afterConnectMultiple (node:net:1712:7)

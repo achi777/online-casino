@@ -23,7 +23,8 @@ check_service_status() {
 
     # Check if port is in use
     if lsof -i :$port &> /dev/null; then
-        local pid=$(lsof -ti:$port)
+        # Get all PIDs on this port and take the first one
+        local pid=$(lsof -ti:$port | head -1)
         echo -e "${GREEN}✓${NC} $service_name is ${GREEN}RUNNING${NC} on port $port (PID: $pid)"
 
         # Check if PID file matches actual process
@@ -31,9 +32,13 @@ check_service_status() {
             local file_pid=$(cat "$pid_file")
             if [ "$pid" != "$file_pid" ]; then
                 echo -e "  ${YELLOW}⚠${NC} Warning: PID file mismatch (file: $file_pid, actual: $pid)"
+                # Update PID file with actual PID
+                echo $pid > "$pid_file"
+                echo -e "  ${GREEN}✓${NC} PID file updated"
             fi
         else
-            echo -e "  ${YELLOW}⚠${NC} Warning: PID file not found"
+            echo -e "  ${YELLOW}⚠${NC} Warning: PID file not found, creating it"
+            echo $pid > "$pid_file"
         fi
     else
         echo -e "${RED}✗${NC} $service_name is ${RED}NOT RUNNING${NC} (expected on port $port)"
@@ -41,6 +46,8 @@ check_service_status() {
         # Check if PID file exists for stopped service
         if [ -f "$pid_file" ]; then
             echo -e "  ${YELLOW}⚠${NC} Stale PID file exists: $pid_file"
+            rm "$pid_file"
+            echo -e "  ${GREEN}✓${NC} Removed stale PID file"
         fi
     fi
 }
@@ -84,10 +91,26 @@ fi
 echo ""
 
 # Check if all services are running
-if lsof -i :8080 &> /dev/null && lsof -i :8888 &> /dev/null && lsof -i :3000 &> /dev/null && lsof -i :3001 &> /dev/null; then
-    echo -e "${GREEN}✓${NC} All services are running"
+BACKEND_UP=$(lsof -i :8080 &> /dev/null && echo 1 || echo 0)
+GAMES_UP=$(lsof -i :8888 &> /dev/null && echo 1 || echo 0)
+USER_UP=$(lsof -i :3000 &> /dev/null && echo 1 || echo 0)
+ADMIN_UP=$(lsof -i :3001 &> /dev/null && echo 1 || echo 0)
+
+TOTAL_UP=$((BACKEND_UP + GAMES_UP + USER_UP + ADMIN_UP))
+
+if [ $TOTAL_UP -eq 4 ]; then
+    echo -e "${GREEN}✓${NC} All services are running (4/4)"
 else
-    echo -e "${YELLOW}⚠${NC} Some services are not running. Run ./start.sh to start them."
+    echo -e "${YELLOW}⚠${NC} $TOTAL_UP/4 services are running. Run ./start.sh to start missing services."
+fi
+
+echo ""
+
+# Suggest actions based on status
+if [ $TOTAL_UP -eq 0 ]; then
+    echo "To start all services, run: ./start.sh"
+elif [ $TOTAL_UP -lt 4 ]; then
+    echo "To restart all services, run: ./restart.sh"
 fi
 
 echo ""
