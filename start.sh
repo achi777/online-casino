@@ -75,6 +75,14 @@ if check_port 8080; then
 else
     print_info "Starting Backend (Spring Boot)..."
     cd "$SCRIPT_DIR/backend"
+
+    # Check if JAR file exists
+    if [ ! -f "target/casino-platform-1.0.0.jar" ]; then
+        print_error "Backend JAR file not found. Please run ./install.sh first."
+        cd "$SCRIPT_DIR"
+        exit 1
+    fi
+
     java -jar target/casino-platform-1.0.0.jar > "$SCRIPT_DIR/logs/backend.log" 2>&1 &
     BACKEND_PID=$!
     echo $BACKEND_PID > "$SCRIPT_DIR/logs/backend.pid"
@@ -86,6 +94,13 @@ if check_port 8888; then
     print_warning "Game server already running on port 8888"
 else
     print_info "Starting Game Server (Python HTTP)..."
+
+    # Check if games directory exists
+    if [ ! -d "$SCRIPT_DIR/games" ]; then
+        print_error "Games directory not found at $SCRIPT_DIR/games"
+        exit 1
+    fi
+
     python3 -m http.server 8888 --directory games > "$SCRIPT_DIR/logs/game-server.log" 2>&1 &
     GAME_SERVER_PID=$!
     echo $GAME_SERVER_PID > "$SCRIPT_DIR/logs/game-server.pid"
@@ -97,6 +112,14 @@ if check_port 3000; then
 else
     print_info "Starting User Portal (React)..."
     cd "$SCRIPT_DIR/frontend-user"
+
+    # Check if node_modules exists
+    if [ ! -d "node_modules" ]; then
+        print_error "User portal dependencies not installed. Please run ./install.sh first."
+        cd "$SCRIPT_DIR"
+        exit 1
+    fi
+
     npm run dev > "$SCRIPT_DIR/logs/frontend-user.log" 2>&1 &
     USER_PORTAL_PID=$!
     echo $USER_PORTAL_PID > "$SCRIPT_DIR/logs/frontend-user.pid"
@@ -109,6 +132,14 @@ if check_port 3001; then
 else
     print_info "Starting Admin Portal (React)..."
     cd "$SCRIPT_DIR/frontend-admin"
+
+    # Check if node_modules exists
+    if [ ! -d "node_modules" ]; then
+        print_error "Admin portal dependencies not installed. Please run ./install.sh first."
+        cd "$SCRIPT_DIR"
+        exit 1
+    fi
+
     npm run dev > "$SCRIPT_DIR/logs/frontend-admin.log" 2>&1 &
     ADMIN_PORTAL_PID=$!
     echo $ADMIN_PORTAL_PID > "$SCRIPT_DIR/logs/frontend-admin.pid"
@@ -142,7 +173,11 @@ echo "Default Credentials:"
 echo "  ${YELLOW}User:${NC}  test@casino.ge / Test1234"
 echo "  ${YELLOW}Admin:${NC} owner@casino.ge / Test1234"
 echo ""
+echo "Available commands:"
+echo "  ./stop.sh    - Stop all services"
+echo "  ./restart.sh - Restart all services"
+echo "  ./status.sh  - Check service status"
+echo ""
 echo "Logs are available in: $SCRIPT_DIR/logs/"
-echo "To stop all services, run: ./stop.sh"
 echo ""
 print_status "Platform is ready for use!"

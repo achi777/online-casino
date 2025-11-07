@@ -3,278 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>American Roulette</title>
+    <title>American Roulette 💰</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
+        html {
+            padding-left: 64px;
+            padding-right: 64px;
+            padding-top: 64px;
+        }
+        body {
+            background: #3d0a91;
+            margin: 0 auto;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .box1,
+        .box2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: #fff;
-            overflow-x: hidden;
-            padding: 20px;
+        .box1 {
+            flex-basis: 100%;
         }
 
-        .game-container {
-            background: linear-gradient(135deg, #1a4d2e 0%, #0d3b2e 100%);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.7);
-            text-align: center;
-            max-width: 1200px;
-            width: 100%;
-            border: 5px solid #8B4513;
+        .box2 {
+            flex-basis: 100%;
         }
 
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: bold;
-            letter-spacing: 3px;
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: 100vh;
+            }
+
+            .box1,
+            .box2 {
+                flex-basis: 50%;
+                height: 50%;
+            }
         }
 
-        .subtitle {
-            font-size: 1.1em;
-            color: #FFD700;
-            margin-bottom: 15px;
-            font-style: italic;
+        @media screen and (min-width: 769px) {
+            .container {
+                flex-direction: row;
+                height: 100%;
+            }
+
+            .box1 {
+                flex-basis: 30%;
+                height: 100%;
+            }
+
+            .box2 {
+                flex-basis: 70%;
+                height: 100%;
+            }
         }
 
-        #status {
-            font-size: 1.4em;
-            color: #FFD700;
-            margin: 20px 0;
-        }
-
-        .balance-display {
-            font-size: 1.4em;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
-            border-radius: 12px;
-            border: 2px solid #FFD700;
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        .balance-amount {
-            color: #FFD700;
-            font-weight: bold;
-            font-size: 1.3em;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-
-        .roulette-table {
-            display: flex;
-            gap: 30px;
-            margin: 20px 0;
-            justify-content: center;
-            flex-wrap: wrap;
-            align-items: flex-start;
-        }
-
-        .wheel-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .wheel-container {
-            position: relative;
-            width: 350px;
-            height: 350px;
-            margin-bottom: 20px;
-        }
-
-        .wheel-outer {
-            width: 350px;
-            height: 350px;
-            border-radius: 50%;
-            border: 12px solid #B8860B;
-            box-shadow:
-                0 0 0 4px #8B7355,
-                0 0 0 8px #D4AF37,
-                0 10px 40px rgba(0, 0, 0, 0.8),
-                inset 0 0 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            background: radial-gradient(circle at center, #8B6F47 0%, #6B4423 40%, #4A2511 100%);
-            will-change: transform;
-        }
-
-        .wheel-outer.spinning {
-            /* Animation will be set dynamically */
-        }
-
-        .wheel-svg {
+        #rouletteWheel {
             width: 100%;
             height: 100%;
+            cursor: pointer;
+        }
+
+        .roll {
+            position: fixed;
+            bottom: 120px;
+            right: 40px;
+            height: 90px;
+            width: 90px;
             border-radius: 50%;
+            box-shadow:
+                0px 8px 16px rgba(0, 0, 0, 0.9),
+                0px 0px 20px rgba(255, 215, 0, 0.4),
+                inset 0px 2px 4px rgba(255, 255, 255, 0.3);
+            border: 4px solid #FFD700;
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 16px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            color: #000;
+            z-index: 100;
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+            animation: pulse-glow 2s ease-in-out infinite;
         }
 
-        .wheel-number {
-            font-family: Arial, sans-serif;
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow:
+                    0px 8px 16px rgba(0, 0, 0, 0.9),
+                    0px 0px 20px rgba(255, 215, 0, 0.4),
+                    inset 0px 2px 4px rgba(255, 255, 255, 0.3);
+            }
+            50% {
+                box-shadow:
+                    0px 8px 16px rgba(0, 0, 0, 0.9),
+                    0px 0px 30px rgba(255, 215, 0, 0.7),
+                    inset 0px 2px 4px rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        .roll:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow:
+                0px 12px 24px rgba(0, 0, 0, 0.8),
+                0px 0px 40px rgba(255, 215, 0, 0.8),
+                inset 0px 2px 4px rgba(255, 255, 255, 0.4);
+            border-color: #FFF;
+        }
+
+        .roll:active {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow:
+                0px 6px 12px rgba(0, 0, 0, 0.7),
+                0px 0px 50px rgba(255, 215, 0, 1),
+                inset 0px 2px 4px rgba(255, 255, 255, 0.5);
+            border-width: 6px;
+        }
+
+        .roll:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            animation: none;
+        }
+
+        .winners {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            width: 100%;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .winner2 {
+            font-size: 1.5em;
+            padding-left: 20px;
+            color: #fff;
+            float: center;
+        }
+
+        text {
+            user-select: none;
+            pointer-events: none;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .redBet {
+            background: red !important;
+            color: #fff;
+        }
+
+        .blackBet {
+            background: #000 !important;
+            color: #fff;
+        }
+
+        .red.active {
+            box-shadow: 0px 0px 3px #ffc107;
+        }
+
+        .active {
+            background: #ffc107 !important;
             font-weight: bold;
-            font-size: 12px;
-            fill: white;
-            text-anchor: middle;
-            paint-order: stroke;
-            stroke: rgba(0, 0, 0, 0.5);
-            stroke-width: 0.5px;
         }
 
-        .segment-border {
-            fill: none;
-            stroke: #FFD700;
-            stroke-width: 1;
+        .betPlacement {
+            width: 95%;
+            height: 100%;
         }
 
-        .wheel-center {
-            position: absolute;
+        .placeBet:hover>rect {
+            fill: rgba(255, 215, 0, 0.3);
+        }
+
+        .placeBet.active>rect {
+            rx: 5;
+            stroke: #ffc107;
+            fill: rgba(255, 215, 0, 0.5);
+        }
+
+        .placeBet {
+            cursor: pointer;
+        }
+
+        .placeBet.circle {
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .money {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: #FFD700;
+            font-weight: 900;
+            font-family: 'Roboto', sans-serif;
+            font-size: 24px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(26, 26, 26, 0.95));
+            border: 3px solid #FFD700;
+            border-radius: 50px;
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(255, 215, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1);
+            text-shadow: 0 2px 8px rgba(255, 215, 0, 0.8);
+            letter-spacing: 1px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .money::before {
+            content: '💰';
+            font-size: 28px;
+            animation: coin-bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes coin-bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            user-select: none;
+            pointer-events: none;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #E8E8E8, #C0C0C0 40%, #A8A8A8 70%, #888 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            font-weight: bold;
-            color: #000;
-            border: 4px solid #D4AF37;
-            box-shadow:
-                0 0 0 2px #8B7355,
-                0 5px 20px rgba(0, 0, 0, 0.6),
-                inset 0 2px 10px rgba(255, 255, 255, 0.3),
-                inset 0 -2px 10px rgba(0, 0, 0, 0.3);
-            z-index: 100;
         }
 
-        .wheel-ball {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: radial-gradient(circle at 35% 35%, #FFFFFF, #E8E8E8 40%, #C0C0C0 70%, #999 100%);
-            border-radius: 50%;
+        .loading {
+            position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-90deg) translateX(140px);
-            box-shadow:
-                0 0 15px rgba(255, 255, 255, 0.9),
-                inset 1px 1px 3px rgba(255, 255, 255, 0.8),
-                inset -1px -1px 3px rgba(0, 0, 0, 0.3);
-            z-index: 99;
-            pointer-events: none;
-            will-change: transform;
-            backface-visibility: hidden;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 1.5em;
         }
 
-        @keyframes ballSpin {
-            0% {
-                transform: translate(-50%, -50%) rotate(-90deg) translateX(140px);
-            }
-            100% {
-                transform: translate(-50%, -50%) rotate(var(--final-angle)) translateX(var(--final-radius));
-            }
-        }
-
-        .betting-grid {
-            background: linear-gradient(135deg, rgba(0, 100, 0, 0.8), rgba(0, 80, 0, 0.8));
-            border-radius: 15px;
-            padding: 20px;
-            border: 3px solid #8B4513;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .grid-row {
-            display: flex;
-            gap: 2px;
-            margin-bottom: 2px;
-        }
-
-        .number-cell {
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1em;
-            cursor: pointer;
-            border: 2px solid #8B4513;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .number-cell:hover {
-            transform: scale(1.1);
-            z-index: 5;
-        }
-
-        .number-cell.red {
-            background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
-            color: white;
-        }
-
-        .number-cell.black {
-            background: linear-gradient(135deg, #2c2c2c 0%, #000 100%);
-            color: white;
-        }
-
-        .number-cell.green {
-            background: linear-gradient(135deg, #228B22 0%, #006400 100%);
-            color: white;
-        }
-
-        .number-cell.selected {
-            box-shadow: 0 0 20px #FFD700, inset 0 0 20px rgba(255, 215, 0, 0.5);
-            border-color: #FFD700;
-        }
-
-        .outside-bet {
-            padding: 12px 25px;
-            background: linear-gradient(135deg, rgba(139, 69, 19, 0.8), rgba(101, 67, 33, 0.8));
-            border: 2px solid #8B4513;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin: 5px;
-            border-radius: 8px;
-            font-size: 0.9em;
-        }
-
-        .outside-bet:hover {
-            background: linear-gradient(135deg, rgba(184, 134, 11, 0.8), rgba(139, 69, 19, 0.8));
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
-        }
-
-        .outside-bet.selected {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: #000;
-            box-shadow: 0 0 20px #FFD700;
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.2);
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #ff6b6b;
         }
 
         .chip-selector {
+            position: fixed;
+            bottom: 20px;
+            right: 160px;
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 15px 0;
+            z-index: 100;
         }
 
         .chip {
@@ -285,10 +284,12 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
             border: 4px solid #fff;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
             transition: all 0.3s;
+            font-family: 'Roboto', sans-serif;
         }
 
         .chip:hover {
@@ -296,225 +297,549 @@
         }
 
         .chip.selected {
-            box-shadow: 0 0 20px #FFD700;
+            box-shadow: 0 0 30px #FFD700;
             border-color: #FFD700;
+            border-width: 5px;
         }
 
-        .chip-1 { background: linear-gradient(135deg, #fff 0%, #ddd 100%); color: #000; }
-        .chip-5 { background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%); color: white; }
-        .chip-10 { background: linear-gradient(135deg, #1E90FF 0%, #0000CD 100%); color: white; }
-        .chip-25 { background: linear-gradient(135deg, #228B22 0%, #006400 100%); color: white; }
-        .chip-100 { background: linear-gradient(135deg, #000 0%, #2c2c2c 100%); color: #FFD700; }
-
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin: 20px 0;
-        }
-
-        .action-button {
-            padding: 15px 40px;
-            font-size: 1.3em;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s;
-            text-transform: uppercase;
-        }
-
-        .action-button.spin {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        .chip-1 {
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
             color: #000;
         }
 
-        .action-button.clear {
+        .chip-5 {
             background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
             color: white;
         }
 
-        .action-button:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.7);
+        .chip-10 {
+            background: linear-gradient(135deg, #1E90FF 0%, #0000CD 100%);
+            color: white;
         }
 
-        .action-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .chip-25 {
+            background: linear-gradient(135deg, #228B22 0%, #006400 100%);
+            color: white;
         }
 
-        .bet-info {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            border: 2px solid #FFD700;
-        }
-
-        .bet-info-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 5px 0;
-            font-size: 1.2em;
-        }
-
-        .bet-info-label {
+        .chip-100 {
+            background: linear-gradient(135deg, #000 0%, #2c2c2c 100%);
             color: #FFD700;
         }
 
+        .bet-info {
+            position: fixed;
+            bottom: 95px;
+            left: 20px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(26, 26, 26, 0.95));
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 3px solid #FFD700;
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(255, 215, 0, 0.4);
+            color: #FFD700;
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            z-index: 100;
+        }
+
         .bet-info-value {
-            color: white;
-            font-weight: bold;
-        }
-
-        .message {
-            margin-top: 20px;
-            font-size: 1.8em;
-            min-height: 60px;
-            font-weight: bold;
-            text-shadow: 0 0 15px currentColor;
-        }
-
-        .win {
-            color: #00FF00;
-            text-shadow: 0 0 20px #00FF00;
-            animation: pulse 0.6s infinite;
-        }
-
-        .lose {
-            color: #FF6B6B;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-        }
-
-        .outside-bets-container {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .bet-chip {
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background: #FFD700;
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7em;
-            font-weight: bold;
-            top: 3px;
-            right: 3px;
-            border: 2px solid white;
-            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.8);
-            z-index: 10;
-        }
-
-        .error {
-            color: #ff6b6b;
-            background: rgba(255, 107, 107, 0.2);
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 2px solid #ff6b6b;
+            color: #FFF;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>🎡 AMERICAN ROULETTE 🎰</h1>
-        <div class="subtitle">Rien ne va plus!</div>
+    <div id="status" class="loading">Loading...</div>
 
-        <div id="status" class="loading">Loading...</div>
-
-        <div id="game-content" style="display: none;">
-            <div class="balance-display">
-                Balance: <span class="balance-amount" id="balance">100.00</span> ₾
+    <div id="game-content" style="display: none;">
+        <div class="container">
+            <div class="box1">
+                <svg id="rouletteWheel" viewBox="0 0 100 100">
+                    <title>Spin the wheel!</title>
+                    <radialGradient id="board">
+                        <stop offset="0%" stop-color="#332701"></stop>
+                        <stop offset="50%" stop-color="#ffe69c"></stop>
+                        <stop offset="100%" stop-color="#332701"></stop>
+                    </radialGradient>
+                    <radialGradient id="spinner">
+                        <stop offset="0%" stop-color="#dee2e6"></stop>
+                        <stop offset="100%" stop-color="#adb5bd"></stop>
+                    </radialGradient>
+                    <filter id="blur" x="-100%" y="-200%" width="400%" height="400%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="2"></feGaussianBlur>
+                    </filter>
+                    <circle cx="50" cy="50" r="49" fill="url('#board')" stroke="#ffe69c" stroke-width="1"></circle>
+                    <circle cx="50" cy="50" r="36" fill="none" stroke="#212529" stroke-width="12"></circle>
+                    <circle cx="50" cy="50" r="36" fill="none" stroke="#fff" stroke-width="10.5"></circle>
+                    <g id="rotateMe">
+                        <g transform="rotate(85.2 50 50)">
+                            <circle cx="50" cy="50" r="36" fill="none" stroke="#dc3545" stroke-width="10" stroke-dasharray="5.952"></circle>
+                            <circle cx="50" cy="50" r="36" fill="none" stroke="#212529" stroke-width="10" stroke-dasharray="5.952" stroke-dashoffset="5.952"></circle>
+                            <circle cx="50" cy="50" r="36" fill="none" stroke="#198754" stroke-width="10" stroke-dasharray="5.952 260 5.952"></circle>
+                            <circle cx="50" cy="50" r="36" fill="none" stroke="#198754" stroke-width="10" stroke-dasharray="5.952 260 5.952" transform="rotate(180 50 50)"></circle>
+                            <circle cx="50" cy="50" r="22" fill="#d63384"></circle>
+                            <g>
+                                <rect fill="#212529" height="4" width="30" x="35" y="48" rx="2" filter="url(#blur)"></rect>
+                                <rect fill="#212529" height="30" width="4" x="48" y="35" rx="2" filter="url(#blur)"></rect>
+                                <rect fill="url('#spinner')" height="4" width="30" x="35" y="48" rx="2"></rect>
+                                <rect fill="url('#spinner')" height="30" width="4" x="48" y="35" rx="2"></rect>
+                                <circle cx="50" cy="50" r="4" fill="#212529" filter="url(#blur)"></circle>
+                                <circle cx="50" cy="50" r="4" fill="url('#spinner')"></circle>
+                            </g>
+                            <circle cx="50" cy="50" r="35" fill="none" stroke="#212529" stroke-width="0.5"></circle>
+                            <circle cx="50" cy="50" r="35" fill="none" stroke="#fff" stroke-width="0.4"></circle>
+                            <text id="r" x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs">17</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(9.474 50 50)">5</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(18.947 50 50)">22</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(28.421 50 50)">34</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(37.895 50 50)">15</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(47.368 50 50)">3</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(56.842 50 50)">24</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(66.316 50 50)">36</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(75.789 50 50)">13</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(85.263 50 50)">1</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(94.737 50 50)">00</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(104.211 50 50)">27</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(113.684 50 50)">10</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(123.158 50 50)">25</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(132.632 50 50)">29</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(142.105 50 50)">12</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(151.579 50 50)">8</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(161.053 50 50)">19</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(170.526 50 50)">31</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(180.000 50 50)">18</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(189.474 50 50)">6</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(198.947 50 50)">21</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(208.421 50 50)">33</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(217.895 50 50)">16</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(227.368 50 50)">4</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(236.842 50 50)">23</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(246.316 50 50)">35</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(255.789 50 50)">14</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(265.263 50 50)">2</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(274.737 50 50)">0</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(284.211 50 50)">28</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(293.684 50 50)">9</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(303.158 50 50)">26</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(312.632 50 50)">30</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(322.105 50 50)">11</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(331.579 50 50)">7</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(341.053 50 50)">20</text>
+                            <text x="50" y="89" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#fff" font-weight="900" stroke="#212529" stroke-width="0.1" textLength="4" lengthAdjust="spacingAndGlyphs" transform="rotate(350.526 50 50)">32</text>
+                        </g>
+                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" values="0 50 50; -360 50 50" dur="10s" begin="0s" repeatCount="indefinite"></animateTransform>
+                        <g>
+                            <circle cx="50" cy="5" r="2" fill="url('#spinner')" stroke="rgba(0,0,0,0.3)" stroke-width="0.2">
+                                <animate class="ball" attributeName="cy" values="5; 17" dur="6s" begin="indefinite" fill="freeze" keyTimes="0;1" keySplines="0.76 0.05 0.98 0.03" calcMode="spline"></animate>
+                                <animate class="ball" attributeName="r" values="2;1.8" dur="6s" begin="indefinite" fill="freeze"></animate>
+                            </circle>
+                            <animateTransform class="ball ballAnim" attributeName="transform" attributeType="XML" type="rotate" values="0 50 50; 1800 50 50" dur="6s" begin="indefinite" fill="freeze" keyTimes="0;1" keySplines="0.05 0.97 0.89 0.98" calcMode="spline"></animateTransform>
+                        </g>
+                    </g>
+                    <circle cx="50" cy="50" r="3.5" fill="#6610f2"></circle>
+                    <text id="win" class="winner" font-size="6" x="50" y="50.5" textLength="5" lengthAdjust="spacingAndGlyphs" fill="#ffc107" stroke="#fff" stroke-width="0.05" font-weight="900" text-anchor="middle" dominant-baseline="middle"></text>
+                    <use href="#win" transform="translate(40 40)"></use>
+                    <use href="#win" transform="translate(-40 40)"></use>
+                    <use href="#win" transform="translate(-40 -40)"></use>
+                    <use href="#win" transform="translate(40 -40)"></use>
+                    <path id="path" d="M 30.2 69.8 A 28 28 0 0 0 69.8 69.8" fill="none"></path>
+                    <text font-size="7" fill="#6610f2" textLength="43.9885" lengthAdjust="spacingAndGlyphs">
+                        <textPath id="winnerMsg" href="#path" startOffset="0" side="right"></textPath>
+                    </text>
+                </svg>
             </div>
-
-            <div class="roulette-table">
-                <div class="wheel-section">
-                    <div class="wheel-container">
-                        <div class="wheel-outer" id="wheel">
-                            <svg class="wheel-svg" id="wheel-svg" viewBox="0 0 350 350"></svg>
-                            <div class="wheel-center" id="result-display">-</div>
-                        </div>
-                        <div class="wheel-ball" id="ball"></div>
-                    </div>
-                </div>
-
-                <div class="betting-grid">
-                    <div class="grid-row">
-                        <div class="number-cell green" data-number="0" onclick="placeBet(0)">0</div>
-                        <div class="number-cell green" data-number="37" onclick="placeBet(37)">00</div>
-                    </div>
-                    <div id="numbers-grid"></div>
-                    <div class="outside-bets-container">
-                        <div class="outside-bet" data-bet="red" onclick="placeOutsideBet('red')">RED</div>
-                        <div class="outside-bet" data-bet="black" onclick="placeOutsideBet('black')">BLACK</div>
-                        <div class="outside-bet" data-bet="even" onclick="placeOutsideBet('even')">EVEN</div>
-                        <div class="outside-bet" data-bet="odd" onclick="placeOutsideBet('odd')">ODD</div>
-                        <div class="outside-bet" data-bet="1-18" onclick="placeOutsideBet('1-18')">1-18</div>
-                        <div class="outside-bet" data-bet="19-36" onclick="placeOutsideBet('19-36')">19-36</div>
-                    </div>
-                </div>
+            <div class="box2">
+                <svg viewBox="-1 0 142 51" class="betPlacement">
+                    <g class="betBackgrounds">
+                        <g id="rd">
+                            <circle id="rc" cx="15" cy="5.5" r="4"></circle>
+                            <use href="#rc" transform="translate(0 0)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(0 10)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(0 20)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(10 0)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(10 10)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(10 20)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(20 0)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(20 10)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(20 20)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(30 0)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(30 10)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(30 20)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(40 0)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(40 10)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(40 20)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(50 0)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(50 10)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(50 20)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(60 0)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(60 10)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(60 20)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(70 0)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(70 10)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(70 20)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(80 0)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(80 10)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(80 20)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(90 0)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(90 10)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(90 20)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(100 0)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(100 10)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(100 20)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(110 0)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(110 10)" fill="#212529"></use>
+                            <use href="#rc" transform="translate(110 20)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(45 40)" fill="#dc3545"></use>
+                            <use href="#rc" transform="translate(65 40)" fill="#212529"></use>
+                        </g>
+                    </g>
+                    <g dominant-baseline="middle" text-anchor="middle" font-size="6" font-weight="900">
+                        <g transform="translate(0 0.5)">
+                            <g class="placeBet" data-number="3">
+                                <rect x="10" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="15" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">3</text>
+                            </g>
+                            <g class="placeBet" data-number="6">
+                                <rect x="20" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="25" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">6</text>
+                            </g>
+                            <g class="placeBet" data-number="9">
+                                <rect x="30" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="35" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">9</text>
+                            </g>
+                            <g class="placeBet" data-number="12">
+                                <rect x="40" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="45" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">12</text>
+                            </g>
+                            <g class="placeBet" data-number="15">
+                                <rect x="50" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="55" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">15</text>
+                            </g>
+                            <g class="placeBet" data-number="18">
+                                <rect x="60" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="65" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">18</text>
+                            </g>
+                            <g class="placeBet" data-number="21">
+                                <rect x="70" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="75" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">21</text>
+                            </g>
+                            <g class="placeBet" data-number="24">
+                                <rect x="80" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="85" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">24</text>
+                            </g>
+                            <g class="placeBet" data-number="27">
+                                <rect x="90" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="95" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">27</text>
+                            </g>
+                            <g class="placeBet" data-number="30">
+                                <rect x="100" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="105" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">30</text>
+                            </g>
+                            <g class="placeBet" data-number="33">
+                                <rect x="110" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="115" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">33</text>
+                            </g>
+                            <g class="placeBet" data-number="36">
+                                <rect x="120" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="125" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">36</text>
+                            </g>
+                        </g>
+                        <g transform="translate(0 10.5)">
+                            <g class="placeBet" data-number="2">
+                                <rect x="10" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="15" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">2</text>
+                            </g>
+                            <g class="placeBet" data-number="5">
+                                <rect x="20" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="25" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">5</text>
+                            </g>
+                            <g class="placeBet" data-number="8">
+                                <rect x="30" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="35" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">8</text>
+                            </g>
+                            <g class="placeBet" data-number="11">
+                                <rect x="40" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="45" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">11</text>
+                            </g>
+                            <g class="placeBet" data-number="14">
+                                <rect x="50" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="55" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">14</text>
+                            </g>
+                            <g class="placeBet" data-number="17">
+                                <rect x="60" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="65" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">17</text>
+                            </g>
+                            <g class="placeBet" data-number="20">
+                                <rect x="70" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="75" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">20</text>
+                            </g>
+                            <g class="placeBet" data-number="23">
+                                <rect x="80" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="85" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">23</text>
+                            </g>
+                            <g class="placeBet" data-number="26">
+                                <rect x="90" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="95" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">26</text>
+                            </g>
+                            <g class="placeBet" data-number="29">
+                                <rect x="100" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="105" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">29</text>
+                            </g>
+                            <g class="placeBet" data-number="32">
+                                <rect x="110" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="115" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">32</text>
+                            </g>
+                            <g class="placeBet" data-number="35">
+                                <rect x="120" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="125" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">35</text>
+                            </g>
+                        </g>
+                        <g transform="translate(0 20.5)">
+                            <g class="placeBet" data-number="1">
+                                <rect x="10" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="15" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">1</text>
+                            </g>
+                            <g class="placeBet" data-number="4">
+                                <rect x="20" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="25" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">4</text>
+                            </g>
+                            <g class="placeBet" data-number="7">
+                                <rect x="30" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="35" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="4">7</text>
+                            </g>
+                            <g class="placeBet" data-number="10">
+                                <rect x="40" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="45" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">10</text>
+                            </g>
+                            <g class="placeBet" data-number="13">
+                                <rect x="50" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="55" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">13</text>
+                            </g>
+                            <g class="placeBet" data-number="16">
+                                <rect x="60" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="65" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">16</text>
+                            </g>
+                            <g class="placeBet" data-number="19">
+                                <rect x="70" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="75" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">19</text>
+                            </g>
+                            <g class="placeBet" data-number="22">
+                                <rect x="80" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="85" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">22</text>
+                            </g>
+                            <g class="placeBet" data-number="25">
+                                <rect x="90" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="95" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">25</text>
+                            </g>
+                            <g class="placeBet" data-number="28">
+                                <rect x="100" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="105" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">28</text>
+                            </g>
+                            <g class="placeBet" data-number="31">
+                                <rect x="110" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="115" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">31</text>
+                            </g>
+                            <g class="placeBet" data-number="34">
+                                <rect x="120" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="125" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="6" lengthAdjust="spacingAndGlyphs">34</text>
+                            </g>
+                        </g>
+                        <g transform="translate(0 30.5)">
+                            <g class="placeBet firstThird" data-bet="1st-12">
+                                <rect x="10" height="10" width="40" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="30" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="12" lengthAdjust="spacingAndGlyphs">1st 12</text>
+                            </g>
+                            <g class="placeBet secondThird" data-bet="2nd-12">
+                                <rect x="50" height="10" width="40" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="70" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="12" lengthAdjust="spacingAndGlyphs">2nd 12</text>
+                            </g>
+                            <g class="placeBet lastThird" data-bet="3rd-12">
+                                <rect x="90" height="10" width="40" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="110" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="12" lengthAdjust="spacingAndGlyphs">3rd 12</text>
+                            </g>
+                        </g>
+                        <g transform="translate(0 40.5)">
+                            <g class="placeBet firstHalf" data-bet="1-18">
+                                <rect x="10" height="10" width="20" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="20" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="14" lengthAdjust="spacingAndGlyphs">1 to 18</text>
+                            </g>
+                            <g class="placeBet even" data-bet="even">
+                                <rect x="30" height="10" width="20" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="40" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="12" lengthAdjust="spacingAndGlyphs">EVEN</text>
+                            </g>
+                            <g class="placeBet red" data-bet="red">
+                                <rect x="50" height="10" width="20" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="60" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="10" lengthAdjust="spacingAndGlyphs">RED</text>
+                            </g>
+                            <g class="placeBet black" data-bet="black">
+                                <rect x="70" height="10" width="20" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="80" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="14" lengthAdjust="spacingAndGlyphs">BLACK</text>
+                            </g>
+                            <g class="placeBet odd" data-bet="odd">
+                                <rect x="90" height="10" width="20" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="100" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="10" lengthAdjust="spacingAndGlyphs">ODD</text>
+                            </g>
+                            <g class="placeBet secondHalf" data-bet="19-36">
+                                <rect x="110" height="10" width="20" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text x="120" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="14" lengthAdjust="spacingAndGlyphs">19 to 36</text>
+                            </g>
+                        </g>
+                        <g>
+                            <g class="placeBet" data-number="00">
+                                <rect x="0" y="0.5" height="15" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text transform="rotate(-90 10 10)" x="12" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="10" lengthAdjust="spacingAndGlyphs">00</text>
+                            </g>
+                            <g class="placeBet" data-number="0">
+                                <rect y="15.5" height="15" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text transform="rotate(-90 10 10)" x="-2.5" y="5.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="5" lengthAdjust="spacingAndGlyphs">0</text>
+                            </g>
+                        </g>
+                        <g class="two2oneColumns">
+                            <g class="placeBet two2one" data-bet="col-3">
+                                <rect x="130" y="0.5" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text transform="rotate(-90 10 10)" x="14.5" y="135.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="7" lengthAdjust="spacingAndGlyphs">2 to 1</text>
+                            </g>
+                            <g class="placeBet two2one" data-bet="col-2">
+                                <rect x="130" y="10.5" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text transform="rotate(-90 10 10)" x="4.5" y="135.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="7" lengthAdjust="spacingAndGlyphs">2 to 1</text>
+                            </g>
+                            <g class="placeBet two2one" data-bet="col-1">
+                                <rect x="130" y="20.5" height="10" width="10" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="0.5"></rect>
+                                <text transform="rotate(-90 10 10)" x="-5.5" y="135.5" fill="#fff" stroke="#212529" stroke-width="0.1" textLength="7" lengthAdjust="spacingAndGlyphs">2 to 1</text>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
             </div>
-
-            <div class="chip-selector">
-                <div class="chip chip-1 selected" data-chip="1" onclick="selectChip(1)">1₾</div>
-                <div class="chip chip-5" data-chip="5" onclick="selectChip(5)">5₾</div>
-                <div class="chip chip-10" data-chip="10" onclick="selectChip(10)">10₾</div>
-                <div class="chip chip-25" data-chip="25" onclick="selectChip(25)">25₾</div>
-                <div class="chip chip-100" data-chip="100" onclick="selectChip(100)">100₾</div>
-            </div>
-
-            <div class="bet-info">
-                <div class="bet-info-row">
-                    <span class="bet-info-label">Total Bet:</span>
-                    <span class="bet-info-value" id="total-bet">0.00 ₾</span>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="action-button spin" id="spin-btn" onclick="spin()">SPIN</button>
-                <button class="action-button clear" onclick="clearBets()">CLEAR BETS</button>
-            </div>
-
-            <div class="message" id="message"></div>
         </div>
+        <div class="winners"></div>
+        <button class="roll" id="roll-btn" title="Spin the wheel!" onclick="spinWheel()">
+            <span>ROLL</span>
+        </button>
+        <span class="money" id="balance">100</span>
+
+        <div class="chip-selector">
+            <div class="chip chip-1 selected" data-chip="1" onclick="selectChip(1)">1₾</div>
+            <div class="chip chip-5" data-chip="5" onclick="selectChip(5)">5₾</div>
+            <div class="chip chip-10" data-chip="10" onclick="selectChip(10)">10₾</div>
+            <div class="chip chip-25" data-chip="25" onclick="selectChip(25)">25₾</div>
+            <div class="chip chip-100" data-chip="100" onclick="selectChip(100)">100₾</div>
+        </div>
+
+        <button class="roll" id="clear-btn" title="Clear all bets" onclick="clearBets()" style="bottom: 200px; right: 40px; width: 60px; height: 60px; font-size: 12px; background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);">
+            <span>CLEAR</span>
+        </button>
+
+        <div class="bet-info">
+            Total Bet: <span class="bet-info-value" id="total-bet">0₾</span>
+        </div>
+
+        <span class="confetti"></span>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/gh/leimapapa/vectorfetti/vectorfettiBeta.js"></script>
     <script>
         const BACKEND_URL = 'http://localhost:8080';
 
-        // American Roulette wheel order (37 represents 00)
-        const wheelOrder = [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 22, 34, 15, 3, 24, 36, 13, 1, 37, 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2];
-        const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-        const blackNumbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
+        // American Roulette wheel order (00 represented as string in display, as number for logic)
+        let nums = ["00", 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2, 0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 22, 34, 15, 3, 24, 36, 13, 1];
+        let two2oneNums = [
+            [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
+            [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35],
+            [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+        ];
+        let thirdsNums = [
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+            [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
+        ];
+        let redNums = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+        let blackNums = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
+        let oddNums = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35];
+        let evenNums = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36];
+        let firstHalfNums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+        let secondHalfNums = [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36];
 
         let balance = 0;
         let sessionToken = '';
         let isDemo = false;
         let gameId = null;
+        let jwtToken = '';
+        let isSpinning = false;
         let currentChip = 1;
         let bets = {};
-        let isSpinning = false;
+        let totalBet = 0;
 
-        // Get session token from URL
+        const roll = document.querySelector(".roll");
+        const wheel = document.querySelector("#rouletteWheel");
+        const ballAnim = document.querySelector(".ballAnim");
+        const balls = document.querySelectorAll(".ball");
+        const betBtnsSVG = document.querySelectorAll(".placeBet");
+
+        // Get params from URL
         const urlParams = new URLSearchParams(window.location.search);
         sessionToken = urlParams.get('session') || '';
         isDemo = urlParams.get('demo') === 'true';
-        const jwtToken = urlParams.get('token') || '';
+        jwtToken = urlParams.get('token') || '';
+
+        const randInt = (min, max) => {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
+
+        // Add bet click handlers
+        betBtnsSVG.forEach(btn => {
+            btn.addEventListener("click", evt => {
+                if (!isSpinning) {
+                    placeBet(btn);
+                }
+            });
+        });
+
+        function selectChip(value) {
+            currentChip = value;
+            document.querySelectorAll('.chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+            document.querySelector(`[data-chip="${value}"]`).classList.add('selected');
+        }
+
+        function placeBet(betElement) {
+            const betKey = betElement.dataset.number || betElement.dataset.bet;
+            if (!betKey) return;
+
+            if (balance < currentChip) {
+                alert('Insufficient balance!');
+                return;
+            }
+
+            // Add or update bet
+            if (!bets[betKey]) {
+                bets[betKey] = 0;
+            }
+            bets[betKey] += currentChip;
+            totalBet += currentChip;
+
+            // Visual feedback
+            betElement.classList.add('active');
+
+            updateBetInfo();
+        }
+
+        function updateBetInfo() {
+            document.getElementById('total-bet').textContent = totalBet + '₾';
+        }
+
+        function clearBets() {
+            bets = {};
+            totalBet = 0;
+            document.querySelectorAll('.placeBet').forEach(bet => {
+                bet.classList.remove('active');
+            });
+            updateBetInfo();
+        }
 
         async function init() {
             const statusEl = document.getElementById('status');
@@ -523,15 +848,10 @@
             console.log('Session Token:', sessionToken);
             console.log('Is Demo:', isDemo);
 
-            // Generate roulette wheel
-            generateRouletteWheel();
-            // Generate numbers grid
-            generateNumbersGrid();
-
             if (isDemo) {
                 console.log('Starting in DEMO mode');
                 balance = 100;
-                updateBalance();
+                updateMoney();
                 showGame();
                 return;
             }
@@ -554,7 +874,7 @@
                     const data = await response.json();
                     console.log('Balance data:', data);
                     balance = data.balance;
-                    updateBalance();
+                    updateMoney();
 
                     // Fetch game info
                     const gameInfoUrl = `${BACKEND_URL}/api/user/game-info?sessionToken=${sessionToken}`;
@@ -576,158 +896,9 @@
                 isDemo = true;
                 balance = 100;
                 setTimeout(() => {
-                    updateBalance();
+                    updateMoney();
                     showGame();
                 }, 2000);
-            }
-        }
-
-        function generateRouletteWheel() {
-            const svg = document.getElementById('wheel-svg');
-            const centerX = 175;
-            const centerY = 175;
-            const radius = 150;
-            const innerRadius = 65;
-            const segmentAngle = (2 * Math.PI) / 38;
-
-            // Add wooden background circles
-            const woodCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            woodCircle.setAttribute('cx', centerX);
-            woodCircle.setAttribute('cy', centerY);
-            woodCircle.setAttribute('r', radius);
-            woodCircle.setAttribute('fill', 'url(#woodGradient)');
-            svg.appendChild(woodCircle);
-
-            // Define gradient for wood effect
-            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-            const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
-            gradient.setAttribute('id', 'woodGradient');
-
-            const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-            stop1.setAttribute('offset', '0%');
-            stop1.setAttribute('style', 'stop-color:#A0826D;stop-opacity:1');
-
-            const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-            stop2.setAttribute('offset', '100%');
-            stop2.setAttribute('style', 'stop-color:#6B4423;stop-opacity:1');
-
-            gradient.appendChild(stop1);
-            gradient.appendChild(stop2);
-            defs.appendChild(gradient);
-            svg.appendChild(defs);
-
-            // Create segments
-            wheelOrder.forEach((num, index) => {
-                const startAngle = index * segmentAngle - Math.PI / 2;
-                const endAngle = (index + 1) * segmentAngle - Math.PI / 2;
-
-                // Calculate segment path
-                const x1 = centerX + radius * Math.cos(startAngle);
-                const y1 = centerY + radius * Math.sin(startAngle);
-                const x2 = centerX + radius * Math.cos(endAngle);
-                const y2 = centerY + radius * Math.sin(endAngle);
-                const x3 = centerX + innerRadius * Math.cos(endAngle);
-                const y3 = centerY + innerRadius * Math.sin(endAngle);
-                const x4 = centerX + innerRadius * Math.cos(startAngle);
-                const y4 = centerY + innerRadius * Math.sin(startAngle);
-
-                // Determine color
-                let color;
-                if (num === 0 || num === 37) {
-                    color = '#2E7D32'; // Green (0 and 00)
-                } else if (redNumbers.includes(num)) {
-                    color = '#C62828'; // Red
-                } else {
-                    color = '#1C1C1C'; // Black
-                }
-
-                // Create segment path
-                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                const largeArcFlag = 0;
-                const d = `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x4} ${y4} Z`;
-
-                path.setAttribute('d', d);
-                path.setAttribute('fill', color);
-                path.setAttribute('stroke', '#D4AF37');
-                path.setAttribute('stroke-width', '1');
-                svg.appendChild(path);
-
-                // Add number text
-                const textAngle = startAngle + segmentAngle / 2;
-                const textRadius = (radius + innerRadius) / 2 + 5;
-                const textX = centerX + textRadius * Math.cos(textAngle);
-                const textY = centerY + textRadius * Math.sin(textAngle);
-
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', textX);
-                text.setAttribute('y', textY + 4);
-                text.setAttribute('class', 'wheel-number');
-                text.setAttribute('transform', `rotate(${(textAngle * 180 / Math.PI) + 90}, ${textX}, ${textY})`);
-                text.textContent = num === 37 ? '00' : num;
-                svg.appendChild(text);
-            });
-
-            // Add inner gold ring
-            const goldRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            goldRing.setAttribute('cx', centerX);
-            goldRing.setAttribute('cy', centerY);
-            goldRing.setAttribute('r', innerRadius);
-            goldRing.setAttribute('fill', 'none');
-            goldRing.setAttribute('stroke', '#D4AF37');
-            goldRing.setAttribute('stroke-width', '3');
-            svg.appendChild(goldRing);
-
-            // Add center wood circle
-            const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            centerCircle.setAttribute('cx', centerX);
-            centerCircle.setAttribute('cy', centerY);
-            centerCircle.setAttribute('r', innerRadius - 3);
-            centerCircle.setAttribute('fill', 'url(#woodGradient)');
-            svg.appendChild(centerCircle);
-
-            // Add radial wood grain lines for realism
-            for (let i = 0; i < 12; i++) {
-                const angle = (i * Math.PI * 2) / 12;
-                const x1 = centerX + (innerRadius - 3) * Math.cos(angle);
-                const y1 = centerY + (innerRadius - 3) * Math.sin(angle);
-                const x2 = centerX + 20 * Math.cos(angle);
-                const y2 = centerY + 20 * Math.sin(angle);
-
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', x1);
-                line.setAttribute('y1', y1);
-                line.setAttribute('x2', x2);
-                line.setAttribute('y2', y2);
-                line.setAttribute('stroke', 'rgba(101, 67, 33, 0.3)');
-                line.setAttribute('stroke-width', '1');
-                svg.appendChild(line);
-            }
-        }
-
-        function generateNumbersGrid() {
-            const grid = document.getElementById('numbers-grid');
-            // Create 3 rows of 12 numbers each
-            for (let row = 0; row < 3; row++) {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'grid-row';
-
-                for (let col = 1; col <= 12; col++) {
-                    const num = (3 - row) + (col - 1) * 3;
-                    const cell = document.createElement('div');
-                    cell.className = 'number-cell';
-                    cell.dataset.number = num;
-                    cell.textContent = num;
-
-                    if (redNumbers.includes(num)) {
-                        cell.classList.add('red');
-                    } else {
-                        cell.classList.add('black');
-                    }
-
-                    cell.onclick = () => placeBet(num);
-                    rowDiv.appendChild(cell);
-                }
-                grid.appendChild(rowDiv);
             }
         }
 
@@ -736,128 +907,49 @@
             document.getElementById('game-content').style.display = 'block';
         }
 
-        function updateBalance() {
-            document.getElementById('balance').textContent = balance.toFixed(2);
+        function updateMoney() {
+            document.querySelector(".money").innerHTML = balance.toFixed(2);
         }
 
-        function selectChip(value) {
-            currentChip = value;
-            document.querySelectorAll('.chip').forEach(chip => {
-                chip.classList.remove('selected');
-            });
-            document.querySelector(`[data-chip="${value}"]`).classList.add('selected');
-        }
-
-        function placeBet(number) {
-            if (isSpinning) return;
-            if (balance < currentChip) {
-                showMessage('Insufficient balance!', 'lose');
-                return;
-            }
-
-            const key = `number-${number}`;
-            if (!bets[key]) {
-                bets[key] = { type: 'straight', number: number, amount: 0 };
-            }
-            bets[key].amount += currentChip;
-
-            updateBetDisplay();
-        }
-
-        function placeOutsideBet(betType) {
-            if (isSpinning) return;
-            if (balance < currentChip) {
-                showMessage('Insufficient balance!', 'lose');
-                return;
-            }
-
-            if (!bets[betType]) {
-                bets[betType] = { type: betType, amount: 0 };
-            }
-            bets[betType].amount += currentChip;
-
-            updateBetDisplay();
-        }
-
-        function updateBetDisplay() {
-            let totalBet = 0;
-
-            // Clear all bet displays
-            document.querySelectorAll('.bet-chip').forEach(el => el.remove());
-            document.querySelectorAll('.number-cell, .outside-bet').forEach(el => {
-                el.classList.remove('selected');
-            });
-
-            // Display bets
-            for (let key in bets) {
-                totalBet += bets[key].amount;
-
-                if (key.startsWith('number-')) {
-                    const num = bets[key].number;
-                    const cell = document.querySelector(`[data-number="${num}"]`);
-                    cell.classList.add('selected');
-
-                    const chipDisplay = document.createElement('div');
-                    chipDisplay.className = 'bet-chip';
-                    chipDisplay.textContent = bets[key].amount;
-                    cell.appendChild(chipDisplay);
-                } else {
-                    const betEl = document.querySelector(`[data-bet="${key}"]`);
-                    if (betEl) {
-                        betEl.classList.add('selected');
-                        betEl.innerHTML = `${key.toUpperCase()}<br>${bets[key].amount}₾`;
-                    }
-                }
-            }
-
-            document.getElementById('total-bet').textContent = `${totalBet.toFixed(2)} ₾`;
-        }
-
-        function clearBets() {
-            if (isSpinning) return;
-            bets = {};
-            updateBetDisplay();
-            showMessage('', '');
-            // Reset outside bet text
-            document.querySelectorAll('.outside-bet').forEach(el => {
-                el.textContent = el.dataset.bet.toUpperCase();
-            });
-        }
-
-        function getTotalBet() {
-            let total = 0;
-            for (let key in bets) {
-                total += bets[key].amount;
-            }
-            return total;
-        }
-
-        async function spin() {
+        async function spinWheel() {
             if (isSpinning) return;
 
-            const totalBet = getTotalBet();
+            // Check bets
             if (totalBet === 0) {
-                showMessage('Place your bets!', 'lose');
+                alert('Place your bets!');
                 return;
             }
 
-            if (totalBet > balance) {
-                showMessage('Insufficient balance!', 'lose');
+            if (balance < totalBet) {
+                alert('Insufficient balance!');
                 return;
             }
 
             isSpinning = true;
-            document.getElementById('spin-btn').disabled = true;
-            document.getElementById('message').textContent = '';
+            roll.disabled = true;
+
+            // Empty messages
+            document.querySelector(".winner").textContent = "";
+            document.querySelector("#winnerMsg").textContent = ``;
+
+            // Generate random angle between 1800 and 3600 (5-10 spins)
+            const winAngle = randInt(1800, 3600);
+
+            // Set ball animation to this angle
+            ballAnim.setAttribute("values", `0 50 50; ${winAngle} 50 50`);
+
+            // Calculate which number the ball will land on
+            // The wheel rotates counter-clockwise (-360 per 10s)
+            // Ball rotates clockwise (winAngle)
+            const index = Math.round(winAngle / (360 / 38)) % 38;
+            const winNumber = nums[index];
+            const winNumberInt = winNumber === "00" ? 37 : parseInt(winNumber);
 
             try {
-                let result;
-
                 if (isDemo) {
-                    // Demo mode - local simulation
+                    // Demo mode - deduct bet
                     balance -= totalBet;
-                    updateBalance();
-                    result = simulateRouletteSpin();
+                    updateMoney();
                 } else {
                     // Real money mode - backend call
                     const roundId = 'round_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -886,201 +978,96 @@
 
                     const data = await response.json();
                     console.log('Spin result:', data);
-
-                    // For roulette, we simulate locally but use backend balance
-                    result = simulateRouletteSpin();
                     balance = data.newBalance;
                 }
 
-                // Animate wheel
-                await animateWheel(result.number);
+                // Start animations
+                balls.forEach(ball => {
+                    ball.beginElement();
+                }, false);
 
-                // Calculate winnings
-                const winAmount = calculateWinnings(result.number);
+                // Wait for animation to complete
+                balls[0].addEventListener('endEvent', async function handler(event) {
+                    balls[0].removeEventListener('endEvent', handler);
 
-                if (isDemo && winAmount > 0) {
-                    balance += winAmount;
-                }
+                    let totalWinnings = 0;
+                    let isWinner = false;
 
-                updateBalance();
+                    // Check individual number bets (35:1 payout)
+                    if (bets[winNumber] || bets[winNumber.toString()]) {
+                        const betAmount = bets[winNumber] || bets[winNumber.toString()];
+                        totalWinnings += betAmount * 36; // bet × 36 (35:1 + original bet)
+                        isWinner = true;
+                    }
 
-                // Show result
-                const displayNumber = result.number === 37 ? '00' : result.number;
-                if (winAmount > 0) {
-                    showMessage(`Number ${displayNumber} ${result.color.toUpperCase()}! You won ${winAmount.toFixed(2)} ₾!`, 'win');
-                } else {
-                    showMessage(`Number ${displayNumber} ${result.color.toUpperCase()}. Better luck next time!`, 'lose');
-                }
+                    // Check outside bets
+                    const checkWinner = (betType, arr, payoutMultiplier) => {
+                        if (bets[betType]) {
+                            if (arr.includes(winNumberInt)) {
+                                totalWinnings += bets[betType] * payoutMultiplier;
+                                isWinner = true;
+                            }
+                        }
+                    };
 
-                // Clear bets
-                setTimeout(() => {
-                    clearBets();
-                }, 4000);
+                    checkWinner('red', redNums, 2);
+                    checkWinner('black', blackNums, 2);
+                    checkWinner('even', evenNums, 2);
+                    checkWinner('odd', oddNums, 2);
+                    checkWinner('1-18', firstHalfNums, 2);
+                    checkWinner('19-36', secondHalfNums, 2);
+                    checkWinner('1st-12', thirdsNums[0], 3);
+                    checkWinner('2nd-12', thirdsNums[1], 3);
+                    checkWinner('3rd-12', thirdsNums[2], 3);
+                    checkWinner('col-3', two2oneNums[0], 3);
+                    checkWinner('col-2', two2oneNums[1], 3);
+                    checkWinner('col-1', two2oneNums[2], 3);
+
+                    if (isDemo && totalWinnings > 0) {
+                        balance += totalWinnings;
+                    }
+
+                    updateMoney();
+
+                    // Show winner number
+                    document.querySelector(".winner").textContent = winNumber;
+
+                    if (isWinner) {
+                        win();
+                    } else {
+                        lose();
+                    }
+
+                    // Clear bets after 3 seconds
+                    setTimeout(() => {
+                        clearBets();
+                        isSpinning = false;
+                        roll.disabled = false;
+                    }, 3000);
+                });
 
             } catch (error) {
                 console.error('Spin error:', error);
-                showMessage('Error during spin', 'lose');
-            } finally {
+                alert('Error during spin');
+
                 isSpinning = false;
-                document.getElementById('spin-btn').disabled = false;
+                roll.disabled = false;
             }
         }
 
-        function simulateRouletteSpin() {
-            const number = Math.floor(Math.random() * 38); // 0-36 + 37 (representing 00)
-            let color = 'green';
-
-            if (redNumbers.includes(number)) {
-                color = 'red';
-            } else if (blackNumbers.includes(number)) {
-                color = 'black';
-            }
-
-            return { number, color };
+        function win() {
+            document.querySelector("#winnerMsg").textContent = `Winner!`;
+            // confetti!
+            confetti(document.querySelector(".confetti"), {
+                spread: window.innerWidth
+            });
         }
 
-        async function animateWheel(result) {
-            const wheel = document.getElementById('wheel');
-            const ball = document.getElementById('ball');
-            const resultDisplay = document.getElementById('result-display');
-
-            // Find the index of the winning number in the wheel
-            const winningIndex = wheelOrder.indexOf(result);
-            const segmentAngle = 360 / 38; // ~9.47 degrees per segment
-
-            // Ball position is at top (-90deg) at start and end
-            const ballPosition = -90;
-
-            // In the SVG, segments are drawn starting from -90deg (top)
-            // Segment i center is at: -90 + i * segmentAngle + segmentAngle/2
-            const segmentCenterAngle = -90 + (winningIndex * segmentAngle) + (segmentAngle / 2);
-
-            // Wheel spins clockwise (positive rotation)
-            // After wheel rotates by R degrees, segment center will be at: segmentCenterAngle + R
-            // We want segment center to align with ball position (-90)
-            // So: segmentCenterAngle + R = -90
-            // Therefore: R = -90 - segmentCenterAngle
-            let wheelRotationNeeded = -90 - segmentCenterAngle;
-
-            // Add full rotations for visual effect (clockwise = positive)
-            const baseWheelRotations = 720; // 2 full rotations clockwise
-            const finalWheelRotation = baseWheelRotations + wheelRotationNeeded;
-
-            // Ball spins counter-clockwise (negative rotation, opposite to wheel)
-            // Ball does 8 full rotations counter-clockwise
-            const ballBaseRotations = -2880; // 8 full rotations counter-clockwise (negative)
-
-            // Ball's final angle: start at -90, spin 8 times counter-clockwise, end at -90
-            // So final angle = -90 + (-2880) = -2970
-            // But we want it to end at -90, so we calculate how much counter-rotation is needed
-            // from the wheel's perspective
-            const ballFinalAngle = ballPosition + ballBaseRotations;
-
-            // Set CSS variables
-            ball.style.setProperty('--final-angle', `${ballFinalAngle}deg`);
-            ball.style.setProperty('--final-radius', '110px');
-
-            // Reset any previous animations
-            ball.style.animation = 'none';
-            wheel.style.animation = 'none';
-            wheel.classList.remove('spinning');
-
-            resultDisplay.textContent = '?';
-
-            // Trigger reflow to restart animation
-            void ball.offsetWidth;
-            void wheel.offsetWidth;
-
-            // Create dynamic wheel animation with smooth easing
-            const wheelKeyframes = `
-                @keyframes wheelSpinDynamic {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(${finalWheelRotation}deg); }
-                }
-            `;
-
-            // Remove old style if exists
-            const oldStyle = document.getElementById('dynamic-wheel-animation');
-            if (oldStyle) oldStyle.remove();
-
-            // Add new style
-            const style = document.createElement('style');
-            style.id = 'dynamic-wheel-animation';
-            style.textContent = wheelKeyframes;
-            document.head.appendChild(style);
-
-            // Start both animations simultaneously with smooth natural easing
-            // Easing: starts fast, maintains speed, then gradually slows down (realistic roulette physics)
-            // Using ease-out cubic for perfectly smooth deceleration
-            const duration = 6000; // 6 seconds for more realistic feel
-            wheel.style.animation = `wheelSpinDynamic ${duration}ms cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards`;
-            ball.style.animation = `ballSpin ${duration}ms cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards`;
-
-            // Wait for animations to complete
-            await new Promise(resolve => setTimeout(resolve, duration));
-
-            resultDisplay.textContent = result === 37 ? '00' : result;
+        function lose() {
+            document.querySelector("#winnerMsg").textContent = `House wins`;
         }
 
-        function calculateWinnings(winningNumber) {
-            let totalWin = 0;
-
-            for (let key in bets) {
-                const bet = bets[key];
-                let isWin = false;
-                let multiplier = 0;
-
-                if (key.startsWith('number-')) {
-                    // Straight bet (35:1)
-                    if (bet.number === winningNumber) {
-                        isWin = true;
-                        multiplier = 35;
-                    }
-                } else {
-                    // Outside bets
-                    switch (key) {
-                        case 'red':
-                            isWin = redNumbers.includes(winningNumber);
-                            multiplier = 1;
-                            break;
-                        case 'black':
-                            isWin = blackNumbers.includes(winningNumber);
-                            multiplier = 1;
-                            break;
-                        case 'even':
-                            isWin = winningNumber > 0 && winningNumber !== 37 && winningNumber % 2 === 0;
-                            multiplier = 1;
-                            break;
-                        case 'odd':
-                            isWin = winningNumber % 2 === 1;
-                            multiplier = 1;
-                            break;
-                        case '1-18':
-                            isWin = winningNumber >= 1 && winningNumber <= 18;
-                            multiplier = 1;
-                            break;
-                        case '19-36':
-                            isWin = winningNumber >= 19 && winningNumber <= 36;
-                            multiplier = 1;
-                            break;
-                    }
-                }
-
-                if (isWin) {
-                    totalWin += bet.amount * (multiplier + 1); // bet + winnings
-                }
-            }
-
-            return totalWin;
-        }
-
-        function showMessage(text, type) {
-            const messageEl = document.getElementById('message');
-            messageEl.textContent = text;
-            messageEl.className = `message ${type}`;
-        }
-
-        // Initialize game on load
+        // Initialize on load
         window.onload = init;
     </script>
 </body>

@@ -128,6 +128,20 @@ cd ..
 
 echo ""
 echo "=================================================="
+echo "Verifying Games Directory"
+echo "=================================================="
+echo ""
+
+if [ -d "games" ]; then
+    GAME_COUNT=$(find games -name "index.html" | wc -l | tr -d ' ')
+    print_status "Games directory found with $GAME_COUNT games"
+else
+    print_error "Games directory not found!"
+    exit 1
+fi
+
+echo ""
+echo "=================================================="
 echo "Installation Complete!"
 echo "=================================================="
 echo ""
@@ -135,5 +149,11 @@ echo "Next steps:"
 echo "1. Make sure PostgreSQL is running with database 'casino_db'"
 echo "2. Update backend/src/main/resources/application.properties with your DB credentials"
 echo "3. Run ./start.sh to start all services"
+echo ""
+echo "Available commands:"
+echo "  ./start.sh   - Start all services"
+echo "  ./stop.sh    - Stop all services"
+echo "  ./restart.sh - Restart all services"
+echo "  ./status.sh  - Check service status"
 echo ""
 print_status "All dependencies installed successfully!"

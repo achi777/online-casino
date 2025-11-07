@@ -137,4 +137,8 @@ if [ "$1" == "--clean" ]; then
 fi
 
 print_status "Platform stopped successfully"
-echo "To start services again, run: ./start.sh"
+echo ""
+echo "Available commands:"
+echo "  ./start.sh   - Start all services"
+echo "  ./restart.sh - Restart all services"
+echo "  ./status.sh  - Check service status"
