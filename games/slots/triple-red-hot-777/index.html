@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triple Red Hot 777</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0000 0%, #4a0000 50%, #8b0000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+/*            overflow: hidden;*/
+        }
+
+        .game-container {
+            background: linear-gradient(180deg, #2a0000 0%, #1a0000 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.5), 0 0 80px rgba(255, 69, 0, 0.3);
+            border: 3px solid #ff4500;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #ff0000, #ff4500, #ffa500, #ff4500, #ff0000);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fire-gradient 2s ease infinite;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+        }
+
+        @keyframes fire-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(139, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 2px solid #ff4500;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.8em;
+            color: #ffa500;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
+        }
+
+        .reels-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(180deg, #000000 0%, #1a0000 100%);
+            border-radius: 15px;
+            border: 3px solid #ff4500;
+            box-shadow: inset 0 0 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .reel {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(180deg, #2a0000 0%, #1a0000 100%);
+            border: 3px solid #ffa500;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5em;
+            box-shadow: 0 0 20px rgba(255, 165, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reel.spinning {
+            animation: spin 0.1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
+
+        .reel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 69, 0, 0.1), transparent);
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .bet-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .bet-button {
+            padding: 12px 24px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: 2px solid #ffa500;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #ff4500 0%, #ff0000 100%);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 15px rgba(255, 69, 0, 0.4);
+        }
+
+        .bet-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 165, 0, 0.6);
+            border-color: #ffff00;
+        }
+
+        .bet-button.active {
+            background: linear-gradient(180deg, #ffa500 0%, #ff8c00 100%);
+            border-color: #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
+        }
+
+        .spin-button {
+            padding: 20px 60px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 3px solid #ffa500;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #ff0000 0%, #8b0000 100%);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 6px 25px rgba(255, 0, 0, 0.5);
+            align-self: center;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 165, 0, 0.7);
+            border-color: #ffff00;
+        }
+
+        .spin-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        .message {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            min-height: 40px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .message.win {
+            color: #ffd700;
+            animation: pulse 0.5s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        .message.jackpot {
+            color: #ff0000;
+            font-size: 2em;
+            animation: jackpot-flash 0.3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes jackpot-flash {
+            0%, 100% {
+                color: #ff0000;
+                transform: scale(1);
+            }
+            50% {
+                color: #ffff00;
+                transform: scale(1.15);
+            }
+        }
+
+        .paytable {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(139, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 2px solid #ff4500;
+        }
+
+        .paytable-title {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffa500;
+            text-transform: uppercase;
+        }
+
+        .paytable-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .paytable-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            border: 1px solid #ff4500;
+        }
+
+        .paytable-symbols {
+            font-size: 1.2em;
+        }
+
+        .paytable-payout {
+            color: #ffa500;
+            font-weight: bold;
+        }
+
+        .flame-effect {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+            top: 0;
+            left: 0;
+        }
+
+        .flame {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff0000, #ff4500, transparent);
+            border-radius: 50%;
+            animation: float-up 4s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="flame-effect" id="flameEffect"></div>
+
+    <div class="game-container">
+        <h1 class="game-title">🔥 Triple Red Hot 777 🔥</h1>
+
+        <div class="info-bar">
+            <div class="info-item">
+                <div class="info-label">Balance</div>
+                <div class="info-value" id="balance">0.00 ₾</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Bet</div>
+                <div class="info-value" id="currentBet">1 ₾</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Win</div>
+                <div class="info-value" id="winAmount">0.00 ₾</div>
+            </div>
+        </div>
+
+        <div class="reels-container">
+            <div class="reel" id="reel1">🔥</div>
+            <div class="reel" id="reel2">7️⃣</div>
+            <div class="reel" id="reel3">💰</div>
+        </div>
+
+        <div class="controls">
+            <div class="bet-controls">
+                <button class="bet-button active" onclick="setBet(1)">1 ₾</button>
+                <button class="bet-button" onclick="setBet(5)">5 ₾</button>
+                <button class="bet-button" onclick="setBet(10)">10 ₾</button>
+                <button class="bet-button" onclick="setBet(25)">25 ₾</button>
+                <button class="bet-button" onclick="setBet(50)">50 ₾</button>
+                <button class="bet-button" onclick="setBet(100)">100 ₾</button>
+            </div>
+            <button class="spin-button" id="spinButton" onclick="spin()">SPIN</button>
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="paytable">
+            <div class="paytable-title">💰 Paytable 💰</div>
+            <div class="paytable-grid">
+                <div class="paytable-item">
+                    <span class="paytable-symbols">7️⃣ 7️⃣ 7️⃣</span>
+                    <span class="paytable-payout">200x</span>
+                </div>
+                <div class="paytable-item">
+                    <span class="paytable-symbols">🔥 🔥 🔥</span>
+                    <span class="paytable-payout">75x</span>
+                </div>
+                <div class="paytable-item">
+                    <span class="paytable-symbols">🌶️ 🌶️ 🌶️</span>
+                    <span class="paytable-payout">50x</span>
+                </div>
+                <div class="paytable-item">
+                    <span class="paytable-symbols">💰 💰 💰</span>
+                    <span class="paytable-payout">30x</span>
+                </div>
+                <div class="paytable-item">
+                    <span class="paytable-symbols">🍒 🍒 🍒</span>
+                    <span class="paytable-payout">20x</span>
+                </div>
+                <div class="paytable-item">
+                    <span class="paytable-symbols">🔴 🔴 🔴</span>
+                    <span class="paytable-payout">15x</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:8080';
+        const symbols = ['7️⃣', '🔥', '🌶️', '💰', '🍒', '🔴'];
+        const payouts = {
+            '7️⃣7️⃣7️⃣': 200,
+            '🔥🔥🔥': 75,
+            '🌶️🌶️🌶️': 50,
+            '💰💰💰': 30,
+            '🍒🍒🍒': 20,
+            '🔴🔴🔴': 15
+        };
+
+        let balance = 0;
+        let currentBet = 1;
+        let isSpinning = false;
+        let sessionToken = '';
+        let jwtToken = '';
+        let isDemo = false;
+
+        // Initialize the game
+        async function initGame() {
+            const urlParams = new URLSearchParams(window.location.search);
+            sessionToken = urlParams.get('session') || '';
+            jwtToken = urlParams.get('token') || '';
+            isDemo = urlParams.get('demo') === 'true';
+
+            if (isDemo) {
+                balance = 1000.00;
+                updateDisplay();
+                showMessage('🎮 Demo Mode - Good Luck!');
+            } else {
+                if (!sessionToken || !jwtToken) {
+                    showMessage('❌ Invalid session');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(
+                        `${BACKEND_URL}/api/user/balance?sessionToken=${sessionToken}`,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${jwtToken}`
+                            }
+                        }
+                    );
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        balance = parseFloat(data.balance);
+                        updateDisplay();
+                        showMessage('🔥 Hot and Ready to Win!');
+                    } else {
+                        showMessage('❌ Failed to load balance');
+                    }
+                } catch (error) {
+                    console.error('Error loading balance:', error);
+                    showMessage('❌ Connection error');
+                }
+            }
+
+            createFlameEffect();
+        }
+
+        function updateDisplay() {
+            document.getElementById('balance').textContent = balance.toFixed(2) + ' ₾';
+            document.getElementById('currentBet').textContent = currentBet + ' ₾';
+        }
+
+        function setBet(amount) {
+            if (isSpinning) return;
+
+            currentBet = amount;
+
+            document.querySelectorAll('.bet-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            updateDisplay();
+        }
+
+        async function spin() {
+            if (isSpinning) return;
+            if (balance < currentBet) {
+                showMessage('❌ Insufficient balance');
+                return;
+            }
+
+            isSpinning = true;
+            document.getElementById('spinButton').disabled = true;
+            document.getElementById('winAmount').textContent = '0.00 ₾';
+            showMessage('');
+
+            const roundId = `round-${Date.now()}`;
+
+            try {
+                if (!isDemo) {
+                    const betResponse = await fetch(`${BACKEND_URL}/api/user/games/bet`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${jwtToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sessionToken: sessionToken,
+                            betAmount: currentBet,
+                            roundId: roundId
+                        })
+                    });
+
+                    if (!betResponse.ok) {
+                        throw new Error('Bet failed');
+                    }
+
+                    const newBalance = await betResponse.text();
+                    balance = parseFloat(newBalance);
+                } else {
+                    balance -= currentBet;
+                }
+
+                updateDisplay();
+
+                // Spin animation
+                const reels = [
+                    document.getElementById('reel1'),
+                    document.getElementById('reel2'),
+                    document.getElementById('reel3')
+                ];
+
+                reels.forEach(reel => reel.classList.add('spinning'));
+
+                // Random symbols during spin
+                const spinInterval = setInterval(() => {
+                    reels.forEach(reel => {
+                        reel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    });
+                }, 100);
+
+                // Stop reels after 2 seconds
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                clearInterval(spinInterval);
+
+                // Generate result
+                const result = generateResult();
+                reels[0].textContent = result[0];
+                reels[1].textContent = result[1];
+                reels[2].textContent = result[2];
+
+                reels.forEach(reel => reel.classList.remove('spinning'));
+
+                // Check for win
+                const resultString = result.join('');
+                const multiplier = payouts[resultString] || 0;
+                const winAmount = currentBet * multiplier;
+
+                if (winAmount > 0) {
+                    if (!isDemo) {
+                        const winResponse = await fetch(`${BACKEND_URL}/api/user/games/win`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${jwtToken}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                sessionToken: sessionToken,
+                                winAmount: winAmount,
+                                roundId: roundId
+                            })
+                        });
+
+                        if (winResponse.ok) {
+                            const newBalance = await winResponse.text();
+                            balance = parseFloat(newBalance);
+                        }
+                    } else {
+                        balance += winAmount;
+                    }
+
+                    document.getElementById('winAmount').textContent = winAmount.toFixed(2) + ' ₾';
+                    updateDisplay();
+
+                    if (multiplier === 200) {
+                        showMessage(`🔥🔥🔥 JACKPOT! ${winAmount.toFixed(2)} ₾ 🔥🔥🔥`, 'jackpot');
+                        createFireworks();
+                    } else {
+                        showMessage(`🎉 YOU WIN ${winAmount.toFixed(2)} ₾! 🎉`, 'win');
+                    }
+                } else {
+                    showMessage('Try again! 🔥');
+                }
+
+            } catch (error) {
+                console.error('Error during spin:', error);
+                showMessage('❌ Error occurred');
+            } finally {
+                isSpinning = false;
+                document.getElementById('spinButton').disabled = false;
+            }
+        }
+
+        function generateResult() {
+            const rand = Math.random();
+
+            // 1% chance for 777 jackpot
+            if (rand < 0.01) {
+                return ['7️⃣', '7️⃣', '7️⃣'];
+            }
+            // 3% chance for triple fire
+            else if (rand < 0.04) {
+                return ['🔥', '🔥', '🔥'];
+            }
+            // 5% chance for triple pepper
+            else if (rand < 0.09) {
+                return ['🌶️', '🌶️', '🌶️'];
+            }
+            // 8% chance for triple money
+            else if (rand < 0.17) {
+                return ['💰', '💰', '💰'];
+            }
+            // 10% chance for triple cherry
+            else if (rand < 0.27) {
+                return ['🍒', '🍒', '🍒'];
+            }
+            // 12% chance for triple red
+            else if (rand < 0.39) {
+                return ['🔴', '🔴', '🔴'];
+            }
+            // Random non-winning combination
+            else {
+                const result = [];
+                for (let i = 0; i < 3; i++) {
+                    result.push(symbols[Math.floor(Math.random() * symbols.length)]);
+                }
+                // Make sure it's not a winning combination
+                const resultString = result.join('');
+                if (payouts[resultString]) {
+                    result[2] = symbols[Math.floor(Math.random() * symbols.length)];
+                }
+                return result;
+            }
+        }
+
+        function showMessage(text, className = '') {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = 'message ' + className;
+        }
+
+        function createFlameEffect() {
+            const flameEffect = document.getElementById('flameEffect');
+            setInterval(() => {
+                const flame = document.createElement('div');
+                flame.className = 'flame';
+                flame.style.left = Math.random() * 100 + '%';
+                flame.style.animationDuration = (2 + Math.random() * 2) + 's';
+                flame.style.animationDelay = Math.random() + 's';
+                flameEffect.appendChild(flame);
+
+                setTimeout(() => {
+                    flame.remove();
+                }, 4000);
+            }, 300);
+        }
+
+        function createFireworks() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'flame';
+                    firework.style.left = (20 + Math.random() * 60) + '%';
+                    firework.style.width = '30px';
+                    firework.style.height = '30px';
+                    firework.style.background = `radial-gradient(circle, #${Math.floor(Math.random()*16777215).toString(16)}, transparent)`;
+                    document.getElementById('flameEffect').appendChild(firework);
+
+                    setTimeout(() => firework.remove(), 4000);
+                }, i * 100);
+            }
+        }
+
+        // Initialize game on load
+        window.onload = initGame;
+    </script>
+</body>
+</html>

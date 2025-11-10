@@ -403,6 +403,106 @@ public class DataLoader implements CommandLineRunner {
             log.info("Game already exists: American Roulette");
         }
 
+        // Create game 19 - Lucky 7 (if doesn't exist)
+        if (!gameRepository.findByGameCode("LUCKY_7").isPresent()) {
+            Game game19 = new Game();
+            game19.setGameCode("LUCKY_7");
+            game19.setName("Lucky 7");
+            game19.setDescription("Lucky 7 is an exciting 3x3 slot machine featuring classic symbols! Hit three 7s for a massive 100x JACKPOT! Multiple paylines including horizontal, vertical, and diagonal combinations. Choose your bet from 1₾ to 100₾ and spin for your fortune!");
+            game19.setCategory(Game.GameCategory.SLOTS);
+            game19.setProvider(provider);
+            game19.setIframeUrl("http://localhost:8888/slots/lucky-7/index.html");
+            game19.setThumbnailUrl("http://localhost:8888/slots/lucky-7/photo.jpeg");
+            game19.setRtp(new BigDecimal("96.50"));
+            game19.setFeatured(true);
+            game19.setStatus(Game.GameStatus.ACTIVE);
+            game19.setSortOrder(19);
+            gameRepository.save(game19);
+            log.info("Game data loaded: {}", game19.getName());
+        } else {
+            log.info("Game already exists: Lucky 7");
+        }
+
+        // Create game 20 - Triple Red Hot 777 (if doesn't exist)
+        if (!gameRepository.findByGameCode("TRIPLE_RED_HOT_777").isPresent()) {
+            Game game20 = new Game();
+            game20.setGameCode("TRIPLE_RED_HOT_777");
+            game20.setName("Triple Red Hot 777");
+            game20.setDescription("Feel the heat with Triple Red Hot 777! A sizzling 3x3 slot with fiery symbols! Hit three 7s for a 200x JACKPOT! Bet from 1₾ to 100₾ and win big!");
+            game20.setCategory(Game.GameCategory.SLOTS);
+            game20.setProvider(provider);
+            game20.setIframeUrl("http://localhost:8888/slots/triple-red-hot-777/index.html");
+            game20.setThumbnailUrl("http://localhost:8888/slots/triple-red-hot-777/photo.jpeg");
+            game20.setRtp(new BigDecimal("96.80"));
+            game20.setFeatured(true);
+            game20.setStatus(Game.GameStatus.ACTIVE);
+            game20.setSortOrder(20);
+            gameRepository.save(game20);
+            log.info("Game data loaded: {}", game20.getName());
+        } else {
+            log.info("Game already exists: Triple Red Hot 777");
+        }
+
+        // Create game 21 - Double 7s (if doesn't exist)
+        if (!gameRepository.findByGameCode("DOUBLE_7S").isPresent()) {
+            Game game21 = new Game();
+            game21.setGameCode("DOUBLE_7S");
+            game21.setName("Double 7s");
+            game21.setDescription("Premium 3x3 slot with colored 7s! Hit three Gold 7s for a huge 250x JACKPOT! Features Red 7s, Blue 7s, and classic symbols. Bet 1-100₾ and win big!");
+            game21.setCategory(Game.GameCategory.SLOTS);
+            game21.setProvider(provider);
+            game21.setIframeUrl("http://localhost:8888/slots/double-7s/index.html");
+            game21.setThumbnailUrl("http://localhost:8888/slots/double-7s/photo.jpeg");
+            game21.setRtp(new BigDecimal("97.00"));
+            game21.setFeatured(true);
+            game21.setStatus(Game.GameStatus.ACTIVE);
+            game21.setSortOrder(21);
+            gameRepository.save(game21);
+            log.info("Game data loaded: {}", game21.getName());
+        } else {
+            log.info("Game already exists: Double 7s");
+        }
+
+        // Create game 22 - Fruit Cocktail (if doesn't exist)
+        if (!gameRepository.findByGameCode("FRUIT_COCKTAIL").isPresent()) {
+            Game game22 = new Game();
+            game22.setGameCode("FRUIT_COCKTAIL");
+            game22.setName("Fruit Cocktail");
+            game22.setDescription("Mix fruits and win big! 3x3 slot with juicy symbols! Hit three Cocktails for 150x JACKPOT! Features strawberries, watermelons, grapes and more!");
+            game22.setCategory(Game.GameCategory.SLOTS);
+            game22.setProvider(provider);
+            game22.setIframeUrl("http://localhost:8888/slots/fruit-cocktail/index.html");
+            game22.setThumbnailUrl("http://localhost:8888/slots/fruit-cocktail/photo.jpeg");
+            game22.setRtp(new BigDecimal("96.50"));
+            game22.setFeatured(true);
+            game22.setStatus(Game.GameStatus.ACTIVE);
+            game22.setSortOrder(22);
+            gameRepository.save(game22);
+            log.info("Game data loaded: {}", game22.getName());
+        } else {
+            log.info("Game already exists: Fruit Cocktail");
+        }
+
+        // Create game 23 - Fruit Shop (if doesn't exist)
+        if (!gameRepository.findByGameCode("FRUIT_SHOP").isPresent()) {
+            Game game23 = new Game();
+            game23.setGameCode("FRUIT_SHOP");
+            game23.setName("Fruit Shop");
+            game23.setDescription("Fresh fruits, big wins! 5-reel slot with delicious symbols! Hit five Watermelons for massive 500x JACKPOT! Features kiwi, strawberry, grapes and more!");
+            game23.setCategory(Game.GameCategory.SLOTS);
+            game23.setProvider(provider);
+            game23.setIframeUrl("http://localhost:8888/slots/fruit-shop/index.html");
+            game23.setThumbnailUrl("http://localhost:8888/slots/fruit-shop/photo.jpeg");
+            game23.setRtp(new BigDecimal("96.70"));
+            game23.setFeatured(true);
+            game23.setStatus(Game.GameStatus.ACTIVE);
+            game23.setSortOrder(23);
+            gameRepository.save(game23);
+            log.info("Game data loaded: {}", game23.getName());
+        } else {
+            log.info("Game already exists: Fruit Shop");
+        }
+
         // Create test user if doesn't exist (run every time)
         if (!userRepository.findByEmail("test@casino.ge").isPresent()) {
             User testUser = new User();

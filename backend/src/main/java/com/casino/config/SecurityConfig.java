@@ -50,6 +50,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
+                        // WebSocket endpoints
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/api/poker/**").permitAll()
+
                         // Game listing endpoints - can be public
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/user/games", "/api/user/games/category/**", "/api/user/games/featured").permitAll()
 

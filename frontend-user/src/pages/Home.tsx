@@ -38,7 +38,7 @@ const Home = () => {
   const { isAuthenticated } = useAuth()
 
   const { data: games, isLoading } = useQuery('games', async () => {
-    const response = await axios.get('/api/user/games')
+    const response = await axios.get('/api/user/games?size=50')
     return response.data.content
   })
 

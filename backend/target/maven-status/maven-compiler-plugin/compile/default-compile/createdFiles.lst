@@ -1,5 +1,7 @@
 com/casino/repository/TransactionRepository.class
 com/casino/dto/SpinResponse.class
+com/casino/entity/PokerHand.class
+com/casino/controller/PokerController$CreateTableRequest.class
 com/casino/controller/SlotSpinController.class
 com/casino/entity/PaymentMethod$PaymentType.class
 com/casino/entity/Bonus.class
@@ -7,6 +9,8 @@ com/casino/dto/AdminResponse.class
 com/casino/repository/UserRepository.class
 com/casino/entity/Banner$BannerPosition.class
 com/casino/dto/GameBetRequest.class
+com/casino/repository/PokerHandRepository.class
+com/casino/entity/PokerHand$HandStage.class
 com/casino/service/AdminService.class
 com/casino/entity/SupportTicket$TicketStatus.class
 com/casino/repository/GameRepository.class
@@ -35,11 +39,14 @@ com/casino/entity/Bonus$BonusType.class
 com/casino/dto/DashboardStatsResponse.class
 com/casino/controller/AdminPaymentMethodController.class
 com/casino/controller/AdminDashboardController$DashboardStats.class
+com/casino/entity/PokerTable$TableStatus.class
 com/casino/dto/TransactionResponse.class
 com/casino/entity/GameProvider$ProviderStatus.class
 com/casino/entity/SupportTicket$TicketPriority.class
 com/casino/exception/BadRequestException.class
+com/casino/entity/PokerTableSeat.class
 com/casino/dto/UpdateProfileRequest.class
+com/casino/controller/PokerController.class
 com/casino/entity/AuditLog$ActorType.class
 com/casino/entity/SystemNotification.class
 com/casino/entity/User$UserStatus.class
@@ -63,6 +70,7 @@ com/casino/controller/AdminReportController$TopUser.class
 com/casino/dto/UserResponse.class
 com/casino/repository/PasswordResetTokenRepository.class
 com/casino/dto/WithdrawRequest.class
+com/casino/repository/PokerTableRepository.class
 com/casino/controller/UserController.class
 com/casino/dto/SpinRequest.class
 com/casino/entity/Banner$BannerStatus.class
@@ -89,7 +97,9 @@ com/casino/dto/CreateAdminRequest.class
 com/casino/entity/SystemNotification$NotificationType.class
 com/casino/controller/AdminDashboardController.class
 com/casino/controller/AdminBonusController.class
+com/casino/entity/PokerTable.class
 com/casino/service/AuditService.class
+com/casino/entity/PokerHand$HandStatus.class
 com/casino/service/AdminGameService.class
 com/casino/dto/DepositRequest.class
 com/casino/dto/CreateProviderRequest.class
@@ -107,11 +117,14 @@ com/casino/entity/SupportTicket.class
 com/casino/service/GameService.class
 com/casino/dto/AuthRequest.class
 com/casino/entity/GameSession$SessionStatus.class
+com/casino/config/WebSocketConfig.class
+com/casino/entity/PokerTableSeat$SeatStatus.class
 com/casino/dto/AuthResponse.class
 com/casino/exception/GlobalExceptionHandler.class
 com/casino/entity/Transaction$TransactionStatus.class
 com/casino/repository/VIPTierRepository.class
 com/casino/entity/GameSession.class
+com/casino/repository/PokerTableSeatRepository.class
 com/casino/repository/BonusRepository.class
 com/casino/controller/AdminUserManagementController.class
 com/casino/dto/UpdateGameRequest.class
@@ -121,6 +134,7 @@ com/casino/entity/SystemNotification$NotificationStatus.class
 com/casino/dto/GameLaunchResponse.class
 com/casino/repository/AdminRepository.class
 com/casino/service/ResponsibleGamingService.class
+com/casino/service/PokerGameService.class
 com/casino/entity/GameRound.class
 com/casino/entity/Game$GameCategory.class
 com/casino/dto/AdminUpdateProfileRequest.class

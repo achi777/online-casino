@@ -55,7 +55,7 @@ const Games = () => {
 
   const fetchGames = async () => {
     try {
-      const response = await axios.get('/api/admin/games')
+      const response = await axios.get('/api/admin/games?size=1000')
       console.log('API Response:', response.data)
 
       // Backend returns paginated response: {content: [], totalElements: 0, ...}

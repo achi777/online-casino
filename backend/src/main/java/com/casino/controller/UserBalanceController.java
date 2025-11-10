@@ -31,6 +31,21 @@ public class UserBalanceController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/game-sessions/{sessionToken}/balance")
+    public ResponseEntity<BalanceResponse> getBalanceByPath(@PathVariable String sessionToken) {
+        GameSession session = gameSessionRepository.findBySessionToken(sessionToken)
+                .orElseThrow(() -> new RuntimeException("Invalid session token"));
+
+        User user = session.getUser();
+
+        BalanceResponse response = new BalanceResponse();
+        response.setBalance(user.getBalance().doubleValue());
+        response.setUserId(user.getId());
+        response.setEmail(user.getEmail());
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/game-info")
     public ResponseEntity<GameInfoResponse> getGameInfo(@RequestParam String sessionToken) {
         GameSession session = gameSessionRepository.findBySessionToken(sessionToken)

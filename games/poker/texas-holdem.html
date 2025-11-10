@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Hold'em Poker 🃏</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .poker-container {
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .game-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .table-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            font-size: 18px;
+            color: #FFD700;
+        }
+
+        .poker-table-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            aspect-ratio: 16 / 10;
+        }
+
+        .poker-table {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0a5c0a 0%, #064806 100%);
+            border-radius: 50%;
+            border: 15px solid #8B4513;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8),
+                        inset 0 0 100px rgba(0, 0, 0, 0.5);
+        }
+
+        .table-felt {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(ellipse at center, #0d7d0d 0%, #085108 100%);
+            border-radius: 50%;
+            border: 3px solid #FFD700;
+        }
+
+        .community-cards {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .card {
+            width: 60px;
+            height: 84px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .card.back {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .pot-display {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 30px;
+            border-radius: 25px;
+            border: 2px solid #FFD700;
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .player-seat {
+            position: absolute;
+            width: 180px;
+        }
+
+        .player-info {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            border: 3px solid #FFD700;
+            text-align: center;
+        }
+
+        .player-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+
+        .player-chips {
+            font-size: 16px;
+            color: #4ADE80;
+            margin-bottom: 10px;
+        }
+
+        .player-cards {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .player-cards .card {
+            width: 50px;
+            height: 70px;
+            font-size: 24px;
+        }
+
+        .dealer-button {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            border: 3px solid #FFD700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .blind-indicator {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: #DC2626;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Seat positions around oval table */
+        .seat-0 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(-280px); }
+        .seat-1 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(-280px) translateX(350px) rotate(40deg); }
+        .seat-2 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateX(480px); }
+        .seat-3 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(280px) translateX(350px) rotate(-40deg); }
+        .seat-4 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(280px); }
+        .seat-5 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(280px) translateX(-350px) rotate(40deg); }
+        .seat-6 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateX(-480px); }
+        .seat-7 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(-280px) translateX(-350px) rotate(-40deg); }
+        .seat-8 { top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(-200px); }
+
+        .empty-seat {
+            opacity: 0.5;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .empty-seat:hover {
+            opacity: 0.8;
+        }
+
+        .actions-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px 40px;
+            border-radius: 20px;
+            border: 3px solid #FFD700;
+            display: none;
+        }
+
+        .actions-panel.active {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn.fold {
+            background: #DC2626;
+            color: white;
+        }
+
+        .action-btn.call {
+            background: #16A34A;
+            color: white;
+        }
+
+        .action-btn.raise {
+            background: #FFD700;
+            color: black;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .bet-slider {
+            width: 200px;
+        }
+
+        .lobby {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .lobby.hidden {
+            display: none;
+        }
+
+        .lobby-content {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .lobby-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 30px;
+        }
+
+        .join-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 18px;
+            color: #FFD700;
+        }
+
+        .form-group input {
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 2px solid #FFD700;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .join-btn {
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #FFD700;
+            color: black;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .join-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="poker-container">
+        <div class="game-header">
+            <h1 class="game-title">♠ Texas Hold'em Poker ♥</h1>
+            <div class="table-info">
+                <div>Table: <span id="tableName">Main Table</span></div>
+                <div>Blinds: <span id="blinds">5₾ / 10₾</span></div>
+                <div>Players: <span id="playerCount">0/9</span></div>
+            </div>
+        </div>
+
+        <div class="poker-table-wrapper">
+            <div class="poker-table">
+                <div class="table-felt"></div>
+
+                <!-- Pot display -->
+                <div class="pot-display">
+                    Pot: <span id="potAmount">0</span> ₾
+                </div>
+
+                <!-- Community cards -->
+                <div class="community-cards" id="communityCards">
+                    <div class="card back">🂠</div>
+                    <div class="card back">🂠</div>
+                    <div class="card back">🂠</div>
+                    <div class="card back">🂠</div>
+                    <div class="card back">🂠</div>
+                </div>
+
+                <!-- Player seats (9 seats) -->
+                <div class="player-seat seat-0" id="seat-0" data-seat="0">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+
+                <div class="player-seat seat-1" id="seat-1" data-seat="1">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+
+                <div class="player-seat seat-2" id="seat-2" data-seat="2">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+
+                <div class="player-seat seat-3" id="seat-3" data-seat="3">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+
+                <div class="player-seat seat-4" id="seat-4" data-seat="4">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+
+                <div class="player-seat seat-5" id="seat-5" data-seat="5">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+
+                <div class="player-seat seat-6" id="seat-6" data-seat="6">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+
+                <div class="player-seat seat-7" id="seat-7" data-seat="7">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+
+                <div class="player-seat seat-8" id="seat-8" data-seat="8">
+                    <div class="player-info empty-seat">
+                        <div class="player-name">Empty Seat</div>
+                        <div class="player-chips">Click to Join</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="actions-panel" id="actionsPanel">
+            <button class="action-btn fold" onclick="playerAction('FOLD')">Fold</button>
+            <button class="action-btn call" onclick="playerAction('CALL')">Call <span id="callAmount">0</span>₾</button>
+            <button class="action-btn call" onclick="playerAction('CHECK')" id="checkBtn">Check</button>
+            <input type="range" class="bet-slider" id="betSlider" min="0" max="1000" step="5" value="0">
+            <button class="action-btn raise" onclick="playerAction('RAISE')">Raise <span id="raiseAmount">0</span>₾</button>
+        </div>
+    </div>
+
+    <!-- Lobby -->
+    <div class="lobby" id="lobby">
+        <div class="lobby-content">
+            <h2 class="lobby-title">Join Table</h2>
+            <div class="join-form">
+                <div class="form-group">
+                    <label>Buy-in Amount (₾)</label>
+                    <input type="number" id="buyInInput" min="100" max="1000" value="500" step="50">
+                </div>
+                <div class="form-group">
+                    <label>Select Seat (0-8)</label>
+                    <input type="number" id="seatInput" min="0" max="8" value="0">
+                </div>
+                <button class="join-btn" onclick="joinTable()">Join Table</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:8080';
+        let stompClient = null;
+        let currentTableId = 1; // Default table ID
+        let myUserId = null;
+        let mySeat = null;
+        let sessionToken = null;
+        let jwtToken = null;
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        sessionToken = urlParams.get('session') || urlParams.get('sessionToken');
+        jwtToken = urlParams.get('token') || urlParams.get('jwtToken');
+        const isDemo = urlParams.get('demo') === 'true';
+
+        async function init() {
+            if (isDemo) {
+                console.log('Demo mode - showing lobby');
+                return;
+            }
+
+            if (!sessionToken || !jwtToken) {
+                alert('Invalid session. Please launch from casino lobby.');
+                return;
+            }
+
+            // Fetch user info and connect to WebSocket
+            await connectWebSocket();
+            await loadTable();
+        }
+
+        async function connectWebSocket() {
+            const socket = new SockJS(`${BACKEND_URL}/ws/poker`);
+            stompClient = Stomp.over(socket);
+
+            return new Promise((resolve, reject) => {
+                stompClient.connect({
+                    Authorization: `Bearer ${jwtToken}`
+                }, function(frame) {
+                    console.log('Connected to WebSocket');
+
+                    // Subscribe to table updates
+                    stompClient.subscribe(`/topic/poker/table/${currentTableId}`, function(message) {
+                        handleTableUpdate(JSON.parse(message.body));
+                    });
+
+                    resolve();
+                }, function(error) {
+                    console.error('WebSocket connection error:', error);
+                    reject(error);
+                });
+            });
+        }
+
+        async function loadTable() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/poker/tables/${currentTableId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const table = await response.json();
+                    updateTableInfo(table);
+                    await loadSeats();
+                }
+            } catch (error) {
+                console.error('Error loading table:', error);
+            }
+        }
+
+        async function loadSeats() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/poker/tables/${currentTableId}/seats`, {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const seats = await response.json();
+                    updateSeats(seats);
+                }
+            } catch (error) {
+                console.error('Error loading seats:', error);
+            }
+        }
+
+        function updateTableInfo(table) {
+            document.getElementById('tableName').textContent = table.tableName;
+            document.getElementById('blinds').textContent = `${table.smallBlind}₾ / ${table.bigBlind}₾`;
+            document.getElementById('playerCount').textContent = `${table.currentPlayers}/${table.maxPlayers}`;
+        }
+
+        function updateSeats(seats) {
+            // Reset all seats
+            for (let i = 0; i < 9; i++) {
+                const seatEl = document.getElementById(`seat-${i}`);
+                const info = seatEl.querySelector('.player-info');
+                info.innerHTML = '<div class="player-name">Empty Seat</div><div class="player-chips">Click to Join</div>';
+                info.classList.add('empty-seat');
+            }
+
+            // Update occupied seats
+            seats.forEach(seat => {
+                if (seat.status === 'OCCUPIED') {
+                    const seatEl = document.getElementById(`seat-${seat.seatNumber}`);
+                    const info = seatEl.querySelector('.player-info');
+                    info.classList.remove('empty-seat');
+                    info.innerHTML = `
+                        <div class="player-name">${seat.user.firstName} ${seat.user.lastName}</div>
+                        <div class="player-chips">${seat.chipStack}₾</div>
+                        <div class="player-cards">
+                            <div class="card back">🂠</div>
+                            <div class="card back">🂠</div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function joinTable() {
+            const buyIn = parseFloat(document.getElementById('buyInInput').value);
+            const seat = parseInt(document.getElementById('seatInput').value);
+
+            if (stompClient && stompClient.connected) {
+                stompClient.send(`/app/poker/table/${currentTableId}/join`, {},
+                    JSON.stringify({ buyInAmount: buyIn, seatNumber: seat }));
+                document.getElementById('lobby').classList.add('hidden');
+                mySeat = seat;
+            }
+        }
+
+        function playerAction(action) {
+            const raiseAmount = document.getElementById('betSlider').value;
+
+            if (stompClient && stompClient.connected) {
+                stompClient.send(`/app/poker/table/${currentTableId}/action`, {},
+                    JSON.stringify({
+                        action: action,
+                        amount: action === 'RAISE' ? raiseAmount : 0
+                    }));
+            }
+        }
+
+        function handleTableUpdate(data) {
+            console.log('Table update:', data);
+
+            switch (data.type) {
+                case 'TABLE_UPDATE':
+                    updateTableInfo(data.table);
+                    break;
+                case 'PLAYER_JOINED':
+                    loadSeats();
+                    break;
+                case 'PLAYER_LEFT':
+                    loadSeats();
+                    break;
+                case 'HAND_START':
+                    handleHandStart(data.hand);
+                    break;
+                case 'PLAYER_ACTION':
+                    console.log('Player action:', data);
+                    break;
+            }
+        }
+
+        function handleHandStart(hand) {
+            document.getElementById('potAmount').textContent = hand.potAmount;
+            // Update community cards, player hands, etc.
+        }
+
+        // Bet slider
+        document.getElementById('betSlider').addEventListener('input', function() {
+            document.getElementById('raiseAmount').textContent = this.value;
+        });
+
+        // Seat click handlers
+        for (let i = 0; i < 9; i++) {
+            document.getElementById(`seat-${i}`).addEventListener('click', function() {
+                if (this.querySelector('.empty-seat')) {
+                    document.getElementById('seatInput').value = i;
+                    document.getElementById('lobby').classList.remove('hidden');
+                }
+            });
+        }
+
+        // Initialize on page load
+        init();
+    </script>
+</body>
+</html>
