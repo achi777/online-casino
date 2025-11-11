@@ -1,0 +1,34 @@
+<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="300" height="200" fill="#1a1a2e"/>
+
+  <!-- Grid pattern -->
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <rect width="20" height="20" fill="none" stroke="#2a2a3e" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="300" height="200" fill="url(#grid)"/>
+
+  <!-- Snake -->
+  <g>
+    <rect x="100" y="80" width="18" height="18" fill="#00ff88" rx="2"/>
+    <rect x="80" y="80" width="18" height="18" fill="#00cc66" rx="2"/>
+    <rect x="60" y="80" width="18" height="18" fill="#00aa55" rx="2"/>
+    <rect x="60" y="100" width="18" height="18" fill="#009944" rx="2"/>
+    <rect x="80" y="100" width="18" height="18" fill="#008833" rx="2"/>
+
+    <!-- Snake eyes -->
+    <circle cx="110" cy="85" r="2" fill="white"/>
+    <circle cx="110" cy="93" r="2" fill="white"/>
+  </g>
+
+  <!-- Coin -->
+  <circle cx="180" cy="120" r="12" fill="#ffd700"/>
+  <circle cx="180" cy="120" r="10" fill="none" stroke="#cc9900" stroke-width="2"/>
+  <text x="180" y="126" font-family="Arial" font-size="14" fill="#cc9900" text-anchor="middle" font-weight="bold">₾</text>
+
+  <!-- Title -->
+  <text x="150" y="35" font-family="Arial" font-size="20" fill="#ffd700" text-anchor="middle" font-weight="bold">SNAKE</text>
+  <text x="150" y="180" font-family="Arial" font-size="14" fill="#00ff88" text-anchor="middle">Coin Collector</text>
+</svg>

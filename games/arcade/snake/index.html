@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Coin Collector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            background: #0a0a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .game-over-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .game-over-overlay.active {
+            display: flex;
+        }
+
+        .game-over-text {
+            font-size: 48px;
+            color: #ff4444;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .btn-start:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.4);
+        }
+
+        .btn-cashout {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+        }
+
+        .btn-cashout:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(253, 203, 110, 0.4);
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+        }
+
+        .btn-demo:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .instructions {
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .instructions p {
+            margin: 5px 0;
+        }
+
+        #message {
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        .message-error {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .message-success {
+            background: rgba(0, 184, 148, 0.2);
+            color: #00b894;
+        }
+
+        .message-info {
+            background: rgba(108, 92, 231, 0.2);
+            color: #6c5ce7;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🐍 Snake Coin Collector</h1>
+
+        <div class="info-panel">
+            <div class="info-box">
+                <div class="info-label">ბალანსი</div>
+                <div class="info-value" id="balance">₾0.00</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">საწყისი ფსონი</div>
+                <div class="info-value">₾5.00</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">შეგროვებული</div>
+                <div class="info-value" id="collected">₾0.00</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">მონეტები</div>
+                <div class="info-value" id="coins">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">სიჩქარე</div>
+                <div class="info-value" id="speed">1.0x</div>
+            </div>
+        </div>
+
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="600" height="390"></canvas>
+            <div class="game-over-overlay" id="gameOverOverlay">
+                <div class="game-over-text">Game Over!</div>
+                <div style="font-size: 20px; margin-bottom: 10px; color: #ff6b6b;">
+                    აგროვებული თანხა დაიკარგა
+                </div>
+                <div style="font-size: 18px; margin-bottom: 20px; color: #ffd700;">
+                    <span id="finalAmount">₾0.00</span>
+                </div>
+                <button class="btn-start" onclick="startGame()">ხელახალი დაწყება</button>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-start" id="startBtn" onclick="startGame()">თამაშის დაწყება (₾5)</button>
+            <button class="btn-cashout" id="cashoutBtn" onclick="cashOut()" disabled>შეჩერება და გადატანა</button>
+            <button class="btn-demo" id="demoBtn" onclick="startDemo()">დემო რეჟიმი</button>
+        </div>
+
+        <div id="message"></div>
+
+        <div class="instructions">
+            <p><strong>როგორ ვითამაშოთ:</strong></p>
+            <p>⌨️ გამოიყენეთ ისრები ან WASD გველის მართვისთვის</p>
+            <p>🪙 შეაგროვეთ მონეტები (თითოეული ₾0.10)</p>
+            <p>⚡ ყოველი მონეტით თამაში სწრაფდება</p>
+            <p>💰 დააჭირეთ "შეჩერება და გადატანა" მოგების ბალანსზე გადასატანად</p>
+            <p>⚠️ თუ წააგებთ (გველი ჩაეჯახება), აგროვებული თანხა დაიკარგება!</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api/user/arcade';
+        const BET_AMOUNT = 5.00;
+        const COIN_VALUE = 0.10;
+        const INITIAL_SPEED = 180; // 20% ით ნელა (150 * 1.2)
+        const SPEED_MULTIPLIER = 0.95; // ყოველ მონეტაზე 5% სწრაფდება
+        const MIN_SPEED = 30; // მინიმალური დაყოვნება
+        const GRID_SIZE = 20;
+        const CANVAS_WIDTH = 600;
+        const CANVAS_HEIGHT = 390;
+        const CELL_WIDTH = CANVAS_WIDTH / GRID_SIZE;
+        const CELL_HEIGHT = CANVAS_HEIGHT / GRID_SIZE;
+
+        let canvas, ctx;
+        let snake, direction, nextDirection, coin;
+        let gameLoop, gameActive, isDemoMode;
+        let coinsCollected, currentSpeed, sessionToken;
+        let betId = null;
+        let currentBalance = 0;
+
+        // Session management
+        function getSessionToken() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            if (token) {
+                sessionStorage.setItem('sessionToken', token);
+                return token;
+            }
+            return sessionStorage.getItem('sessionToken');
+        }
+
+        function isDemo() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('demo') === 'true';
+        }
+
+        // Initialize
+        window.onload = function() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            sessionToken = getSessionToken();
+
+            if (isDemo()) {
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('demoBtn').style.display = 'none';
+            }
+
+            setupControls();
+            drawGrid();
+        };
+
+        function setupControls() {
+            document.addEventListener('keydown', handleKeyPress);
+        }
+
+        function handleKeyPress(e) {
+            if (!gameActive) return;
+
+            const key = e.key.toLowerCase();
+
+            // Prevent default for arrow keys
+            if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+                e.preventDefault();
+            }
+
+            // Direction controls
+            if ((key === 'arrowup' || key === 'w') && direction.y === 0) {
+                nextDirection = {x: 0, y: -1};
+            } else if ((key === 'arrowdown' || key === 's') && direction.y === 0) {
+                nextDirection = {x: 0, y: 1};
+            } else if ((key === 'arrowleft' || key === 'a') && direction.x === 0) {
+                nextDirection = {x: -1, y: 0};
+            } else if ((key === 'arrowright' || key === 'd') && direction.x === 0) {
+                nextDirection = {x: 1, y: 0};
+            }
+        }
+
+        function drawGrid() {
+            ctx.fillStyle = '#0a0a1a';
+            ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            ctx.strokeStyle = '#1a1a2e';
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i <= GRID_SIZE; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * CELL_WIDTH, 0);
+                ctx.lineTo(i * CELL_WIDTH, CANVAS_HEIGHT);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(0, i * CELL_HEIGHT);
+                ctx.lineTo(CANVAS_WIDTH, i * CELL_HEIGHT);
+                ctx.stroke();
+            }
+        }
+
+        function drawSnake() {
+            snake.forEach((segment, index) => {
+                // Head is brighter
+                const gradient = ctx.createLinearGradient(
+                    segment.x * CELL_WIDTH,
+                    segment.y * CELL_HEIGHT,
+                    (segment.x + 1) * CELL_WIDTH,
+                    (segment.y + 1) * CELL_HEIGHT
+                );
+
+                if (index === 0) {
+                    gradient.addColorStop(0, '#00ff88');
+                    gradient.addColorStop(1, '#00cc66');
+                } else {
+                    gradient.addColorStop(0, '#00cc66');
+                    gradient.addColorStop(1, '#009944');
+                }
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(
+                    segment.x * CELL_WIDTH + 1,
+                    segment.y * CELL_HEIGHT + 1,
+                    CELL_WIDTH - 2,
+                    CELL_HEIGHT - 2
+                );
+
+                // Draw eyes on head
+                if (index === 0) {
+                    ctx.fillStyle = '#fff';
+                    const eyeSize = Math.min(CELL_WIDTH, CELL_HEIGHT) / 6;
+                    const eyeOffsetX = CELL_WIDTH / 4;
+                    const eyeOffsetY = CELL_HEIGHT / 4;
+
+                    if (direction.x === 1) { // Right
+                        ctx.fillRect(segment.x * CELL_WIDTH + CELL_WIDTH - eyeOffsetX, segment.y * CELL_HEIGHT + eyeOffsetY, eyeSize, eyeSize);
+                        ctx.fillRect(segment.x * CELL_WIDTH + CELL_WIDTH - eyeOffsetX, segment.y * CELL_HEIGHT + CELL_HEIGHT - eyeOffsetY - eyeSize, eyeSize, eyeSize);
+                    } else if (direction.x === -1) { // Left
+                        ctx.fillRect(segment.x * CELL_WIDTH + eyeOffsetX - eyeSize, segment.y * CELL_HEIGHT + eyeOffsetY, eyeSize, eyeSize);
+                        ctx.fillRect(segment.x * CELL_WIDTH + eyeOffsetX - eyeSize, segment.y * CELL_HEIGHT + CELL_HEIGHT - eyeOffsetY - eyeSize, eyeSize, eyeSize);
+                    } else if (direction.y === 1) { // Down
+                        ctx.fillRect(segment.x * CELL_WIDTH + eyeOffsetX, segment.y * CELL_HEIGHT + CELL_HEIGHT - eyeOffsetY, eyeSize, eyeSize);
+                        ctx.fillRect(segment.x * CELL_WIDTH + CELL_WIDTH - eyeOffsetX - eyeSize, segment.y * CELL_HEIGHT + CELL_HEIGHT - eyeOffsetY, eyeSize, eyeSize);
+                    } else { // Up
+                        ctx.fillRect(segment.x * CELL_WIDTH + eyeOffsetX, segment.y * CELL_HEIGHT + eyeOffsetY - eyeSize, eyeSize, eyeSize);
+                        ctx.fillRect(segment.x * CELL_WIDTH + CELL_WIDTH - eyeOffsetX - eyeSize, segment.y * CELL_HEIGHT + eyeOffsetY - eyeSize, eyeSize, eyeSize);
+                    }
+                }
+            });
+        }
+
+        function drawCoin() {
+            const centerX = coin.x * CELL_WIDTH + CELL_WIDTH / 2;
+            const centerY = coin.y * CELL_HEIGHT + CELL_HEIGHT / 2;
+            const radius = Math.min(CELL_WIDTH, CELL_HEIGHT) / 2 - 2;
+
+            // Coin gradient
+            const gradient = ctx.createRadialGradient(
+                centerX - radius / 3,
+                centerY - radius / 3,
+                0,
+                centerX,
+                centerY,
+                radius
+            );
+            gradient.addColorStop(0, '#fff4a3');
+            gradient.addColorStop(0.5, '#ffd700');
+            gradient.addColorStop(1, '#cc9900');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Coin border
+            ctx.strokeStyle = '#cc9900';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Coin symbol
+            ctx.fillStyle = '#cc9900';
+            ctx.font = 'bold ' + (Math.min(CELL_WIDTH, CELL_HEIGHT) / 2) + 'px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('₾', centerX, centerY);
+        }
+
+        function generateCoin() {
+            let newCoin;
+            do {
+                newCoin = {
+                    x: Math.floor(Math.random() * GRID_SIZE),
+                    y: Math.floor(Math.random() * GRID_SIZE)
+                };
+            } while (snake.some(segment => segment.x === newCoin.x && segment.y === newCoin.y));
+
+            coin = newCoin;
+        }
+
+        function update() {
+            if (!gameActive) return;
+
+            // Update direction
+            direction = nextDirection;
+
+            // Calculate new head position
+            const head = {
+                x: snake[0].x + direction.x,
+                y: snake[0].y + direction.y
+            };
+
+            // Check wall collision
+            if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                gameOver();
+                return;
+            }
+
+            // Check self collision
+            if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                gameOver();
+                return;
+            }
+
+            // Add new head
+            snake.unshift(head);
+
+            // Check coin collision
+            if (head.x === coin.x && head.y === coin.y) {
+                coinsCollected++;
+                // ყოველ მონეტაზე 5% სწრაფდება
+                currentSpeed = Math.max(MIN_SPEED, INITIAL_SPEED * Math.pow(SPEED_MULTIPLIER, coinsCollected));
+                updateUI();
+                generateCoin();
+
+                // Restart game loop with new speed
+                clearInterval(gameLoop);
+                gameLoop = setInterval(update, currentSpeed);
+            } else {
+                // Remove tail if no coin collected
+                snake.pop();
+            }
+
+            draw();
+        }
+
+        function draw() {
+            drawGrid();
+            drawCoin();
+            drawSnake();
+        }
+
+        function updateUI() {
+            const collectedAmount = coinsCollected * COIN_VALUE;
+            document.getElementById('balance').textContent = '₾' + currentBalance.toFixed(2);
+            document.getElementById('collected').textContent = '₾' + collectedAmount.toFixed(2);
+            document.getElementById('coins').textContent = coinsCollected;
+            document.getElementById('speed').textContent = (INITIAL_SPEED / currentSpeed).toFixed(1) + 'x';
+        }
+
+        function showMessage(text, type = 'info') {
+            const msgEl = document.getElementById('message');
+            msgEl.textContent = text;
+            msgEl.className = 'message-' + type;
+        }
+
+        async function startGame() {
+            if (!sessionToken && !isDemo()) {
+                showMessage('გთხოვთ გაიაროთ ავტორიზაცია', 'error');
+                return;
+            }
+
+            try {
+                // Place bet
+                const response = await fetch(`${API_BASE}/start`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionToken}`
+                    },
+                    body: JSON.stringify({
+                        betAmount: BET_AMOUNT,
+                        gameCode: 'SNAKE_ARCADE'
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    showMessage(error.message || 'ფსონის განთავსება ვერ მოხერხდა', 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                betId = data.sessionToken;
+                currentBalance = data.newBalance;
+
+                initGame(false);
+                showMessage('თამაში დაიწყო! შეაგროვეთ მონეტები', 'success');
+            } catch (error) {
+                console.error('Bet error:', error);
+                showMessage('შეცდომა სერვერთან კავშირში', 'error');
+            }
+        }
+
+        function startDemo() {
+            initGame(true);
+            showMessage('დემო რეჟიმი - თამაში არ მოითხოვს ფსონს', 'info');
+        }
+
+        function initGame(demo) {
+            isDemoMode = demo;
+            gameActive = true;
+            coinsCollected = 0;
+            currentSpeed = INITIAL_SPEED;
+
+            // Initialize snake in the middle
+            const center = Math.floor(GRID_SIZE / 2);
+            snake = [
+                {x: center, y: center},
+                {x: center - 1, y: center},
+                {x: center - 2, y: center}
+            ];
+
+            direction = {x: 1, y: 0};
+            nextDirection = {x: 1, y: 0};
+
+            generateCoin();
+            updateUI();
+
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('demoBtn').disabled = true;
+            document.getElementById('cashoutBtn').disabled = false;
+            document.getElementById('gameOverOverlay').classList.remove('active');
+
+            clearInterval(gameLoop);
+            gameLoop = setInterval(update, currentSpeed);
+        }
+
+        async function cashOut() {
+            if (!gameActive) return;
+
+            gameActive = false;
+            clearInterval(gameLoop);
+
+            const collectedAmount = coinsCollected * COIN_VALUE;
+
+            if (isDemoMode) {
+                showMessage(`დემო თამაში დასრულდა! შეგროვდა: ₾${collectedAmount.toFixed(2)}`, 'info');
+                resetButtons();
+                return;
+            }
+
+            try {
+                // Complete bet with winnings
+                const winAmount = collectedAmount;
+                const response = await fetch(`${API_BASE}/cashout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionToken}`
+                    },
+                    body: JSON.stringify({
+                        sessionToken: betId,
+                        winAmount: winAmount,
+                        gameData: {
+                            coinsCollected: coinsCollected,
+                            finalSpeed: (INITIAL_SPEED / currentSpeed).toFixed(1)
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to complete bet');
+                }
+
+                const cashoutData = await response.json();
+                currentBalance = cashoutData.newBalance;
+                updateUI();
+
+                showMessage(`შეჩერება წარმატებული! შეგროვებული თანხა გადატანილია ბალანსზე: ₾${winAmount.toFixed(2)}`, 'success');
+                resetButtons();
+            } catch (error) {
+                console.error('Cash out error:', error);
+                showMessage('შეცდომა CASH OUT-ის დროს', 'error');
+            }
+        }
+
+        async function gameOver() {
+            gameActive = false;
+            clearInterval(gameLoop);
+
+            const collectedAmount = coinsCollected * COIN_VALUE;
+            document.getElementById('finalAmount').textContent = '₾' + collectedAmount.toFixed(2);
+            document.getElementById('gameOverOverlay').classList.add('active');
+
+            if (isDemoMode) {
+                resetButtons();
+                return;
+            }
+
+            try {
+                // Game Over - player loses all collected coins (winAmount = 0)
+                const winAmount = 0;
+                const response = await fetch(`${API_BASE}/cashout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionToken}`
+                    },
+                    body: JSON.stringify({
+                        sessionToken: betId,
+                        winAmount: winAmount,
+                        gameData: {
+                            coinsCollected: coinsCollected,
+                            collectedAmount: collectedAmount,
+                            finalSpeed: (INITIAL_SPEED / currentSpeed).toFixed(1),
+                            result: 'game_over'
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    const gameOverData = await response.json();
+                    currentBalance = gameOverData.newBalance;
+                    updateUI();
+                }
+
+                showMessage(`თამაში დასრულდა! აგროვებული თანხა დაიკარგა: ₾${collectedAmount.toFixed(2)}`, 'error');
+            } catch (error) {
+                console.error('Game over error:', error);
+            }
+
+            resetButtons();
+        }
+
+        function resetButtons() {
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('demoBtn').disabled = false;
+            document.getElementById('cashoutBtn').disabled = true;
+            betId = null;
+        }
+    </script>
+</body>
+</html>

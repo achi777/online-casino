@@ -503,6 +503,26 @@ public class DataLoader implements CommandLineRunner {
             log.info("Game already exists: Fruit Shop");
         }
 
+        // Create game 24 - Snake Coin Collector (if doesn't exist)
+        if (!gameRepository.findByGameCode("SNAKE_ARCADE").isPresent()) {
+            Game game24 = new Game();
+            game24.setGameCode("SNAKE_ARCADE");
+            game24.setName("Snake Coin Collector");
+            game24.setDescription("Classic snake game with a twist! Collect coins worth ₾0.10 each. Start with ₾5 bet, cash out anytime! The game speeds up with each coin collected!");
+            game24.setCategory(Game.GameCategory.ARCADE);
+            game24.setProvider(provider);
+            game24.setIframeUrl("http://localhost:8888/arcade/snake/index.html");
+            game24.setThumbnailUrl("http://localhost:8888/arcade/snake/thumbnail.svg");
+            game24.setRtp(new BigDecimal("97.00"));
+            game24.setFeatured(true);
+            game24.setStatus(Game.GameStatus.ACTIVE);
+            game24.setSortOrder(24);
+            gameRepository.save(game24);
+            log.info("Game data loaded: {}", game24.getName());
+        } else {
+            log.info("Game already exists: Snake Coin Collector");
+        }
+
         // Create test user if doesn't exist (run every time)
         if (!userRepository.findByEmail("test@casino.ge").isPresent()) {
             User testUser = new User();

@@ -67,6 +67,10 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/bet").hasRole("USER")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/win").hasRole("USER")
 
+                        // Arcade game endpoints
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/arcade/start").hasRole("USER")
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/arcade/cashout").hasRole("USER")
+
                         // Admin endpoints
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN_OWNER", "ADMIN_FINANCE", "ADMIN_SUPPORT", "ADMIN_CONTENT")
 

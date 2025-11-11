@@ -1,0 +1,43 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.casino:casino-platform >---------------------
+[INFO] Building Casino Platform 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ casino-platform ---
+[INFO] Deleting /Users/archilodishelidze/Desktop/dev/gambling/backend/target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ casino-platform ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ casino-platform ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 102 source files with javac [debug release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ casino-platform ---
+[INFO] skip non existing resourceDirectory /Users/archilodishelidze/Desktop/dev/gambling/backend/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ casino-platform ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ casino-platform ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.3.0:jar (default-jar) @ casino-platform ---
+[INFO] Building jar: /Users/archilodishelidze/Desktop/dev/gambling/backend/target/casino-platform-1.0.0.jar
+[INFO] 
+[INFO] --- spring-boot:3.2.0:repackage (repackage) @ casino-platform ---
+[INFO] Replacing main artifact /Users/archilodishelidze/Desktop/dev/gambling/backend/target/casino-platform-1.0.0.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /Users/archilodishelidze/Desktop/dev/gambling/backend/target/casino-platform-1.0.0.jar.original
+[INFO] 
+[INFO] --- install:3.1.1:install (default-install) @ casino-platform ---
+[INFO] Installing /Users/archilodishelidze/Desktop/dev/gambling/backend/pom.xml to /Users/archilodishelidze/.m2/repository/com/casino/casino-platform/1.0.0/casino-platform-1.0.0.pom
+[INFO] Installing /Users/archilodishelidze/Desktop/dev/gambling/backend/target/casino-platform-1.0.0.jar to /Users/archilodishelidze/.m2/repository/com/casino/casino-platform/1.0.0/casino-platform-1.0.0.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.452 s
+[INFO] Finished at: 2025-11-11T16:27:28+04:00
+[INFO] ------------------------------------------------------------------------

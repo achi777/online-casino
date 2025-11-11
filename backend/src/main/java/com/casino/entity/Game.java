@@ -48,7 +48,7 @@ public class Game extends BaseEntity {
     private Boolean featured = false;
 
     public enum GameCategory {
-        SLOTS, TABLE_GAMES, LIVE_CASINO, JACKPOT, VIDEO_POKER, OTHER
+        SLOTS, TABLE_GAMES, LIVE_CASINO, JACKPOT, VIDEO_POKER, ARCADE, OTHER
     }
 
     public enum GameStatus {

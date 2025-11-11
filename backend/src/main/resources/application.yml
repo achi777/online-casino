@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/casino_db
-    username: postgres
-    password: postgres
+    username: casino_user
+    password: casino_pass
     driver-class-name: org.postgresql.Driver
 
   jpa:
