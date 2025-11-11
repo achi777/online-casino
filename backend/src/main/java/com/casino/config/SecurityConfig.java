@@ -60,6 +60,9 @@ public class SecurityConfig {
                         // Game initialization endpoints - secured by session token in backend
                         .requestMatchers("/api/user/balance", "/api/user/game-info").permitAll()
 
+                        // Static file serving for uploads
+                        .requestMatchers("/uploads/**").permitAll()
+
                         // SECURITY: Game play endpoints
                         // Launch endpoint is public to support demo mode (controller validates auth for real play)
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/games/launch").permitAll()

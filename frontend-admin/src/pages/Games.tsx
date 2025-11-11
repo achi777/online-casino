@@ -10,7 +10,8 @@ import {
 import {
   Search as SearchIcon,
   Edit as EditIcon,
-  Visibility as VisibilityIcon
+  Visibility as VisibilityIcon,
+  CloudUpload as CloudUploadIcon
 } from '@mui/icons-material'
 import AdminLayout from '../components/AdminLayout'
 import { useAuth } from '../context/AuthContext'
@@ -44,6 +45,9 @@ const Games = () => {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadPreview, setUploadPreview] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -77,7 +81,53 @@ const Games = () => {
 
   const handleEditGame = (game: Game) => {
     setSelectedGame(game)
+    setSelectedFile(null)
+    setUploadPreview(null)
     setEditDialogOpen(true)
+  }
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setSelectedFile(file)
+      // Create preview URL
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setUploadPreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleUploadThumbnail = async () => {
+    if (!selectedFile || !selectedGame) return
+
+    const formData = new FormData()
+    formData.append('file', selectedFile)
+
+    setUploading(true)
+    try {
+      const response = await axios.post('http://localhost:8080/api/admin/upload/game-thumbnail', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      // Update the selected game with the new thumbnail URL
+      setSelectedGame({
+        ...selectedGame,
+        thumbnailUrl: response.data.url
+      })
+
+      // Clear file selection
+      setSelectedFile(null)
+      setUploadPreview(null)
+    } catch (err) {
+      console.error('Failed to upload thumbnail:', err)
+      alert('Failed to upload thumbnail. Please try again.')
+    } finally {
+      setUploading(false)
+    }
   }
 
   const handleSaveGame = async () => {
@@ -380,6 +430,78 @@ const Games = () => {
                   }
                   label="Featured Game"
                 />
+
+                {/* Thumbnail Upload Section */}
+                <Box sx={{ mt: 3, p: 2, border: '1px solid #ddd', borderRadius: 1 }}>
+                  <Typography variant="subtitle1" sx={{ mb: 2 }}>
+                    Game Thumbnail
+                  </Typography>
+
+                  {/* Current Thumbnail */}
+                  {selectedGame.thumbnailUrl && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        Current Thumbnail:
+                      </Typography>
+                      <img
+                        src={selectedGame.thumbnailUrl}
+                        alt="Current thumbnail"
+                        style={{ width: '100%', maxWidth: '300px', height: 'auto', borderRadius: '4px' }}
+                      />
+                    </Box>
+                  )}
+
+                  {/* Upload Preview */}
+                  {uploadPreview && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        New Thumbnail Preview:
+                      </Typography>
+                      <img
+                        src={uploadPreview}
+                        alt="Upload preview"
+                        style={{ width: '100%', maxWidth: '300px', height: 'auto', borderRadius: '4px' }}
+                      />
+                    </Box>
+                  )}
+
+                  {/* File Upload Button */}
+                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <Button
+                      component="label"
+                      variant="outlined"
+                      startIcon={<CloudUploadIcon />}
+                      disabled={uploading}
+                    >
+                      Choose File
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        onChange={handleFileSelect}
+                      />
+                    </Button>
+
+                    {selectedFile && (
+                      <>
+                        <Typography variant="body2" color="text.secondary">
+                          {selectedFile.name}
+                        </Typography>
+                        <Button
+                          variant="contained"
+                          onClick={handleUploadThumbnail}
+                          disabled={uploading}
+                        >
+                          {uploading ? 'Uploading...' : 'Upload'}
+                        </Button>
+                      </>
+                    )}
+                  </Box>
+
+                  <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                    Upload image files only (JPG, PNG, etc.)
+                  </Typography>
+                </Box>
               </Box>
             )}
           </DialogContent>

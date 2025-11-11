@@ -4,7 +4,27 @@
 
 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
 
-  VITE v5.4.21  ready in 206 ms
+  VITE v5.4.21  ready in 234 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
+5:51:14 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:10:44 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:10:45 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:10:47 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)
+6:10:51 PM [vite] http proxy error: /api/user/wallet/balance
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1712:7)

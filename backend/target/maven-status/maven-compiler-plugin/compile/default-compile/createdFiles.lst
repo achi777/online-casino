@@ -1,5 +1,6 @@
 com/casino/repository/TransactionRepository.class
 com/casino/dto/SpinResponse.class
+com/casino/config/WebConfig.class
 com/casino/controller/SlotSpinController.class
 com/casino/entity/PaymentMethod$PaymentType.class
 com/casino/controller/ArcadeGameController$ArcadeCashoutRequest.class
@@ -8,6 +9,7 @@ com/casino/dto/AdminResponse.class
 com/casino/repository/UserRepository.class
 com/casino/entity/Banner$BannerPosition.class
 com/casino/dto/GameBetRequest.class
+com/casino/controller/FileUploadController.class
 com/casino/service/AdminService.class
 com/casino/entity/SupportTicket$TicketStatus.class
 com/casino/repository/GameRepository.class

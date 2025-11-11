@@ -523,6 +523,306 @@ public class DataLoader implements CommandLineRunner {
             log.info("Game already exists: Snake Coin Collector");
         }
 
+        // Create game 25 - 40 Super Hot (if doesn't exist)
+        if (!gameRepository.findByGameCode("40_SUPER_HOT").isPresent()) {
+            Game game25 = new Game();
+            game25.setGameCode("40_SUPER_HOT");
+            game25.setName("40 Super Hot");
+            game25.setDescription("Classic 5x4 fruit slot with 40 paylines! Features blazing sevens, cherries, watermelons and more. Big wins with traditional symbols!");
+            game25.setCategory(Game.GameCategory.SLOTS);
+            game25.setProvider(provider);
+            game25.setIframeUrl("http://localhost:8888/slots/40-super-hot/index.html");
+            game25.setThumbnailUrl("http://localhost:8888/slots/40-super-hot/photo.jpeg");
+            game25.setRtp(new BigDecimal("95.80"));
+            game25.setFeatured(false);
+            game25.setStatus(Game.GameStatus.ACTIVE);
+            game25.setSortOrder(25);
+            gameRepository.save(game25);
+            log.info("Game data loaded: {}", game25.getName());
+        } else {
+            log.info("Game already exists: 40 Super Hot");
+        }
+
+        // Create game 26 - 777 Deluxe (if doesn't exist)
+        if (!gameRepository.findByGameCode("777_DELUXE").isPresent()) {
+            Game game26 = new Game();
+            game26.setGameCode("777_DELUXE");
+            game26.setName("777 Deluxe");
+            game26.setDescription("Premium 3x3 slot with lucky sevens! Hit three 777 symbols for massive JACKPOT! Classic casino experience!");
+            game26.setCategory(Game.GameCategory.SLOTS);
+            game26.setProvider(provider);
+            game26.setIframeUrl("http://localhost:8888/slots/777-deluxe/index.html");
+            game26.setThumbnailUrl("http://localhost:8888/slots/777-deluxe/photo.jpeg");
+            game26.setRtp(new BigDecimal("96.20"));
+            game26.setFeatured(false);
+            game26.setStatus(Game.GameStatus.ACTIVE);
+            game26.setSortOrder(26);
+            gameRepository.save(game26);
+            log.info("Game data loaded: {}", game26.getName());
+        } else {
+            log.info("Game already exists: 777 Deluxe");
+        }
+
+        // Create game 27 - Blazing 7s (if doesn't exist)
+        if (!gameRepository.findByGameCode("BLAZING_7S").isPresent()) {
+            Game game27 = new Game();
+            game27.setGameCode("BLAZING_7S");
+            game27.setName("Blazing 7s");
+            game27.setDescription("Hot 3x3 slot with blazing sevens! Triple red sevens for 200x JACKPOT! Features fiery symbols and big payouts!");
+            game27.setCategory(Game.GameCategory.SLOTS);
+            game27.setProvider(provider);
+            game27.setIframeUrl("http://localhost:8888/slots/blazing-7s/index.html");
+            game27.setThumbnailUrl("http://localhost:8888/slots/blazing-7s/photo.jpeg");
+            game27.setRtp(new BigDecimal("96.50"));
+            game27.setFeatured(false);
+            game27.setStatus(Game.GameStatus.ACTIVE);
+            game27.setSortOrder(27);
+            gameRepository.save(game27);
+            log.info("Game data loaded: {}", game27.getName());
+        } else {
+            log.info("Game already exists: Blazing 7s");
+        }
+
+        // Create game 28 - Burning Hot (if doesn't exist)
+        if (!gameRepository.findByGameCode("BURNING_HOT").isPresent()) {
+            Game game28 = new Game();
+            game28.setGameCode("BURNING_HOT");
+            game28.setName("Burning Hot");
+            game28.setDescription("Sizzling 5-reel slot with hot fruits! Burning symbols and fiery wins! Get three Flames for explosive payouts!");
+            game28.setCategory(Game.GameCategory.SLOTS);
+            game28.setProvider(provider);
+            game28.setIframeUrl("http://localhost:8888/slots/burning-hot/index.html");
+            game28.setThumbnailUrl("http://localhost:8888/slots/burning-hot/photo.jpeg");
+            game28.setRtp(new BigDecimal("96.45"));
+            game28.setFeatured(false);
+            game28.setStatus(Game.GameStatus.ACTIVE);
+            game28.setSortOrder(28);
+            gameRepository.save(game28);
+            log.info("Game data loaded: {}", game28.getName());
+        } else {
+            log.info("Game already exists: Burning Hot");
+        }
+
+        // Create game 29 - Fire 7s (if doesn't exist)
+        if (!gameRepository.findByGameCode("FIRE_7S").isPresent()) {
+            Game game29 = new Game();
+            game29.setGameCode("FIRE_7S");
+            game29.setName("Fire 7s");
+            game29.setDescription("Flaming hot 3x3 slot! Red hot sevens bring fire wins! Triple Fire 7s for sizzling 250x JACKPOT!");
+            game29.setCategory(Game.GameCategory.SLOTS);
+            game29.setProvider(provider);
+            game29.setIframeUrl("http://localhost:8888/slots/fire-7s/index.html");
+            game29.setThumbnailUrl("http://localhost:8888/slots/fire-7s/photo.jpeg");
+            game29.setRtp(new BigDecimal("96.55"));
+            game29.setFeatured(false);
+            game29.setStatus(Game.GameStatus.ACTIVE);
+            game29.setSortOrder(29);
+            gameRepository.save(game29);
+            log.info("Game data loaded: {}", game29.getName());
+        } else {
+            log.info("Game already exists: Fire 7s");
+        }
+
+        // Create game 30 - Fruit Mania (if doesn't exist)
+        if (!gameRepository.findByGameCode("FRUIT_MANIA").isPresent()) {
+            Game game30 = new Game();
+            game30.setGameCode("FRUIT_MANIA");
+            game30.setName("Fruit Mania");
+            game30.setDescription("Go crazy with fruits! 5-reel slot packed with juicy symbols! Watermelons, cherries, lemons and huge wins!");
+            game30.setCategory(Game.GameCategory.SLOTS);
+            game30.setProvider(provider);
+            game30.setIframeUrl("http://localhost:8888/slots/fruit-mania/index.html");
+            game30.setThumbnailUrl("http://localhost:8888/slots/fruit-mania/photo.jpeg");
+            game30.setRtp(new BigDecimal("96.25"));
+            game30.setFeatured(false);
+            game30.setStatus(Game.GameStatus.ACTIVE);
+            game30.setSortOrder(30);
+            gameRepository.save(game30);
+            log.info("Game data loaded: {}", game30.getName());
+        } else {
+            log.info("Game already exists: Fruit Mania");
+        }
+
+        // Create game 31 - Fruit Party (if doesn't exist)
+        if (!gameRepository.findByGameCode("FRUIT_PARTY").isPresent()) {
+            Game game31 = new Game();
+            game31.setGameCode("FRUIT_PARTY");
+            game31.setName("Fruit Party");
+            game31.setDescription("Party with fruits! Colorful 5-reel slot with cascading wins! Strawberries, grapes, oranges bring festive payouts!");
+            game31.setCategory(Game.GameCategory.SLOTS);
+            game31.setProvider(provider);
+            game31.setIframeUrl("http://localhost:8888/slots/fruit-party/index.html");
+            game31.setThumbnailUrl("http://localhost:8888/slots/fruit-party/photo.jpeg");
+            game31.setRtp(new BigDecimal("96.50"));
+            game31.setFeatured(false);
+            game31.setStatus(Game.GameStatus.ACTIVE);
+            game31.setSortOrder(31);
+            gameRepository.save(game31);
+            log.info("Game data loaded: {}", game31.getName());
+        } else {
+            log.info("Game already exists: Fruit Party");
+        }
+
+        // Create game 32 - Hot Fruits 100 (if doesn't exist)
+        if (!gameRepository.findByGameCode("HOT_FRUITS_100").isPresent()) {
+            Game game32 = new Game();
+            game32.setGameCode("HOT_FRUITS_100");
+            game32.setName("Hot Fruits 100");
+            game32.setDescription("100 lines of hot fruit action! Massive 5x4 slot with flaming fruits! Hit five Fire symbols for volcanic 500x JACKPOT!");
+            game32.setCategory(Game.GameCategory.SLOTS);
+            game32.setProvider(provider);
+            game32.setIframeUrl("http://localhost:8888/slots/hot-fruits-100/index.html");
+            game32.setThumbnailUrl("http://localhost:8888/slots/hot-fruits-100/photo.jpeg");
+            game32.setRtp(new BigDecimal("96.75"));
+            game32.setFeatured(true);
+            game32.setStatus(Game.GameStatus.ACTIVE);
+            game32.setSortOrder(32);
+            gameRepository.save(game32);
+            log.info("Game data loaded: {}", game32.getName());
+        } else {
+            log.info("Game already exists: Hot Fruits 100");
+        }
+
+        // Create game 33 - Hot Fruits 20 (if doesn't exist)
+        if (!gameRepository.findByGameCode("HOT_FRUITS_20").isPresent()) {
+            Game game33 = new Game();
+            game33.setGameCode("HOT_FRUITS_20");
+            game33.setName("Hot Fruits 20");
+            game33.setDescription("20 sizzling paylines! Classic 5x3 slot with hot fruits! Fire symbols trigger burning wins!");
+            game33.setCategory(Game.GameCategory.SLOTS);
+            game33.setProvider(provider);
+            game33.setIframeUrl("http://localhost:8888/slots/hot-fruits-20/index.html");
+            game33.setThumbnailUrl("http://localhost:8888/slots/hot-fruits-20/photo.jpeg");
+            game33.setRtp(new BigDecimal("96.30"));
+            game33.setFeatured(false);
+            game33.setStatus(Game.GameStatus.ACTIVE);
+            game33.setSortOrder(33);
+            gameRepository.save(game33);
+            log.info("Game data loaded: {}", game33.getName());
+        } else {
+            log.info("Game already exists: Hot Fruits 20");
+        }
+
+        // Create game 34 - Hot Fruits 40 (if doesn't exist)
+        if (!gameRepository.findByGameCode("HOT_FRUITS_40").isPresent()) {
+            Game game34 = new Game();
+            game34.setGameCode("HOT_FRUITS_40");
+            game34.setName("Hot Fruits 40");
+            game34.setDescription("40 lines of fruity heat! Expanded 5x4 grid with scorching symbols! Five flames for 400x inferno!");
+            game34.setCategory(Game.GameCategory.SLOTS);
+            game34.setProvider(provider);
+            game34.setIframeUrl("http://localhost:8888/slots/hot-fruits-40/index.html");
+            game34.setThumbnailUrl("http://localhost:8888/slots/hot-fruits-40/photo.jpeg");
+            game34.setRtp(new BigDecimal("96.60"));
+            game34.setFeatured(false);
+            game34.setStatus(Game.GameStatus.ACTIVE);
+            game34.setSortOrder(34);
+            gameRepository.save(game34);
+            log.info("Game data loaded: {}", game34.getName());
+        } else {
+            log.info("Game already exists: Hot Fruits 40");
+        }
+
+        // Create game 35 - Juicy Fruits (if doesn't exist)
+        if (!gameRepository.findByGameCode("JUICY_FRUITS").isPresent()) {
+            Game game35 = new Game();
+            game35.setGameCode("JUICY_FRUITS");
+            game35.setName("Juicy Fruits");
+            game35.setDescription("Squeeze out juicy wins! 5-reel slot bursting with fresh fruits! Watermelons, oranges, cherries drip with rewards!");
+            game35.setCategory(Game.GameCategory.SLOTS);
+            game35.setProvider(provider);
+            game35.setIframeUrl("http://localhost:8888/slots/juicy-fruits/index.html");
+            game35.setThumbnailUrl("http://localhost:8888/slots/juicy-fruits/photo.jpeg");
+            game35.setRtp(new BigDecimal("96.40"));
+            game35.setFeatured(false);
+            game35.setStatus(Game.GameStatus.ACTIVE);
+            game35.setSortOrder(35);
+            gameRepository.save(game35);
+            log.info("Game data loaded: {}", game35.getName());
+        } else {
+            log.info("Game already exists: Juicy Fruits");
+        }
+
+        // Create game 36 - Mega 7s (if doesn't exist)
+        if (!gameRepository.findByGameCode("MEGA_7S").isPresent()) {
+            Game game36 = new Game();
+            game36.setGameCode("MEGA_7S");
+            game36.setName("Mega 7s");
+            game36.setDescription("Mega lucky sevens! 3x3 slot with giant payouts! Triple Mega 7s for colossal 300x JACKPOT!");
+            game36.setCategory(Game.GameCategory.SLOTS);
+            game36.setProvider(provider);
+            game36.setIframeUrl("http://localhost:8888/slots/mega-7s/index.html");
+            game36.setThumbnailUrl("http://localhost:8888/slots/mega-7s/photo.jpeg");
+            game36.setRtp(new BigDecimal("96.65"));
+            game36.setFeatured(false);
+            game36.setStatus(Game.GameStatus.ACTIVE);
+            game36.setSortOrder(36);
+            gameRepository.save(game36);
+            log.info("Game data loaded: {}", game36.getName());
+        } else {
+            log.info("Game already exists: Mega 7s");
+        }
+
+        // Create game 37 - Sizzling Hot (if doesn't exist)
+        if (!gameRepository.findByGameCode("SIZZLING_HOT").isPresent()) {
+            Game game37 = new Game();
+            game37.setGameCode("SIZZLING_HOT");
+            game37.setName("Sizzling Hot");
+            game37.setDescription("Classic sizzling fruits! 5-reel slot with scorching payouts! Red hot sevens and fiery fruits bring the heat!");
+            game37.setCategory(Game.GameCategory.SLOTS);
+            game37.setProvider(provider);
+            game37.setIframeUrl("http://localhost:8888/slots/sizzling-hot/index.html");
+            game37.setThumbnailUrl("http://localhost:8888/slots/sizzling-hot/photo.jpeg");
+            game37.setRtp(new BigDecimal("95.66"));
+            game37.setFeatured(true);
+            game37.setStatus(Game.GameStatus.ACTIVE);
+            game37.setSortOrder(37);
+            gameRepository.save(game37);
+            log.info("Game data loaded: {}", game37.getName());
+        } else {
+            log.info("Game already exists: Sizzling Hot");
+        }
+
+        // Create game 38 - Sweet Bonanza (if doesn't exist)
+        if (!gameRepository.findByGameCode("SWEET_BONANZA").isPresent()) {
+            Game game38 = new Game();
+            game38.setGameCode("SWEET_BONANZA");
+            game38.setName("Sweet Bonanza");
+            game38.setDescription("Sweet cascade slot! Tumbling reels with candies and fruits! Multipliers and free spins bring sugar rush wins!");
+            game38.setCategory(Game.GameCategory.SLOTS);
+            game38.setProvider(provider);
+            game38.setIframeUrl("http://localhost:8888/slots/sweet-bonanza/index.html");
+            game38.setThumbnailUrl("http://localhost:8888/slots/sweet-bonanza/photo.jpeg");
+            game38.setRtp(new BigDecimal("96.48"));
+            game38.setFeatured(true);
+            game38.setStatus(Game.GameStatus.ACTIVE);
+            game38.setSortOrder(38);
+            gameRepository.save(game38);
+            log.info("Game data loaded: {}", game38.getName());
+        } else {
+            log.info("Game already exists: Sweet Bonanza");
+        }
+
+        // Create game 39 - Triple Bar (if doesn't exist)
+        if (!gameRepository.findByGameCode("TRIPLE_BAR").isPresent()) {
+            Game game39 = new Game();
+            game39.setGameCode("TRIPLE_BAR");
+            game39.setName("Triple Bar");
+            game39.setDescription("Classic bar symbols! 3x3 traditional slot! Triple BAR symbols for nostalgic 200x JACKPOT!");
+            game39.setCategory(Game.GameCategory.SLOTS);
+            game39.setProvider(provider);
+            game39.setIframeUrl("http://localhost:8888/slots/triple-bar/index.html");
+            game39.setThumbnailUrl("http://localhost:8888/slots/triple-bar/photo.jpeg");
+            game39.setRtp(new BigDecimal("96.15"));
+            game39.setFeatured(false);
+            game39.setStatus(Game.GameStatus.ACTIVE);
+            game39.setSortOrder(39);
+            gameRepository.save(game39);
+            log.info("Game data loaded: {}", game39.getName());
+        } else {
+            log.info("Game already exists: Triple Bar");
+        }
+
         // Create test user if doesn't exist (run every time)
         if (!userRepository.findByEmail("test@casino.ge").isPresent()) {
             User testUser = new User();

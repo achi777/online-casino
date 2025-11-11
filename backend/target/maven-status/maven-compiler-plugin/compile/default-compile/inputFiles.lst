@@ -4,6 +4,8 @@
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/AuditLog.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/service/AdminGameService.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/UserRepository.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/FileUploadController.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/config/WebConfig.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/AdminDashboardController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/WithdrawRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/DepositRequest.java
