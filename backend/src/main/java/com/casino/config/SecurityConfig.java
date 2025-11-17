@@ -62,6 +62,7 @@ public class SecurityConfig {
 
                         // Static file serving for uploads
                         .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/api/files/upload").hasAnyRole("USER", "ADMIN")
 
                         // SECURITY: Game play endpoints
                         // Launch endpoint is public to support demo mode (controller validates auth for real play)

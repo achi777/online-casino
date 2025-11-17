@@ -78,6 +78,8 @@ const KYC = () => {
   const [selfieImageUrl, setSelfieImageUrl] = useState('')
   const [proofOfAddressUrl, setProofOfAddressUrl] = useState('')
   const [notes, setNotes] = useState('')
+  const [uploading, setUploading] = useState<string | null>(null)
+  const [showResubmitForm, setShowResubmitForm] = useState(false)
 
   const { data: kycStatus, refetch: refetchKYC, isLoading: kycLoading } = useQuery<KYCStatus | null>(
     'kycStatus',
@@ -102,6 +104,46 @@ const KYC = () => {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
+
+  const handleFileUpload = async (file: File, fieldName: string) => {
+    setUploading(fieldName)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await axios.post('/api/files/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      const fileUrl = 'http://localhost:8080' + response.data.url
+
+      // Update the appropriate state based on fieldName
+      switch (fieldName) {
+        case 'documentFront':
+          setDocumentFrontImageUrl(fileUrl)
+          break
+        case 'documentBack':
+          setDocumentBackImageUrl(fileUrl)
+          break
+        case 'selfie':
+          setSelfieImageUrl(fileUrl)
+          break
+        case 'proofOfAddress':
+          setProofOfAddressUrl(fileUrl)
+          break
+      }
+
+      setMessage(`File uploaded successfully!`)
+      setMessageType('success')
+    } catch (error: any) {
+      setMessage(error.response?.data?.error || 'File upload failed')
+      setMessageType('error')
+    } finally {
+      setUploading(null)
+    }
   }
 
   const handleSubmit = async () => {
@@ -132,6 +174,7 @@ const KYC = () => {
       })
       setMessage('KYC submitted successfully! Your documents will be reviewed shortly.')
       setMessageType('success')
+      setShowResubmitForm(false)
       refetchKYC()
       setActiveStep(0)
     } catch (error: any) {
@@ -141,8 +184,6 @@ const KYC = () => {
       setLoading(false)
     }
   }
-
-  const canResubmit = kycStatus?.status === 'REJECTED'
 
   if (kycLoading) {
     return (
@@ -157,8 +198,8 @@ const KYC = () => {
     )
   }
 
-  // Show status if KYC already submitted (and not rejected)
-  if (kycStatus && !canResubmit) {
+  // Show status if KYC is PENDING or VERIFIED (not REJECTED)
+  if (kycStatus && kycStatus.status !== 'REJECTED') {
     return (
       <>
         <Navbar />
@@ -232,7 +273,7 @@ const KYC = () => {
   }
 
   // Show rejection message and allow resubmission
-  if (canResubmit) {
+  if (kycStatus && kycStatus.status === 'REJECTED' && !showResubmitForm) {
     return (
       <>
         <Navbar />
@@ -268,7 +309,7 @@ const KYC = () => {
             <Button
               variant="contained"
               fullWidth
-              onClick={() => window.location.reload()}
+              onClick={() => setShowResubmitForm(true)}
             >
               Submit New KYC Application
             </Button>
@@ -295,6 +336,20 @@ const KYC = () => {
         {message && (
           <Alert severity={messageType} sx={{ mb: 3 }} onClose={() => setMessage('')}>
             {message}
+          </Alert>
+        )}
+
+        {kycStatus?.status === 'REJECTED' && showResubmitForm && kycStatus.rejectionReason && (
+          <Alert severity="warning" sx={{ mb: 3 }}>
+            <Typography variant="body2" fontWeight="bold" gutterBottom>
+              Previous KYC was rejected. Reason:
+            </Typography>
+            <Typography variant="body2">
+              {kycStatus.rejectionReason}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              Please correct the issues mentioned above before resubmitting.
+            </Typography>
           </Alert>
         )}
 
@@ -472,60 +527,143 @@ const KYC = () => {
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom>Upload Documents</Typography>
                 <Alert severity="info" sx={{ mb: 2 }}>
-                  Please provide URLs to your document images. In a production environment, you would upload files here.
+                  Please upload images of your documents. Accepted formats: JPG, PNG. Max size: 10MB.
                 </Alert>
               </Grid>
+
+              {/* Document Front Image */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Document Front Image URL"
-                  value={documentFrontImageUrl}
-                  onChange={(e) => setDocumentFrontImageUrl(e.target.value)}
-                  placeholder="https://example.com/front.jpg"
-                  required
-                  InputProps={{
-                    startAdornment: <UploadFileIcon sx={{ mr: 1, color: 'text.secondary' }} />
-                  }}
-                />
+                <Box sx={{ border: '1px dashed #ccc', borderRadius: 1, p: 2 }}>
+                  <Typography variant="body2" fontWeight="bold" gutterBottom>
+                    Document Front Image *
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={<UploadFileIcon />}
+                    disabled={uploading === 'documentFront'}
+                    fullWidth
+                  >
+                    {uploading === 'documentFront' ? 'Uploading...' : 'Choose File'}
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) handleFileUpload(file, 'documentFront')
+                      }}
+                    />
+                  </Button>
+                  {documentFrontImageUrl && (
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="caption" color="success.main">✓ File uploaded</Typography>
+                      <Box component="img" src={documentFrontImageUrl} sx={{ width: '100%', maxWidth: 200, mt: 1, borderRadius: 1 }} />
+                    </Box>
+                  )}
+                </Box>
               </Grid>
+
+              {/* Document Back Image */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Document Back Image URL"
-                  value={documentBackImageUrl}
-                  onChange={(e) => setDocumentBackImageUrl(e.target.value)}
-                  placeholder="https://example.com/back.jpg"
-                  InputProps={{
-                    startAdornment: <UploadFileIcon sx={{ mr: 1, color: 'text.secondary' }} />
-                  }}
-                />
+                <Box sx={{ border: '1px dashed #ccc', borderRadius: 1, p: 2 }}>
+                  <Typography variant="body2" fontWeight="bold" gutterBottom>
+                    Document Back Image (Optional)
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={<UploadFileIcon />}
+                    disabled={uploading === 'documentBack'}
+                    fullWidth
+                  >
+                    {uploading === 'documentBack' ? 'Uploading...' : 'Choose File'}
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) handleFileUpload(file, 'documentBack')
+                      }}
+                    />
+                  </Button>
+                  {documentBackImageUrl && (
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="caption" color="success.main">✓ File uploaded</Typography>
+                      <Box component="img" src={documentBackImageUrl} sx={{ width: '100%', maxWidth: 200, mt: 1, borderRadius: 1 }} />
+                    </Box>
+                  )}
+                </Box>
               </Grid>
+
+              {/* Selfie with Document */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Selfie with Document URL"
-                  value={selfieImageUrl}
-                  onChange={(e) => setSelfieImageUrl(e.target.value)}
-                  placeholder="https://example.com/selfie.jpg"
-                  required
-                  InputProps={{
-                    startAdornment: <UploadFileIcon sx={{ mr: 1, color: 'text.secondary' }} />
-                  }}
-                />
+                <Box sx={{ border: '1px dashed #ccc', borderRadius: 1, p: 2 }}>
+                  <Typography variant="body2" fontWeight="bold" gutterBottom>
+                    Selfie with Document *
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={<UploadFileIcon />}
+                    disabled={uploading === 'selfie'}
+                    fullWidth
+                  >
+                    {uploading === 'selfie' ? 'Uploading...' : 'Choose File'}
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) handleFileUpload(file, 'selfie')
+                      }}
+                    />
+                  </Button>
+                  {selfieImageUrl && (
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="caption" color="success.main">✓ File uploaded</Typography>
+                      <Box component="img" src={selfieImageUrl} sx={{ width: '100%', maxWidth: 200, mt: 1, borderRadius: 1 }} />
+                    </Box>
+                  )}
+                </Box>
               </Grid>
+
+              {/* Proof of Address */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Proof of Address URL"
-                  value={proofOfAddressUrl}
-                  onChange={(e) => setProofOfAddressUrl(e.target.value)}
-                  placeholder="https://example.com/proof.jpg"
-                  required
-                  InputProps={{
-                    startAdornment: <UploadFileIcon sx={{ mr: 1, color: 'text.secondary' }} />
-                  }}
-                />
+                <Box sx={{ border: '1px dashed #ccc', borderRadius: 1, p: 2 }}>
+                  <Typography variant="body2" fontWeight="bold" gutterBottom>
+                    Proof of Address *
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={<UploadFileIcon />}
+                    disabled={uploading === 'proofOfAddress'}
+                    fullWidth
+                  >
+                    {uploading === 'proofOfAddress' ? 'Uploading...' : 'Choose File'}
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) handleFileUpload(file, 'proofOfAddress')
+                      }}
+                    />
+                  </Button>
+                  {proofOfAddressUrl && (
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="caption" color="success.main">✓ File uploaded</Typography>
+                      <Box component="img" src={proofOfAddressUrl} sx={{ width: '100%', maxWidth: 200, mt: 1, borderRadius: 1 }} />
+                    </Box>
+                  )}
+                </Box>
               </Grid>
+
+              {/* Additional Notes */}
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -551,7 +689,7 @@ const KYC = () => {
                 <Button
                   variant="contained"
                   onClick={handleSubmit}
-                  disabled={loading}
+                  disabled={loading || !documentFrontImageUrl || !selfieImageUrl || !proofOfAddressUrl}
                   startIcon={loading ? <CircularProgress size={20} /> : null}
                 >
                   {loading ? 'Submitting...' : 'Submit KYC'}

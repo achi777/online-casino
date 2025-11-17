@@ -9,7 +9,8 @@ import {
 import {
   CheckCircle as ApproveIcon,
   Cancel as RejectIcon,
-  Visibility as ViewIcon
+  Visibility as ViewIcon,
+  Close as CloseIcon
 } from '@mui/icons-material'
 import AdminLayout from '../components/AdminLayout'
 import { useAuth } from '../context/AuthContext'
@@ -68,6 +69,8 @@ const KYC = () => {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState<'success' | 'error'>('success')
+  const [imageViewerOpen, setImageViewerOpen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -173,6 +176,11 @@ const KYC = () => {
       setSelectedDocument(document)
       setDetailsOpen(true)
     }
+  }
+
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl)
+    setImageViewerOpen(true)
   }
 
   const getStatusColor = (status: string) => {
@@ -382,53 +390,72 @@ const KYC = () => {
                 {/* Document Images */}
                 <Grid item xs={12}>
                   <Typography variant="h6" gutterBottom>Document Images</Typography>
+                  <Alert severity="info" sx={{ mb: 2 }}>
+                    Click on any image to view it in full size
+                  </Alert>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Card>
+                  <Card sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedDocument.documentFrontImageUrl)}>
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={selectedDocument.documentFrontImageUrl}
+                      alt="Document Front"
+                      sx={{ objectFit: 'contain', bgcolor: '#f5f5f5' }}
+                    />
                     <CardContent>
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                      <Typography variant="body2" color="text.secondary" align="center">
                         Document Front
-                      </Typography>
-                      <Typography variant="caption" sx={{ wordBreak: 'break-all' }}>
-                        {selectedDocument.documentFrontImageUrl}
                       </Typography>
                     </CardContent>
                   </Card>
                 </Grid>
                 {selectedDocument.documentBackImageUrl && (
                   <Grid item xs={12} sm={6}>
-                    <Card>
+                    <Card sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedDocument.documentBackImageUrl!)}>
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={selectedDocument.documentBackImageUrl}
+                        alt="Document Back"
+                        sx={{ objectFit: 'contain', bgcolor: '#f5f5f5' }}
+                      />
                       <CardContent>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" color="text.secondary" align="center">
                           Document Back
-                        </Typography>
-                        <Typography variant="caption" sx={{ wordBreak: 'break-all' }}>
-                          {selectedDocument.documentBackImageUrl}
                         </Typography>
                       </CardContent>
                     </Card>
                   </Grid>
                 )}
                 <Grid item xs={12} sm={6}>
-                  <Card>
+                  <Card sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedDocument.selfieImageUrl)}>
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={selectedDocument.selfieImageUrl}
+                      alt="Selfie with Document"
+                      sx={{ objectFit: 'contain', bgcolor: '#f5f5f5' }}
+                    />
                     <CardContent>
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                      <Typography variant="body2" color="text.secondary" align="center">
                         Selfie with Document
-                      </Typography>
-                      <Typography variant="caption" sx={{ wordBreak: 'break-all' }}>
-                        {selectedDocument.selfieImageUrl}
                       </Typography>
                     </CardContent>
                   </Card>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Card>
+                  <Card sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedDocument.proofOfAddressUrl)}>
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={selectedDocument.proofOfAddressUrl}
+                      alt="Proof of Address"
+                      sx={{ objectFit: 'contain', bgcolor: '#f5f5f5' }}
+                    />
                     <CardContent>
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                      <Typography variant="body2" color="text.secondary" align="center">
                         Proof of Address
-                      </Typography>
-                      <Typography variant="caption" sx={{ wordBreak: 'break-all' }}>
-                        {selectedDocument.proofOfAddressUrl}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -538,6 +565,39 @@ const KYC = () => {
             {loading ? 'Rejecting...' : 'Confirm Rejection'}
           </Button>
         </DialogActions>
+      </Dialog>
+
+      {/* Image Viewer Dialog */}
+      <Dialog
+        open={imageViewerOpen}
+        onClose={() => setImageViewerOpen(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>
+          Document Image
+          <IconButton
+            onClick={() => setImageViewerOpen(false)}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {selectedImage && (
+            <Box
+              component="img"
+              src={selectedImage}
+              alt="Document"
+              sx={{
+                width: '100%',
+                height: 'auto',
+                maxHeight: '80vh',
+                objectFit: 'contain'
+              }}
+            />
+          )}
+        </DialogContent>
       </Dialog>
     </AdminLayout>
   )

@@ -43,3 +43,6 @@ logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.hibernate.SQL: DEBUG
+
+file:
+  upload-dir: uploads

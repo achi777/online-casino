@@ -2,8 +2,8 @@ package com.casino.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,25 +17,31 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/admin/upload")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+@RequestMapping("/api/files")
 @Slf4j
 public class FileUploadController {
 
-    // Upload directory - create 'uploads' folder in backend directory
-    private final String uploadDir = "uploads/game-thumbnails/";
+    @Value("${file.upload-dir:uploads}")
+    private String uploadDir;
 
-    @PostMapping("/game-thumbnail")
-    public ResponseEntity<?> uploadGameThumbnail(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/upload")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
+            // Validate file
             if (file.isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Please select a file to upload"));
+                return ResponseEntity.badRequest().body(Map.of("error", "File is empty"));
             }
 
-            // Validate file type
+            // Validate file type (images only)
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Only image files are allowed"));
+            }
+
+            // Validate file size (max 10MB)
+            if (file.getSize() > 10 * 1024 * 1024) {
+                return ResponseEntity.badRequest().body(Map.of("error", "File size must not exceed 10MB"));
             }
 
             // Create upload directory if it doesn't exist
@@ -56,41 +62,38 @@ public class FileUploadController {
             Path filePath = uploadPath.resolve(newFilename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Return the URL that will be used to access the file
-            String fileUrl = "http://localhost:8080/uploads/game-thumbnails/" + newFilename;
-
+            // Return file URL
+            String fileUrl = "/uploads/" + newFilename;
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
             response.put("filename", newFilename);
 
-            log.info("File uploaded successfully: {}", fileUrl);
-
+            log.info("File uploaded successfully: {}", newFilename);
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
             log.error("Failed to upload file", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to upload file: " + e.getMessage()));
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to upload file: " + e.getMessage()));
         }
     }
 
-    @DeleteMapping("/game-thumbnail/{filename}")
-    public ResponseEntity<?> deleteGameThumbnail(@PathVariable String filename) {
+    @DeleteMapping("/{filename}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> deleteFile(@PathVariable String filename) {
         try {
             Path filePath = Paths.get(uploadDir).resolve(filename);
 
-            if (Files.exists(filePath)) {
-                Files.delete(filePath);
-                log.info("File deleted successfully: {}", filename);
-                return ResponseEntity.ok(Map.of("message", "File deleted successfully"));
-            } else {
+            if (!Files.exists(filePath)) {
                 return ResponseEntity.notFound().build();
             }
 
+            Files.delete(filePath);
+            log.info("File deleted successfully: {}", filename);
+            return ResponseEntity.ok(Map.of("message", "File deleted successfully"));
+
         } catch (IOException e) {
             log.error("Failed to delete file", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to delete file: " + e.getMessage()));
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to delete file: " + e.getMessage()));
         }
     }
 }

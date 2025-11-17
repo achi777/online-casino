@@ -1,7 +1,6 @@
 com/casino/entity/KYCDocument$KYCStatus.class
 com/casino/repository/TransactionRepository.class
 com/casino/dto/SpinResponse.class
-com/casino/config/WebConfig.class
 com/casino/controller/UserVIPController$VIPStatusResponse.class
 com/casino/controller/SlotSpinController.class
 com/casino/entity/PaymentMethod$PaymentType.class
@@ -155,6 +154,7 @@ com/casino/service/ResponsibleGamingService.class
 com/casino/entity/GameRound.class
 com/casino/entity/Game$GameCategory.class
 com/casino/dto/AdminUpdateProfileRequest.class
+com/casino/config/StaticResourceConfig.class
 com/casino/entity/GameProvider$IntegrationType.class
 com/casino/dto/PasswordResetRequest.class
 com/casino/service/SlotSpinService.class
