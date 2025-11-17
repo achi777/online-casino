@@ -10,6 +10,7 @@ import HistoryIcon from '@mui/icons-material/History'
 import SecurityIcon from '@mui/icons-material/Security'
 import LogoutIcon from '@mui/icons-material/Logout'
 import StarsIcon from '@mui/icons-material/Stars'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 import { useQuery } from 'react-query'
 import axios from 'axios'
 
@@ -152,6 +153,9 @@ const Navbar = () => {
           >
             <MenuItem onClick={() => { handleClose(); navigate('/profile'); }}>
               <AccountCircleIcon sx={{ mr: 1 }} /> Profile
+            </MenuItem>
+            <MenuItem onClick={() => { handleClose(); navigate('/kyc'); }}>
+              <VerifiedUserIcon sx={{ mr: 1 }} /> KYC Verification
             </MenuItem>
             <MenuItem onClick={() => { handleClose(); navigate('/responsible-gaming'); }}>
               <SecurityIcon sx={{ mr: 1 }} /> Responsible Gaming

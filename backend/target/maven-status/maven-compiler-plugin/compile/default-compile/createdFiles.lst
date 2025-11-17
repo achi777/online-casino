@@ -1,3 +1,4 @@
+com/casino/entity/KYCDocument$KYCStatus.class
 com/casino/repository/TransactionRepository.class
 com/casino/dto/SpinResponse.class
 com/casino/config/WebConfig.class
@@ -18,6 +19,7 @@ com/casino/repository/GameRepository.class
 com/casino/service/FinancialService.class
 com/casino/controller/AdminReportController.class
 com/casino/dto/GameLaunchRequest.class
+com/casino/controller/AdminKYCController.class
 com/casino/controller/AdminManagementController.class
 com/casino/config/OpenApiConfig.class
 com/casino/config/DataLoader.class
@@ -28,6 +30,7 @@ com/casino/controller/AdminReportController$TopGame.class
 com/casino/controller/AdminCMSController.class
 com/casino/entity/Banner.class
 com/casino/entity/VIPPointsTransaction.class
+com/casino/entity/KYCDocument$DocumentType.class
 com/casino/repository/GameSessionRepository.class
 com/casino/repository/GameProviderRepository.class
 com/casino/security/JwtUtil.class
@@ -45,24 +48,29 @@ com/casino/controller/AdminPaymentMethodController.class
 com/casino/controller/AdminDashboardController$DashboardStats.class
 com/casino/controller/ArcadeGameController.class
 com/casino/dto/TransactionResponse.class
+com/casino/dto/KYCReviewRequest.class
 com/casino/entity/GameProvider$ProviderStatus.class
 com/casino/entity/SupportTicket$TicketPriority.class
 com/casino/exception/BadRequestException.class
 com/casino/dto/UpdateProfileRequest.class
 com/casino/entity/AuditLog$ActorType.class
 com/casino/controller/ArcadeGameController$ArcadeStartRequest.class
+com/casino/controller/UserKYCController.class
 com/casino/entity/SystemNotification.class
 com/casino/entity/User$UserStatus.class
 com/casino/entity/Bonus$BonusStatus.class
 com/casino/controller/UserBalanceController.class
 com/casino/security/JwtAuthenticationFilter.class
 com/casino/service/WalletService.class
+com/casino/dto/KYCSubmissionRequest.class
 com/casino/dto/GameResponse.class
 com/casino/dto/CreateGameRequest.class
 com/casino/entity/Transaction.class
 com/casino/controller/AdminVIPController$AdjustPointsRequest.class
+com/casino/controller/AdminKYCController$KYCStats.class
 com/casino/repository/UserBonusRepository.class
 com/casino/entity/PaymentMethod.class
+com/casino/entity/KYCDocument.class
 com/casino/controller/UserBalanceController$GameInfoResponse.class
 com/casino/entity/User$KYCStatus.class
 com/casino/entity/GameRound$RoundStatus.class
@@ -91,6 +99,7 @@ com/casino/entity/Transaction$TransactionType.class
 com/casino/dto/FinancialReportResponse.class
 com/casino/repository/PaymentMethodRepository.class
 com/casino/entity/BaseEntity.class
+com/casino/dto/KYCResponse.class
 com/casino/repository/SupportTicketRepository.class
 com/casino/controller/AdminSupportController.class
 com/casino/controller/AdminTransactionController$AdminTransactionResponse.class
@@ -121,6 +130,7 @@ com/casino/service/AuthService.class
 com/casino/repository/SystemNotificationRepository.class
 com/casino/entity/SupportTicket.class
 com/casino/repository/VIPPointsTransactionRepository.class
+com/casino/service/KYCService.class
 com/casino/service/GameService.class
 com/casino/dto/AuthRequest.class
 com/casino/entity/GameSession$SessionStatus.class
@@ -135,6 +145,7 @@ com/casino/repository/BonusRepository.class
 com/casino/service/BonusService.class
 com/casino/controller/AdminUserManagementController.class
 com/casino/dto/UpdateGameRequest.class
+com/casino/repository/KYCDocumentRepository.class
 com/casino/dto/GameSessionResponse.class
 com/casino/repository/BannerRepository.class
 com/casino/entity/SystemNotification$NotificationStatus.class

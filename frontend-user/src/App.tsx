@@ -11,6 +11,7 @@ import ResponsibleGaming from './pages/ResponsibleGaming'
 import Profile from './pages/Profile'
 import GameHistory from './pages/GameHistory'
 import VIP from './pages/VIP'
+import KYC from './pages/KYC'
 import PrivateRoute from './components/PrivateRoute'
 
 const theme = createTheme({
@@ -87,6 +88,14 @@ function App() {
             element={
               <PrivateRoute>
                 <VIP />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/kyc"
+            element={
+              <PrivateRoute>
+                <KYC />
               </PrivateRoute>
             }
           />

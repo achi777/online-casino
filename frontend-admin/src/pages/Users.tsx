@@ -4,12 +4,13 @@ import {
   Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, Chip, TextField, InputAdornment, Dialog, DialogTitle, DialogContent,
   DialogActions, Select, MenuItem, FormControl, InputLabel, Grid, TablePagination,
-  IconButton, Button
+  IconButton, Button, Divider, Alert, CircularProgress
 } from '@mui/material'
 import {
   Search as SearchIcon,
   Edit as EditIcon,
-  Visibility as VisibilityIcon
+  Visibility as VisibilityIcon,
+  VerifiedUser as KYCIcon
 } from '@mui/icons-material'
 import AdminLayout from '../components/AdminLayout'
 import { useAuth } from '../context/AuthContext'
@@ -27,12 +28,43 @@ interface User {
   createdAt: string
 }
 
+interface KYCDocument {
+  id: number
+  userId: number
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED'
+  firstName: string
+  lastName: string
+  dateOfBirth: string
+  nationality: string
+  addressLine1: string
+  addressLine2?: string
+  city: string
+  country: string
+  postalCode: string
+  documentType: 'PASSPORT' | 'NATIONAL_ID' | 'DRIVERS_LICENSE'
+  documentNumber: string
+  documentIssueDate: string
+  documentExpiryDate: string
+  documentIssuingCountry?: string
+  documentFrontImageUrl?: string
+  documentBackImageUrl?: string
+  selfieImageUrl?: string
+  proofOfAddressUrl?: string
+  submittedAt: string
+  reviewedAt?: string
+  reviewedByAdminId?: number
+  rejectionReason?: string
+  notes?: string
+}
+
 const Users = () => {
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [users, setUsers] = useState<User[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [userKycDocument, setUserKycDocument] = useState<KYCDocument | null>(null)
+  const [loadingKyc, setLoadingKyc] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
   const [page, setPage] = useState(0)
@@ -67,9 +99,34 @@ const Users = () => {
     setEditDialogOpen(true)
   }
 
-  const handleViewDetails = (user: User) => {
+  const handleViewDetails = async (user: User) => {
     setSelectedUser(user)
     setDetailsDialogOpen(true)
+    setUserKycDocument(null)
+
+    // Fetch user's KYC document if exists
+    if (user.kycStatus !== 'NOT_SUBMITTED') {
+      setLoadingKyc(true)
+      try {
+        // Get all KYC documents for this user and take the most recent one
+        const response = await axios.get('/api/admin/kyc', {
+          params: { page: 0, size: 1 }
+        })
+
+        // Filter by userId in frontend (since backend might not support user filtering)
+        const userKyc = response.data.content?.find((kyc: KYCDocument) => kyc.userId === user.id)
+
+        if (userKyc) {
+          // Fetch full details
+          const detailsResponse = await axios.get(`/api/admin/kyc/${userKyc.id}`)
+          setUserKycDocument(detailsResponse.data)
+        }
+      } catch (err) {
+        console.error('Failed to fetch KYC document:', err)
+      } finally {
+        setLoadingKyc(false)
+      }
+    }
   }
 
   const handleSaveUser = async () => {
@@ -258,12 +315,13 @@ const Users = () => {
         </Dialog>
 
         {/* User Details Dialog */}
-        <Dialog open={detailsDialogOpen} onClose={() => setDetailsDialogOpen(false)} maxWidth="md" fullWidth>
+        <Dialog open={detailsDialogOpen} onClose={() => setDetailsDialogOpen(false)} maxWidth="lg" fullWidth>
           <DialogTitle>User Details</DialogTitle>
           <DialogContent>
             {selectedUser && (
               <Box sx={{ pt: 2 }}>
-                <Grid container spacing={2}>
+                <Typography variant="h6" gutterBottom>Account Information</Typography>
+                <Grid container spacing={2} sx={{ mb: 3 }}>
                   <Grid item xs={12} sm={6}>
                     <Typography variant="body2" color="text.secondary">User ID</Typography>
                     <Typography variant="body1" gutterBottom>{selectedUser.id}</Typography>
@@ -315,6 +373,97 @@ const Users = () => {
                     <Typography variant="body1">{formatDate(selectedUser.createdAt)}</Typography>
                   </Grid>
                 </Grid>
+
+                <Divider sx={{ my: 3 }} />
+
+                {/* KYC Information Section */}
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <KYCIcon sx={{ mr: 1 }} />
+                  <Typography variant="h6">KYC Verification Details</Typography>
+                </Box>
+
+                {loadingKyc ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                    <CircularProgress />
+                  </Box>
+                ) : userKycDocument ? (
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Alert severity={
+                        userKycDocument.status === 'VERIFIED' ? 'success' :
+                        userKycDocument.status === 'REJECTED' ? 'error' : 'warning'
+                      }>
+                        Status: <strong>{userKycDocument.status}</strong>
+                        {userKycDocument.reviewedAt && (
+                          <> • Reviewed: {new Date(userKycDocument.reviewedAt).toLocaleString()}</>
+                        )}
+                      </Alert>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="text.secondary">Full Name (KYC)</Typography>
+                      <Typography variant="body1">{userKycDocument.firstName} {userKycDocument.lastName}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="text.secondary">Date of Birth</Typography>
+                      <Typography variant="body1">{new Date(userKycDocument.dateOfBirth).toLocaleDateString()}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="text.secondary">Nationality</Typography>
+                      <Typography variant="body1">{userKycDocument.nationality}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="text.secondary">Document Type</Typography>
+                      <Typography variant="body1">{userKycDocument.documentType.replace('_', ' ')}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="text.secondary">Document Number</Typography>
+                      <Typography variant="body1">{userKycDocument.documentNumber}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="text.secondary">Submitted At</Typography>
+                      <Typography variant="body1">{new Date(userKycDocument.submittedAt).toLocaleString()}</Typography>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <Typography variant="body2" color="text.secondary">Address</Typography>
+                      <Typography variant="body1">
+                        {userKycDocument.addressLine1}
+                        {userKycDocument.addressLine2 && `, ${userKycDocument.addressLine2}`}
+                        <br />
+                        {userKycDocument.city}, {userKycDocument.country} {userKycDocument.postalCode}
+                      </Typography>
+                    </Grid>
+
+                    {userKycDocument.rejectionReason && (
+                      <Grid item xs={12}>
+                        <Alert severity="error">
+                          <Typography variant="body2" fontWeight="bold" gutterBottom>
+                            Rejection Reason:
+                          </Typography>
+                          <Typography variant="body2">
+                            {userKycDocument.rejectionReason}
+                          </Typography>
+                        </Alert>
+                      </Grid>
+                    )}
+
+                    <Grid item xs={12}>
+                      <Button
+                        variant="outlined"
+                        startIcon={<KYCIcon />}
+                        onClick={() => navigate('/kyc')}
+                        fullWidth
+                      >
+                        View Full KYC Details & Manage
+                      </Button>
+                    </Grid>
+                  </Grid>
+                ) : (
+                  <Alert severity="info">
+                    No KYC document submitted yet for this user.
+                  </Alert>
+                )}
               </Box>
             )}
           </DialogContent>

@@ -68,7 +68,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
       text: 'KYC Verification',
       icon: <KYCIcon />,
       path: '/kyc',
-      show: permissions.canManageKYC
+      show: true
     },
     {
       text: 'Games',

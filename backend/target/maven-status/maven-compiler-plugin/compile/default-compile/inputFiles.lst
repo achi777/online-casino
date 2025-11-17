@@ -9,8 +9,10 @@
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/AdminDashboardController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/WithdrawRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/DepositRequest.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/service/KYCService.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/Game.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/CreateGameRequest.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/KYCDocumentRepository.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/AdminCMSController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/AuditLogRepository.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/SupportTicket.java
@@ -26,6 +28,7 @@
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/AuthResponse.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/ChangePasswordRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/SystemNotificationRepository.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/KYCDocument.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/GameSession.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/UserController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/VIPPointsTransactionRepository.java
@@ -47,11 +50,13 @@
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/UpdateProfileRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/AuthRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/PasswordResetRequest.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/UserKYCController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/GameRepository.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/UserBalanceController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/Transaction.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/WalletController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/VIPPointsTransaction.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/KYCSubmissionRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/BannerRepository.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/config/DataLoader.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/SystemNotification.java
@@ -68,6 +73,7 @@
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/VIPTier.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/PasswordResetTokenRepository.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/AdminReportController.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/AdminKYCController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/FinancialController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/exception/GlobalExceptionHandler.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/GameSessionRepository.java
@@ -85,9 +91,11 @@
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/GameRound.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/service/AuditService.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/GameProvider.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/KYCReviewRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/repository/SupportTicketRepository.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/CasinoPlatformApplication.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/BaseEntity.java
+/Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/KYCResponse.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/controller/UserBonusController.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/dto/ResponsibleGamingRequest.java
 /Users/archilodishelidze/Desktop/dev/gambling/backend/src/main/java/com/casino/entity/UserBonus.java
