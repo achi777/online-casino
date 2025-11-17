@@ -26,6 +26,7 @@ public class GameService {
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
     private final AuditService auditService;
+    private final VIPService vipService;
 
     @Transactional(readOnly = true)
     public Page<GameResponse> getAllGames(Pageable pageable) {
@@ -172,6 +173,9 @@ public class GameService {
         session.setTotalBet(session.getTotalBet().add(request.getBetAmount()));
         session.setRoundsPlayed(session.getRoundsPlayed() + 1);
         gameSessionRepository.save(session);
+
+        // Add VIP points for wagering
+        vipService.addPointsForWagering(userId, request.getBetAmount(), session);
 
         return balanceAfter;
     }

@@ -61,6 +61,23 @@ public class User extends BaseEntity {
 
     private Boolean temporaryBlock = false;
 
+    // VIP & Loyalty Program fields
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "vip_tier_id")
+    private VIPTier vipTier;
+
+    @Column(nullable = false)
+    private Integer vipPoints = 0;
+
+    @Column(precision = 19, scale = 2)
+    private BigDecimal totalWagered = BigDecimal.ZERO;
+
+    @Column(precision = 19, scale = 2)
+    private BigDecimal lifetimeDeposits = BigDecimal.ZERO;
+
+    @Column(precision = 19, scale = 2)
+    private BigDecimal lifetimeWithdrawals = BigDecimal.ZERO;
+
     public enum UserStatus {
         ACTIVE, SUSPENDED, BLOCKED, CLOSED
     }

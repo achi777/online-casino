@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, Badge } from '@mui/material'
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, Badge, Chip } from '@mui/material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
@@ -9,6 +9,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard'
 import HistoryIcon from '@mui/icons-material/History'
 import SecurityIcon from '@mui/icons-material/Security'
 import LogoutIcon from '@mui/icons-material/Logout'
+import StarsIcon from '@mui/icons-material/Stars'
 import { useQuery } from 'react-query'
 import axios from 'axios'
 
@@ -23,6 +24,13 @@ const Navbar = () => {
     return response.data
   }, {
     refetchInterval: 30000, // Refetch every 30 seconds
+  })
+
+  const { data: vipStatus } = useQuery('vipStatus', async () => {
+    const response = await axios.get('/api/user/vip/my-status')
+    return response.data
+  }, {
+    refetchInterval: 60000, // Refetch every 60 seconds
   })
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -93,6 +101,31 @@ const Navbar = () => {
             }}
           >
             History
+          </Button>
+          <Button
+            color="inherit"
+            startIcon={<StarsIcon />}
+            onClick={() => navigate('/vip')}
+            sx={{
+              borderBottom: isActive('/vip') ? '2px solid white' : 'none',
+              borderRadius: 0,
+              position: 'relative'
+            }}
+          >
+            VIP
+            {vipStatus?.currentTier && (
+              <Chip
+                label={vipStatus.currentTier.name}
+                size="small"
+                sx={{
+                  ml: 1,
+                  height: 20,
+                  fontSize: '0.7rem',
+                  backgroundColor: vipStatus.currentTier.color,
+                  color: '#000'
+                }}
+              />
+            )}
           </Button>
         </Box>
 

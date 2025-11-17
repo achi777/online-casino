@@ -1,82 +1,31 @@
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/blazing-7s/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/burning-hot/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/40-super-hot/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/fire-7s/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/777-deluxe/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] "GET /arcade/snake/thumbnail.svg HTTP/1.1" 304 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/fruit-mania/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/fruit-party/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/hot-fruits-40/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/hot-fruits-20/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/hot-fruits-100/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/juicy-fruits/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/mega-7s/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/sizzling-hot/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/sweet-bonanza/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:52:14] code 404, message File not found
-::1 - - [11/Nov/2025 17:52:14] "GET /slots/triple-bar/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/40-super-hot/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/777-deluxe/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/burning-hot/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/blazing-7s/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/fruit-mania/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/fruit-party/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/fire-7s/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/hot-fruits-40/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/juicy-fruits/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/hot-fruits-100/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/mega-7s/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/hot-fruits-20/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/sizzling-hot/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/sweet-bonanza/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:57:39] code 404, message File not found
-::1 - - [11/Nov/2025 17:57:39] "GET /slots/triple-bar/photo.jpeg HTTP/1.1" 404 -
-::1 - - [11/Nov/2025 17:59:56] "GET /arcade/snake/thumbnail.svg HTTP/1.1" 304 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/40-super-hot/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/777-deluxe/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/blazing-7s/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/burning-hot/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/fire-7s/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/fruit-party/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/fruit-mania/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/hot-fruits-20/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/hot-fruits-100/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/hot-fruits-40/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/juicy-fruits/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/mega-7s/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/sizzling-hot/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/sweet-bonanza/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 17:59:56] "GET /slots/triple-bar/photo.jpeg HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 18:00:26] "GET /slots/fruit-cocktail/index.html?session=33ef0b10-586b-4f33-a1ff-d369255eb791&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2Mjg2OTQ1NywiZXhwIjoxNzYyOTU1ODU3fQ.VICTGOTbibA9fjhfNAnIWEDfjNF9BE2JoTqcMSif6C0SIpaZGvwMOQekxfiplx0M HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 18:00:38] "GET /arcade/snake/index.html?session=demo-1623de53-ec94-4aee-b882-2e6a23d7a842&demo=true&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2Mjg2OTQ1NywiZXhwIjoxNzYyOTU1ODU3fQ.VICTGOTbibA9fjhfNAnIWEDfjNF9BE2JoTqcMSif6C0SIpaZGvwMOQekxfiplx0M HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 18:00:50] "GET /arcade/snake/index.html?session=97f6763a-dd7d-43e2-b515-1990885911b4&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2Mjg2OTQ1NywiZXhwIjoxNzYyOTU1ODU3fQ.VICTGOTbibA9fjhfNAnIWEDfjNF9BE2JoTqcMSif6C0SIpaZGvwMOQekxfiplx0M HTTP/1.1" 200 -
-::1 - - [11/Nov/2025 18:15:44] "GET /arcade/snake/thumbnail.svg HTTP/1.1" 304 -
-::1 - - [11/Nov/2025 18:17:01] "GET /poker/caribbean-stud-poker/index.html?session=c1a90065-396c-42ef-a88f-fcfea995dc04&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2Mjg2OTQ1NywiZXhwIjoxNzYyOTU1ODU3fQ.VICTGOTbibA9fjhfNAnIWEDfjNF9BE2JoTqcMSif6C0SIpaZGvwMOQekxfiplx0M HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /table-games/dragon-tiger/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /other/keno/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /slots/first/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /table-games/craps/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /table-games/baccarat/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /slots/book-style-slots/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /slots/hold-and-win/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /poker/three-card-poker/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /fun/chicken-road/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /poker/jack-or-better/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /table-games/blackjack/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /other/money-wheel/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /poker/caribbean-stud-poker/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /table-games/european-roulette/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /table-games/sic-bo/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /table-games/american-roulette/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /other/bingo/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:39] "GET /slots/simple5-reel-video-slots/photo.jpeg HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:02:48] "GET /slots/triple-bar/index.html?session=d9a7a230-b40a-42e5-a0e5-e8953803b1ce&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:03:12] "GET /slots/first/index.html?session=96803984-9a56-407c-85f1-a685512c46cc&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:15:09] "GET /slots/first/index.html?session=a89aadd3-5afe-4fd2-be99-3d569227061d&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:16:36] "GET /slots/first/index.html?session=bb0ad661-8180-4bbc-9c95-ca1edb093ec9&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:16:50] "GET /slots/simple5-reel-video-slots/index.html?session=1f8ee422-1713-4cfd-9655-d0199dabe965&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:17:07] "GET /table-games/american-roulette/index.html?session=5f5e82ea-f009-46c0-9030-86be7b8d8d5a&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:24:50] "GET /slots/first/index.html?session=540f36ae-4173-48ab-bfa8-757396832f07&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:25:07] "GET /slots/fruit-cocktail/index.html?session=d2060c35-b63d-4854-ba73-635fc18be098&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:25:51] "GET /slots/fruit-party/index.html?session=4e1c8872-1247-4f1d-8d4e-309d667cc1e5&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:26:04] "GET /slots/777-deluxe/index.html?session=5223a97c-16e2-4cb5-ab36-53cef510e54b&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:26:53] "GET /slots/sweet-bonanza/index.html?session=bcca67b4-b46a-48e0-88b8-c86de1b812fe&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 12:27:48] "GET /slots/lucky-7/index.html?session=45afe51e-41d4-498b-8c73-41de57a9ee5e&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -
+::1 - - [17/Nov/2025 14:03:25] "GET /slots/triple-red-hot-777/index.html?session=5379cbbe-5b2e-463e-80ef-c510eda1a628&demo=false&token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJrYXhhbTFAZ21haWwuY29tIiwidHlwZSI6IkFDQ0VTUyIsImlhdCI6MTc2MzM2NjU0NSwiZXhwIjoxNzYzNDUyOTQ1fQ.j_a17oGL8Qcg39br8OqH1Gud5SRO30SpCh5f0caBBqaLA-t6KEJmQN8lRvzej3p3 HTTP/1.1" 200 -

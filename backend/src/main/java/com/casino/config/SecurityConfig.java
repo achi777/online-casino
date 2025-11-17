@@ -74,6 +74,15 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/arcade/start").hasRole("USER")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/user/arcade/cashout").hasRole("USER")
 
+                        // Bonus endpoints
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/user/bonuses/available").permitAll()
+                        .requestMatchers("/api/user/bonuses/**").hasRole("USER")
+
+                        // VIP endpoints
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/user/vip/tiers").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/user/vip/benefits").permitAll()
+                        .requestMatchers("/api/user/vip/**").hasRole("USER")
+
                         // Admin endpoints
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN_OWNER", "ADMIN_FINANCE", "ADMIN_SUPPORT", "ADMIN_CONTENT")
 

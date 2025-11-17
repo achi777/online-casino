@@ -10,6 +10,7 @@ import Wallet from './pages/Wallet'
 import ResponsibleGaming from './pages/ResponsibleGaming'
 import Profile from './pages/Profile'
 import GameHistory from './pages/GameHistory'
+import VIP from './pages/VIP'
 import PrivateRoute from './components/PrivateRoute'
 
 const theme = createTheme({
@@ -78,6 +79,14 @@ function App() {
             element={
               <PrivateRoute>
                 <GameHistory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vip"
+            element={
+              <PrivateRoute>
+                <VIP />
               </PrivateRoute>
             }
           />

@@ -1,7 +1,8 @@
 package com.casino.controller;
 
 import com.casino.entity.Bonus;
-import com.casino.repository.BonusRepository;
+import com.casino.entity.UserBonus;
+import com.casino.service.BonusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,45 +13,50 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/bonuses")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN_OWNER', 'ADMIN_ADMIN', 'ADMIN_CONTENT')")
+@PreAuthorize("hasAnyRole('ADMIN_OWNER', 'ADMIN_FINANCE', 'ADMIN_CONTENT')")
 public class AdminBonusController {
 
-    private final BonusRepository bonusRepository;
+    private final BonusService bonusService;
 
     @GetMapping
     public ResponseEntity<List<Bonus>> getAllBonuses() {
-        return ResponseEntity.ok(bonusRepository.findAll());
+        return ResponseEntity.ok(bonusService.getAllBonuses());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Bonus> getBonusById(@PathVariable Long id) {
-        return bonusRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            return ResponseEntity.ok(bonusService.getBonusById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN_OWNER', 'ADMIN_ADMIN', 'ADMIN_CONTENT')")
     public ResponseEntity<Bonus> createBonus(@RequestBody Bonus bonus) {
-        Bonus saved = bonusRepository.save(bonus);
+        Bonus saved = bonusService.createBonus(bonus);
         return ResponseEntity.ok(saved);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN_OWNER', 'ADMIN_ADMIN', 'ADMIN_CONTENT')")
     public ResponseEntity<Bonus> updateBonus(@PathVariable Long id, @RequestBody Bonus bonus) {
-        return bonusRepository.findById(id)
-                .map(existing -> {
-                    bonus.setId(id);
-                    return ResponseEntity.ok(bonusRepository.save(bonus));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Bonus updated = bonusService.updateBonus(id, bonus);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN_OWNER', 'ADMIN_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN_OWNER', 'ADMIN_FINANCE')")
     public ResponseEntity<Void> deleteBonus(@PathVariable Long id) {
-        bonusRepository.deleteById(id);
+        bonusService.deleteBonus(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<UserBonus>> getUserBonuses(@PathVariable Long userId) {
+        return ResponseEntity.ok(bonusService.getUserBonuses(userId));
     }
 }

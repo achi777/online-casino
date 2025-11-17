@@ -27,6 +27,7 @@ public class WalletService {
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
     private final AuditService auditService;
+    private final VIPService vipService;
 
     @Transactional
     public TransactionResponse deposit(Long userId, DepositRequest request) {
@@ -62,6 +63,9 @@ public class WalletService {
 
         auditService.logUserAction(userId, "DEPOSIT", "Transaction", transaction.getId(),
                 balanceBefore.toString(), balanceAfter.toString());
+
+        // Add VIP points for deposit
+        vipService.addPointsForDeposit(userId, request.getAmount(), transaction);
 
         return TransactionResponse.fromEntity(transaction);
     }

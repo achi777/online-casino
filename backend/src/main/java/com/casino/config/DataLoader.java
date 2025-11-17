@@ -26,9 +26,14 @@ public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final com.casino.service.VIPService vipService;
 
     @Override
     public void run(String... args) {
+        // Initialize VIP tiers
+        vipService.initializeDefaultTiers();
+        log.info("VIP tiers initialization completed");
+
         // Save or get existing provider
         GameProvider provider = gameProviderRepository.findByCode("HOUSE")
                 .orElseGet(() -> {
