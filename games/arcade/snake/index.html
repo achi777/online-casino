@@ -249,24 +249,30 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8080/api/user/arcade';
-        const BET_AMOUNT = 5.00;
-        const COIN_VALUE = 0.10;
-        const INITIAL_SPEED = 180; // 20% ით ნელა (150 * 1.2)
-        const SPEED_MULTIPLIER = 0.95; // ყოველ მონეტაზე 5% სწრაფდება
-        const MIN_SPEED = 30; // მინიმალური დაყოვნება
+        const API_BASE = 'http://localhost:8000/api/game'; // Python backend
         const GRID_SIZE = 20;
         const CANVAS_WIDTH = 600;
         const CANVAS_HEIGHT = 390;
         const CELL_WIDTH = CANVAS_WIDTH / GRID_SIZE;
         const CELL_HEIGHT = CANVAS_HEIGHT / GRID_SIZE;
 
+        // Game config from backend (loaded on init)
+        let BET_AMOUNT = 5.00;
+        let COIN_VALUE = 0.10;
+        let INITIAL_SPEED = 180;
+        let SPEED_MULTIPLIER = 0.95;
+        let MIN_SPEED = 30;
+        let MAX_WIN_AMOUNT = 100.0;
+
         let canvas, ctx;
         let snake, direction, nextDirection, coin;
         let gameLoop, gameActive, isDemoMode;
-        let coinsCollected, currentSpeed, sessionToken;
+        let coinsCollected, currentSpeed, sessionToken, gameSessionToken;
         let betId = null;
         let currentBalance = 0;
+        let gameStartTime = null;
+        let collisionType = 'wall';
+        let configLoaded = false;
 
         // Session management
         function getSessionToken() {
@@ -284,8 +290,59 @@
             return params.get('demo') === 'true';
         }
 
+        // Load game configuration from backend
+        async function loadGameConfig() {
+            try {
+                const response = await fetch(`${API_BASE}/config`);
+                if (response.ok) {
+                    const config = await response.json();
+                    BET_AMOUNT = config.bet_amount;
+                    COIN_VALUE = config.coin_value;
+                    INITIAL_SPEED = config.initial_speed;
+                    SPEED_MULTIPLIER = config.speed_multiplier;
+                    MIN_SPEED = config.min_speed;
+                    MAX_WIN_AMOUNT = config.max_win_amount;
+                    configLoaded = true;
+
+                    // Update UI with loaded config
+                    document.querySelector('.info-box:nth-child(2) .info-value').textContent = '₾' + BET_AMOUNT.toFixed(2);
+                    document.getElementById('startBtn').textContent = `თამაშის დაწყება (₾${BET_AMOUNT})`;
+                } else {
+                    console.error('Failed to load game config');
+                    showMessage('კონფიგურაციის ჩატვირთვა ვერ მოხერხდა', 'error');
+                }
+            } catch (error) {
+                console.error('Failed to load game config:', error);
+                showMessage('კონფიგურაციის ჩატვირთვა ვერ მოხერხდა', 'error');
+            }
+        }
+
+        // Fetch user balance
+        async function fetchBalance() {
+            if (!sessionToken || isDemo()) {
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/api/user/wallet/balance', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const balance = await response.json();
+                    currentBalance = balance;
+                    updateUI();
+                }
+            } catch (error) {
+                console.error('Failed to fetch balance:', error);
+            }
+        }
+
         // Initialize
-        window.onload = function() {
+        window.onload = async function() {
             canvas = document.getElementById('gameCanvas');
             ctx = canvas.getContext('2d');
             sessionToken = getSessionToken();
@@ -297,6 +354,12 @@
 
             setupControls();
             drawGrid();
+
+            // Load config from backend first
+            await loadGameConfig();
+
+            // Then fetch balance
+            await fetchBalance();
         };
 
         function setupControls() {
@@ -457,12 +520,14 @@
 
             // Check wall collision
             if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                collisionType = 'wall';
                 gameOver();
                 return;
             }
 
             // Check self collision
             if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                collisionType = 'self';
                 gameOver();
                 return;
             }
@@ -475,6 +540,12 @@
                 coinsCollected++;
                 // ყოველ მონეტაზე 5% სწრაფდება
                 currentSpeed = Math.max(MIN_SPEED, INITIAL_SPEED * Math.pow(SPEED_MULTIPLIER, coinsCollected));
+
+                // Report coin collection to backend (if not demo mode)
+                if (!isDemoMode && gameSessionToken) {
+                    reportCoinCollection(coin, head);
+                }
+
                 updateUI();
                 generateCoin();
 
@@ -509,14 +580,38 @@
             msgEl.className = 'message-' + type;
         }
 
+        async function reportCoinCollection(coinPos, snakeHead) {
+            try {
+                await fetch(`${API_BASE}/collect-coin`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        session_token: gameSessionToken,
+                        coin_position: { x: coinPos.x, y: coinPos.y },
+                        snake_head: { x: snakeHead.x, y: snakeHead.y },
+                        timestamp: Date.now()
+                    })
+                });
+            } catch (error) {
+                console.error('Failed to report coin collection:', error);
+            }
+        }
+
         async function startGame() {
+            if (!configLoaded) {
+                showMessage('გთხოვთ დაელოდოთ კონფიგურაციის ჩატვირთვას', 'error');
+                return;
+            }
+
             if (!sessionToken && !isDemo()) {
                 showMessage('გთხოვთ გაიაროთ ავტორიზაცია', 'error');
                 return;
             }
 
             try {
-                // Place bet
+                // Place bet - call Python backend
                 const response = await fetch(`${API_BASE}/start`, {
                     method: 'POST',
                     headers: {
@@ -524,23 +619,25 @@
                         'Authorization': `Bearer ${sessionToken}`
                     },
                     body: JSON.stringify({
-                        betAmount: BET_AMOUNT,
-                        gameCode: 'SNAKE_ARCADE'
+                        bet_amount: BET_AMOUNT
                     })
                 });
 
                 if (!response.ok) {
                     const error = await response.json();
-                    showMessage(error.message || 'ფსონის განთავსება ვერ მოხერხდა', 'error');
+                    showMessage(error.detail || 'ფსონის განთავსება ვერ მოხერხდა', 'error');
                     return;
                 }
 
                 const data = await response.json();
-                betId = data.sessionToken;
-                currentBalance = data.newBalance;
+                gameSessionToken = data.session_token;
+                gameStartTime = Date.now();
 
                 initGame(false);
                 showMessage('თამაში დაიწყო! შეაგროვეთ მონეტები', 'success');
+
+                // Update balance after bet deduction
+                await fetchBalance();
             } catch (error) {
                 console.error('Bet error:', error);
                 showMessage('შეცდომა სერვერთან კავშირში', 'error');
@@ -548,6 +645,10 @@
         }
 
         function startDemo() {
+            if (!configLoaded) {
+                showMessage('გთხოვთ დაელოდოთ კონფიგურაციის ჩატვირთვას', 'error');
+                return;
+            }
             initGame(true);
             showMessage('დემო რეჟიმი - თამაში არ მოითხოვს ფსონს', 'info');
         }
@@ -596,33 +697,36 @@
             }
 
             try {
-                // Complete bet with winnings
-                const winAmount = collectedAmount;
+                const gameDuration = Date.now() - gameStartTime;
+                const finalSpeed = (INITIAL_SPEED / currentSpeed);
+
+                // Complete bet with winnings - call Python backend
                 const response = await fetch(`${API_BASE}/cashout`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionToken}`
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        sessionToken: betId,
-                        winAmount: winAmount,
-                        gameData: {
-                            coinsCollected: coinsCollected,
-                            finalSpeed: (INITIAL_SPEED / currentSpeed).toFixed(1)
-                        }
+                        session_token: gameSessionToken,
+                        coins_collected: coinsCollected,
+                        final_speed: finalSpeed,
+                        game_duration: gameDuration
                     })
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to complete bet');
+                    const error = await response.json();
+                    showMessage(error.detail || 'Cash out ვერ მოხერხდა', 'error');
+                    return;
                 }
 
                 const cashoutData = await response.json();
-                currentBalance = cashoutData.newBalance;
-                updateUI();
+                const winAmount = cashoutData.win_amount;
 
                 showMessage(`შეჩერება წარმატებული! შეგროვებული თანხა გადატანილია ბალანსზე: ₾${winAmount.toFixed(2)}`, 'success');
+
+                // Update balance after winnings added
+                await fetchBalance();
                 resetButtons();
             } catch (error) {
                 console.error('Cash out error:', error);
@@ -644,37 +748,35 @@
             }
 
             try {
-                // Game Over - player loses all collected coins (winAmount = 0)
-                const winAmount = 0;
-                const response = await fetch(`${API_BASE}/cashout`, {
+                const gameDuration = Date.now() - gameStartTime;
+
+                // Game Over - call Python backend
+                const response = await fetch(`${API_BASE}/game-over`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionToken}`
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        sessionToken: betId,
-                        winAmount: winAmount,
-                        gameData: {
-                            coinsCollected: coinsCollected,
-                            collectedAmount: collectedAmount,
-                            finalSpeed: (INITIAL_SPEED / currentSpeed).toFixed(1),
-                            result: 'game_over'
-                        }
+                        session_token: gameSessionToken,
+                        coins_collected: coinsCollected,
+                        game_duration: gameDuration,
+                        collision_type: collisionType
                     })
                 });
 
                 if (response.ok) {
                     const gameOverData = await response.json();
-                    currentBalance = gameOverData.newBalance;
-                    updateUI();
+                    showMessage(`თამაში დასრულდა! აგროვებული თანხა დაიკარგა: ₾${gameOverData.amount_lost.toFixed(2)}`, 'error');
+                } else {
+                    showMessage(`თამაში დასრულდა! აგროვებული თანხა დაიკარგა: ₾${collectedAmount.toFixed(2)}`, 'error');
                 }
-
-                showMessage(`თამაში დასრულდა! აგროვებული თანხა დაიკარგა: ₾${collectedAmount.toFixed(2)}`, 'error');
             } catch (error) {
                 console.error('Game over error:', error);
+                showMessage(`თამაში დასრულდა! აგროვებული თანხა დაიკარგა: ₾${collectedAmount.toFixed(2)}`, 'error');
             }
 
+            // Update balance (should show bet deduction)
+            await fetchBalance();
             resetButtons();
         }
 
@@ -683,6 +785,8 @@
             document.getElementById('demoBtn').disabled = false;
             document.getElementById('cashoutBtn').disabled = true;
             betId = null;
+            gameSessionToken = null;
+            gameStartTime = null;
         }
     </script>
 </body>
