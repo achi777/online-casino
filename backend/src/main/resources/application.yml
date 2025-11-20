@@ -46,3 +46,20 @@ logging:
 
 file:
   upload-dir: uploads
+
+# Resilience4j Rate Limiting Configuration
+resilience4j:
+  ratelimiter:
+    instances:
+      gameOperations:
+        limitForPeriod: 10          # 10 requests per period
+        limitRefreshPeriod: 1s      # Period of 1 second
+        timeoutDuration: 0s         # No wait time, fail immediately if limit exceeded
+      slotSpin:
+        limitForPeriod: 5           # 5 spins per period (slots are faster)
+        limitRefreshPeriod: 1s      # Period of 1 second
+        timeoutDuration: 0s
+      betOperations:
+        limitForPeriod: 20          # 20 bets per period
+        limitRefreshPeriod: 1s      # Period of 1 second
+        timeoutDuration: 0s

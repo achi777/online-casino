@@ -54,6 +54,39 @@ public class WalletController {
         return ResponseEntity.ok(walletService.getTransactionHistory(userId, pageable));
     }
 
+    // Game integration endpoints
+    @PostMapping("/deduct")
+    public ResponseEntity<?> deductForGame(
+            Authentication authentication,
+            @RequestBody java.util.Map<String, Object> request) {
+        Long userId = getUserIdFromAuth(authentication);
+        Double amount = ((Number) request.get("amount")).doubleValue();
+        String gameType = (String) request.getOrDefault("gameType", "UNKNOWN");
+
+        try {
+            walletService.deductBalance(userId, BigDecimal.valueOf(amount), gameType);
+            return ResponseEntity.ok().body(java.util.Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addWinnings(
+            Authentication authentication,
+            @RequestBody java.util.Map<String, Object> request) {
+        Long userId = getUserIdFromAuth(authentication);
+        Double amount = ((Number) request.get("amount")).doubleValue();
+        String gameType = (String) request.getOrDefault("gameType", "UNKNOWN");
+
+        try {
+            walletService.addWinnings(userId, BigDecimal.valueOf(amount), gameType);
+            return ResponseEntity.ok().body(java.util.Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
+
     private Long getUserIdFromAuth(Authentication authentication) {
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)

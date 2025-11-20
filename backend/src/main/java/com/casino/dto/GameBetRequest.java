@@ -19,4 +19,6 @@ public class GameBetRequest {
     @NotNull(message = "Bet amount is required")
     @DecimalMin(value = "0.01", message = "Minimum bet is 0.01")
     private BigDecimal betAmount;
+
+    private String ipAddress; // Client IP for security validation
 }

@@ -19,4 +19,6 @@ public class GameWinRequest {
     @NotNull(message = "Win amount is required")
     @DecimalMin(value = "0.00", message = "Win amount cannot be negative")
     private BigDecimal winAmount;
+
+    private String ipAddress; // Client IP for security validation
 }

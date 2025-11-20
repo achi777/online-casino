@@ -6,6 +6,9 @@ import com.casino.entity.User;
 import com.casino.exception.BadRequestException;
 import com.casino.repository.UserRepository;
 import com.casino.service.GameService;
+import com.casino.util.IpAddressUtil;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -45,7 +48,12 @@ public class GameController {
     @PostMapping("/launch")
     public ResponseEntity<GameLaunchResponse> launchGame(
             Authentication authentication,
-            @Valid @RequestBody GameLaunchRequest request) {
+            @Valid @RequestBody GameLaunchRequest request,
+            HttpServletRequest httpRequest) {
+        // Extract client IP for security tracking
+        String ipAddress = IpAddressUtil.getClientIpAddress(httpRequest);
+        request.setIpAddress(ipAddress);
+
         // Demo mode doesn't require authentication
         if (Boolean.TRUE.equals(request.getDemoMode())) {
             return ResponseEntity.ok(gameService.launchGameDemo(request));
@@ -67,19 +75,34 @@ public class GameController {
     }
 
     @PostMapping("/bet")
+    @RateLimiter(name = "betOperations", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<BigDecimal> placeBet(
             Authentication authentication,
-            @Valid @RequestBody GameBetRequest request) {
+            @Valid @RequestBody GameBetRequest request,
+            HttpServletRequest httpRequest) {
         Long userId = getUserIdFromAuth(authentication);
+        // Extract client IP for security validation
+        String ipAddress = IpAddressUtil.getClientIpAddress(httpRequest);
+        request.setIpAddress(ipAddress);
         return ResponseEntity.ok(gameService.placeBet(userId, request));
     }
 
     @PostMapping("/win")
+    @RateLimiter(name = "betOperations", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<BigDecimal> processWin(
             Authentication authentication,
-            @Valid @RequestBody GameWinRequest request) {
+            @Valid @RequestBody GameWinRequest request,
+            HttpServletRequest httpRequest) {
         Long userId = getUserIdFromAuth(authentication);
+        // Extract client IP for security validation
+        String ipAddress = IpAddressUtil.getClientIpAddress(httpRequest);
+        request.setIpAddress(ipAddress);
         return ResponseEntity.ok(gameService.processWin(userId, request));
+    }
+
+    // Rate limit fallback method
+    private ResponseEntity<BigDecimal> rateLimitFallback(Exception e) {
+        throw new BadRequestException("Too many requests. Please slow down.");
     }
 
     @PostMapping("/rollback/{roundId}")

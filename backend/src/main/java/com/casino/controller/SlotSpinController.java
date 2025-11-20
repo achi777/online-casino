@@ -8,6 +8,7 @@ import com.casino.exception.BadRequestException;
 import com.casino.repository.GameSessionRepository;
 import com.casino.repository.UserRepository;
 import com.casino.service.SlotSpinService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ public class SlotSpinController {
     private final GameSessionRepository gameSessionRepository;
 
     @PostMapping("/games/spin")
+    @RateLimiter(name = "slotSpin", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<SpinResponse> spin(
             Authentication authentication,
             @RequestBody SpinRequest request) {
@@ -33,11 +35,21 @@ public class SlotSpinController {
     }
 
     @PostMapping("/game-sessions/{sessionToken}/spin")
+    @RateLimiter(name = "slotSpin", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<SpinResponse> spinByPath(
+            Authentication authentication,
             @PathVariable String sessionToken,
             @RequestBody SpinRequest request) {
+        // SECURITY: Validate authentication first
+        Long userId = getUserIdFromAuth(authentication);
+
         GameSession session = gameSessionRepository.findBySessionToken(sessionToken)
-                .orElseThrow(() -> new RuntimeException("Invalid session token"));
+                .orElseThrow(() -> new BadRequestException("Invalid session token"));
+
+        // SECURITY: Validate session belongs to authenticated user
+        if (!session.getUser().getId().equals(userId)) {
+            throw new BadRequestException("Invalid session");
+        }
 
         User user = session.getUser();
 
@@ -52,6 +64,11 @@ public class SlotSpinController {
 
         SpinResponse response = slotSpinService.processSpin(user.getId(), request);
         return ResponseEntity.ok(response);
+    }
+
+    // Rate limit fallback method
+    private ResponseEntity<SpinResponse> rateLimitFallback(Exception e) {
+        throw new BadRequestException("Too many spin requests. Please slow down.");
     }
 
     private Long getUserIdFromAuth(Authentication authentication) {

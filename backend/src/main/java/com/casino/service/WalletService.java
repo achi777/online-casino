@@ -123,6 +123,75 @@ public class WalletService {
         return user.getBalance();
     }
 
+    @Transactional
+    public void deductBalance(Long userId, BigDecimal amount, String gameType) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        if (user.getStatus() != User.UserStatus.ACTIVE) {
+            throw new BadRequestException("User account is not active");
+        }
+
+        if (user.getBalance().compareTo(amount) < 0) {
+            throw new BadRequestException("Insufficient balance");
+        }
+
+        BigDecimal balanceBefore = user.getBalance();
+        BigDecimal balanceAfter = balanceBefore.subtract(amount);
+
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setTransactionId(UUID.randomUUID().toString());
+        transaction.setType(Transaction.TransactionType.BET);
+        transaction.setAmount(amount);
+        transaction.setBalanceBefore(balanceBefore);
+        transaction.setBalanceAfter(balanceAfter);
+        transaction.setStatus(Transaction.TransactionStatus.COMPLETED);
+        transaction.setDescription("Game bet: " + gameType);
+
+        transactionRepository.save(transaction);
+
+        user.setBalance(balanceAfter);
+        userRepository.save(user);
+
+        auditService.logUserAction(userId, "GAME_BET", "Transaction", transaction.getId(),
+                balanceBefore.toString(), balanceAfter.toString());
+    }
+
+    @Transactional
+    public void addWinnings(Long userId, BigDecimal amount, String gameType) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        if (user.getStatus() != User.UserStatus.ACTIVE) {
+            throw new BadRequestException("User account is not active");
+        }
+
+        BigDecimal balanceBefore = user.getBalance();
+        BigDecimal balanceAfter = balanceBefore.add(amount);
+
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setTransactionId(UUID.randomUUID().toString());
+        transaction.setType(Transaction.TransactionType.WIN);
+        transaction.setAmount(amount);
+        transaction.setBalanceBefore(balanceBefore);
+        transaction.setBalanceAfter(balanceAfter);
+        transaction.setStatus(Transaction.TransactionStatus.COMPLETED);
+        transaction.setDescription("Game win: " + gameType);
+
+        transactionRepository.save(transaction);
+
+        user.setBalance(balanceAfter);
+        userRepository.save(user);
+
+        auditService.logUserAction(userId, "GAME_WIN", "Transaction", transaction.getId(),
+                balanceBefore.toString(), balanceAfter.toString());
+
+        // Add VIP points for wins (if method exists)
+        // vipService.addPointsForWin(userId, amount, transaction);
+    }
+
     private void checkDepositLimits(User user, BigDecimal amount) {
         LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
         LocalDateTime startOfWeek = LocalDateTime.now().minusWeeks(1);

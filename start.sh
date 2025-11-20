@@ -105,11 +105,32 @@ else
 fi
 
 if check_port 8888; then
-    print_warning "Game server already running on port 8888"
-    # Get actual PID and save it
+    # Check if it's actually the Python game server
     ACTUAL_PID=$(lsof -ti:8888 | grep -v "^$" | tail -1)
     if [ ! -z "$ACTUAL_PID" ]; then
-        echo $ACTUAL_PID > "$SCRIPT_DIR/logs/game-server.pid"
+        # Check if this PID is Python http.server
+        if ps -p $ACTUAL_PID -o comm= | grep -q "Python"; then
+            print_warning "Game server already running on port 8888"
+            echo $ACTUAL_PID > "$SCRIPT_DIR/logs/game-server.pid"
+        else
+            # Port is occupied by something else, kill it and start game server
+            print_warning "Port 8888 occupied by another process (PID: $ACTUAL_PID), killing it..."
+            kill -9 $ACTUAL_PID 2>/dev/null || true
+            sleep 1
+            # Now start the game server
+            print_info "Starting Game Server (Python HTTP)..."
+            cd "$SCRIPT_DIR"
+            python3 -m http.server 8888 --directory games > "$SCRIPT_DIR/logs/game-server.log" 2>&1 &
+            GAME_SERVER_PID=$!
+            echo $GAME_SERVER_PID > "$SCRIPT_DIR/logs/game-server.pid"
+            sleep 1
+            if ps -p $GAME_SERVER_PID > /dev/null 2>&1; then
+                print_status "Game server started (PID: $GAME_SERVER_PID)"
+            else
+                print_error "Failed to start game server"
+                exit 1
+            fi
+        fi
     fi
 else
     print_info "Starting Game Server (Python HTTP)..."

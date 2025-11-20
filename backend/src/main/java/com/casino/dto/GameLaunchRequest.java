@@ -10,4 +10,6 @@ public class GameLaunchRequest {
     private Long gameId;
 
     private Boolean demoMode = false;
+
+    private String ipAddress; // Client IP for security tracking
 }

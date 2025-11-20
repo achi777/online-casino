@@ -1,5 +1,6 @@
 package com.casino.service;
 
+import com.casino.constants.VIPConstants;
 import com.casino.entity.*;
 import com.casino.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing VIP tiers and loyalty points.
+ *
+ * <p>This service handles:</p>
+ * <ul>
+ *   <li>VIP tier management (CRUD operations)</li>
+ *   <li>VIP points calculation and accrual</li>
+ *   <li>Automatic tier progression</li>
+ *   <li>Points transactions tracking</li>
+ *   <li>VIP benefits distribution</li>
+ * </ul>
+ *
+ * <p>Points are earned at the following rates:</p>
+ * <ul>
+ *   <li>1 point per 1 GEL wagered</li>
+ *   <li>0.1 points per 1 GEL deposited</li>
+ * </ul>
+ *
+ * @author Casino Platform
+ * @version 1.0
+ * @since 2025-11-19
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,10 +46,6 @@ public class VIPService {
     private final VIPTierRepository vipTierRepository;
     private final VIPPointsTransactionRepository vipPointsTransactionRepository;
     private final UserRepository userRepository;
-
-    // Points calculation rates
-    private static final BigDecimal POINTS_PER_GEL_WAGERED = new BigDecimal("1"); // 1 ქულა = 1 ლარი wagering
-    private static final BigDecimal POINTS_PER_GEL_DEPOSIT = new BigDecimal("0.1"); // 0.1 ქულა = 1 ლარი deposit
 
     // VIP Tier Management
     public List<VIPTier> getAllTiers() {
@@ -56,13 +75,24 @@ public class VIPService {
     }
 
     // VIP Points Management
+    /**
+     * Adds VIP points to a user based on wagering activity.
+     *
+     * <p>Points are calculated at a rate of 1 point per 1 GEL wagered.
+     * This method also updates the user's total wagered amount and
+     * checks for tier progression.</p>
+     *
+     * @param userId the ID of the user who wagered
+     * @param wageringAmount the amount wagered in GEL
+     * @param gameSession the game session in which the wagering occurred
+     */
     @Transactional
     public void addPointsForWagering(Long userId, BigDecimal wageringAmount, GameSession gameSession) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Calculate points: 1 ლარი wagering = 1 VIP point
-        int points = wageringAmount.multiply(POINTS_PER_GEL_WAGERED)
+        // Calculate points using constant rate
+        int points = wageringAmount.multiply(VIPConstants.PointsRate.POINTS_PER_GEL_WAGERED)
                 .setScale(0, RoundingMode.DOWN)
                 .intValue();
 
@@ -78,13 +108,23 @@ public class VIPService {
         }
     }
 
+    /**
+     * Adds VIP points to a user based on deposit activity.
+     *
+     * <p>Points are calculated at a rate of 0.1 points per 1 GEL deposited.
+     * This method also updates the user's lifetime deposits amount.</p>
+     *
+     * @param userId the ID of the user who made a deposit
+     * @param depositAmount the amount deposited in GEL
+     * @param transaction the transaction record for this deposit
+     */
     @Transactional
     public void addPointsForDeposit(Long userId, BigDecimal depositAmount, Transaction transaction) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Calculate points: 1 ლარი deposit = 0.1 VIP points
-        int points = depositAmount.multiply(POINTS_PER_GEL_DEPOSIT)
+        // Calculate points using constant rate
+        int points = depositAmount.multiply(VIPConstants.PointsRate.POINTS_PER_GEL_DEPOSIT)
                 .setScale(0, RoundingMode.DOWN)
                 .intValue();
 
